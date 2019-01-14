@@ -46,19 +46,19 @@ export default [
       // SystemManager
       {
         path: '/system-manager',
-        icon: 'form',
-        name: '系统管理',
+        icon: 'setting',
+        name: 'systemManager',
         hideChildrenInMenu: true,
         routes: [
           {
             path: '/system-manager/admin-manager',
-            name: '管理员管理',
+            name: 'adminManager',
             //authority: ['admin'],
             component: './SystemManager/AdminManager',
           } ,
           {
             path: '/system-manager/department-manager',
-            name: '部门管理',
+            name: 'departmentManager',
             //authority: ['admin'],
             component: './SystemManager/DepartmentManager',
           },

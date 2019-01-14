@@ -20,6 +20,32 @@ export async function queryMenus() {
 export async function getFakeCaptcha() {
   return `${baseURL}/captcha.jpg?t=${new Date().getTime()}`;
 }
+//查询管理员管理列表
+export async function queryRule(params) {
+  return request(`${baseURL}/sys/user/list?${stringify(params)}`);
+}
+//新建管理员
+export async function addRule(params) {
+  return request(`${baseURL}/sys/user/save`, {
+    method: 'POST',
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
+
+//查询角色列表
+export async function queryRole(params) {
+  return request(`${baseURL}/sys/role/list?${stringify(params)}`);
+}
+
+//查询部门列表
+export async function queryDept(params) {
+  return request(`${baseURL}/sys/dept/list?${stringify(params)}`);
+}
+
 
 
 export async function queryProjectNotice() {
@@ -30,9 +56,7 @@ export async function queryActivities() {
   return request('/api/activities');
 }
 
-export async function queryRule(params) {
-  return request(`${baseURL}/sys/user/list?${stringify(params)}`);
-}
+
 
 export async function removeRule(params) {
   return request('/api/rule', {
@@ -44,15 +68,6 @@ export async function removeRule(params) {
   });
 }
 
-export async function addRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    body: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
 
 export async function updateRule(params) {
   return request('/api/rule', {

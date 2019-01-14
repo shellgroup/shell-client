@@ -1,7 +1,7 @@
-import { queryRule, removeRule, addRule, updateRule } from '@/services/api';
-
+import { queryRole } from '@/services/api'; //, removeRule, addRule, updateRule
+//RoleManager
 export default {
-  namespace: 'rule',
+  namespace: 'role',
 
   state: {
     data: {
@@ -12,8 +12,8 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryRule, payload);
-      console.log(response,"***************用户列表数据");
+      const response = yield call(queryRole, payload);
+      console.log(response,"***************角色列表数据");
       yield put({
         type: 'save',
         payload: response,

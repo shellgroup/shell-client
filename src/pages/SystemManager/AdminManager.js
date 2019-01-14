@@ -20,7 +20,7 @@ import {
   Badge,
   Divider,
   Steps,
-  Radio,
+  Radio, TreeSelect,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import TreeSeltctInput from '@/components/TreeSeltctInput'
@@ -41,7 +41,8 @@ const statusMap = ['default', 'processing'];
 const status = ['停用', '正常'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, treeValue } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, onChangeTreeSelect, handleChange} = props;
+  console.log(props,8888);
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -57,13 +58,25 @@ const CreateForm = Form.create()(props => {
     children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
   }
 
-  function handleChange(value) {
-    console.log(`selected ${value}`);
-  }
 
-
-
-
+  const treeData = [{
+    title: 'Node1',
+    value: '0-0',
+    key: '0-0',
+    children: [{
+      title: 'Child Node1',
+      value: '0-0-1',
+      key: '0-0-1',
+    }, {
+      title: 'Child Node2',
+      value: '0-0-2',
+      key: '0-0-2',
+    }],
+  }, {
+    title: 'Node2',
+    value: '0-1',
+    key: '0-1',
+  }];
   return (
     <Modal
       destroyOnClose
@@ -96,21 +109,43 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
         {form.getFieldDecorator('dept', {
           rules: [{ required: true, message: '请选择所属部门！', min: 2 }],
-        })(<TreeSeltctInput placeholder="所属部门" />)}
+        })(
+          <TreeSelect
+            className={styles.width}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            treeData={treeData}
+            dropdownMatchSelectWidth={false}
+            placeholder="请选择部门"
+            treeDefaultExpandAll
+            onChange={onChangeTreeSelect}
+          />
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角&emsp;色">
-        <Select
-          mode="multiple"
-          style={{ width: '100%' }}
-          placeholder="Please select"
-          defaultValue={['a10', 'c12']}
-          onChange={handleChange}
-        >
-          {children}
-        </Select>
+        {form.getFieldDecorator('role', {
+          rules: [{ required: false}],
+        })(
+          <Select
+            mode="multiple"
+            style={{ width: '100%' }}
+            placeholder="请选择角色"
+            onChange={handleChange}
+          >
+            {children}
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状&emsp;态">
-        <Switch checkedChildren="正常" unCheckedChildren="停用" defaultChecked />
+        {form.getFieldDecorator('status', {
+          rules: [{ required: false}],
+        })(
+          <div>
+            <RadioGroup defaultValue={1}>
+              <Radio value={1}>A</Radio>
+              <Radio value={2}>B</Radio>
+            </RadioGroup>
+          </div>
+        )}
       </FormItem>
     </Modal>
   );
@@ -126,12 +161,34 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
+    console.log(props,"((((((((((((((");
+
+    values:
+      createTime: "2016-11-11 11:11:11"
+    deptId: 1
+    deptName: "人人开源集团"
+    email: "root@renren.io"
+    mobile: "13612345678"
+    roleIdList: null
+    salt: "YzcmCZNvbXocrsz9dm8e"
+    status: 1
+    userId: 1
+    username: "admin"
+
 
     this.state = {
       formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
+        name: props.values.username,
+        key: props.values.userId,
+        deptId: props.values.deptId,
+        deptName: props.values.deptName,
+        email: props.values.email,
+        mobile: props.values.mobile,
+        roleIdList: null,
+        salt: "YzcmCZNvbXocrsz9dm8e",
+        status: props.values.status,
+        userId: props.values.userId,
+        username: props.values.username,
         target: '0',
         template: '0',
         type: '1',
@@ -186,9 +243,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ usr, loading }) => ({
+  usr,
+  loading: loading.models.usr,
 }))
 @Form.create()
 class AdminManager extends PureComponent {
@@ -200,6 +257,7 @@ class AdminManager extends PureComponent {
     formValues: {},
     stepFormValues: {},
     key: "userId",
+    val: undefined,
   }
 
   columns = [
@@ -253,10 +311,11 @@ class AdminManager extends PureComponent {
       ),
     },
   ];
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'usr/fetch',
     });
   }
 
@@ -281,7 +340,7 @@ class AdminManager extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'usr/fetch',
       payload: params,
     });
   };
@@ -293,7 +352,7 @@ class AdminManager extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'usr/fetch',
       payload: {},
     });
   };
@@ -313,7 +372,7 @@ class AdminManager extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'usr/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -328,7 +387,12 @@ class AdminManager extends PureComponent {
         break;
     }
   };
-
+  onChangeTreeSelect = (value) => {
+    console.log(value);
+  }
+  handleChange = (value) =>{
+    console.log(value);
+  }
   handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
@@ -353,7 +417,7 @@ class AdminManager extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'usr/fetch',
         payload: values,
       });
     });
@@ -366,6 +430,7 @@ class AdminManager extends PureComponent {
   };
 
   handleUpdateModalVisible = (flag, record) => {
+    console.log(record,flag,"****************")
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
@@ -373,9 +438,10 @@ class AdminManager extends PureComponent {
   };
 
   handleAdd = fields => {
+    console.log(fields,777777777);
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'usr/add',
       payload: {
         desc: fields.desc,
       },
@@ -388,7 +454,7 @@ class AdminManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
+      type: 'usr/update',
       payload: {
         name: fields.name,
         desc: fields.desc,
@@ -458,13 +524,15 @@ class AdminManager extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      usr: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
+      onChangeTreeSelect:this.onChangeTreeSelect,
+      handleChange:this.handleChange
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,

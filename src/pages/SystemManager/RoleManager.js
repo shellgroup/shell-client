@@ -151,9 +151,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ role, loading }) => ({
+  role,
+  loading: loading.models.role,
 }))
 @Form.create()
 class RoleManager extends PureComponent {
@@ -164,24 +164,25 @@ class RoleManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    key: "roleId",
   };
 
   columns = [
     {
       title: '角色名称',
-      dataIndex: 'name',
+      dataIndex: 'roleName',
     },
     {
       title: '所属部门',
-      dataIndex: 'dept',
+      dataIndex: 'deptName',
     },
     {
       title: '备注',
-      dataIndex: 'email',
+      dataIndex: 'remark',
     },
     {
       title: '创建时间',
-      dataIndex: 'createtime',
+      dataIndex: 'createTime',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
@@ -200,7 +201,7 @@ class RoleManager extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'role/fetch',
     });
   }
 
@@ -225,7 +226,7 @@ class RoleManager extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'role/fetch',
       payload: params,
     });
   };
@@ -237,7 +238,7 @@ class RoleManager extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'role/fetch',
       payload: {},
     });
   };
@@ -257,7 +258,7 @@ class RoleManager extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'role/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -297,7 +298,7 @@ class RoleManager extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'role/fetch',
         payload: values,
       });
     });
@@ -319,7 +320,7 @@ class RoleManager extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'role/add',
       payload: {
         desc: fields.desc,
       },
@@ -332,7 +333,7 @@ class RoleManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
+      type: 'role/update',
       payload: {
         name: fields.name,
         desc: fields.desc,
@@ -402,7 +403,7 @@ class RoleManager extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      role: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
@@ -433,6 +434,7 @@ class RoleManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              rowKey = {this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

@@ -146,9 +146,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ dept, loading }) => ({
+  dept,
+  loading: loading.models.dept,
 }))
 @Form.create()
 class DepartmentManager extends PureComponent {
@@ -159,6 +159,7 @@ class DepartmentManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    key: "deptId",
   };
 
   columns = [
@@ -168,11 +169,11 @@ class DepartmentManager extends PureComponent {
     },
     {
       title: '上级部门管',
-      dataIndex: 'dept',
+      dataIndex: 'parentName',
     },
     {
       title: '排序',
-      dataIndex: 'email',
+      dataIndex: 'orderNum',
     },
     {
       title: '操作',
@@ -189,7 +190,7 @@ class DepartmentManager extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'dept/fetch',
     });
   }
 
@@ -214,7 +215,7 @@ class DepartmentManager extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'dept/fetch',
       payload: params,
     });
   };
@@ -226,7 +227,7 @@ class DepartmentManager extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'dept/fetch',
       payload: {},
     });
   };
@@ -246,7 +247,7 @@ class DepartmentManager extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'dept/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -286,7 +287,7 @@ class DepartmentManager extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'dept/fetch',
         payload: values,
       });
     });
@@ -308,7 +309,7 @@ class DepartmentManager extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'dept/add',
       payload: {
         desc: fields.desc,
       },
@@ -321,7 +322,7 @@ class DepartmentManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
+      type: 'dept/update',
       payload: {
         name: fields.name,
         desc: fields.desc,
@@ -339,7 +340,7 @@ class DepartmentManager extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      dept: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
@@ -370,6 +371,7 @@ class DepartmentManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              rowKey = {this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
