@@ -51,7 +51,7 @@ const CreateForm = Form.create()(props => {
     <Modal
       destroyOnClose
       title="新增管理员"
-      width={'940px'}
+      width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -150,9 +150,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ dictionary, loading }) => ({
+  dictionary,
+  loading: loading.models.dictionary,
 }))
 @Form.create()
 class DictionaryManager extends PureComponent {
@@ -163,6 +163,7 @@ class DictionaryManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    key: "id",
   };
 
   columns = [
@@ -172,23 +173,21 @@ class DictionaryManager extends PureComponent {
     },
     {
       title: '类型',
-      dataIndex: 'dept',
+      dataIndex: 'type',
     },
     {
       title: '排序',
-      dataIndex: 'updatedAt',
+      dataIndex: 'orderNum',
       sorter: true,
       render: val => <span>{0}</span>,
     },
     {
-      title: '备注',
-      dataIndex: 'phone',
+      title: '字典值',
+      dataIndex: 'value',
     },
     {
-      title: '时间',
-      dataIndex: 'updatedAt',
-      sorter: true,
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      title: '备注',
+      dataIndex: 'remark',
     },
     {
       title: '操作',
@@ -205,7 +204,7 @@ class DictionaryManager extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'dictionary/fetch',
     });
   }
 
@@ -230,7 +229,7 @@ class DictionaryManager extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'dictionary/fetch',
       payload: params,
     });
   };
@@ -242,7 +241,7 @@ class DictionaryManager extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'dictionary/fetch',
       payload: {},
     });
   };
@@ -262,7 +261,7 @@ class DictionaryManager extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'dictionary/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -302,7 +301,7 @@ class DictionaryManager extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'dictionary/fetch',
         payload: values,
       });
     });
@@ -324,7 +323,7 @@ class DictionaryManager extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'dictionary/add',
       payload: {
         desc: fields.desc,
       },
@@ -337,7 +336,7 @@ class DictionaryManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
+      type: 'dictionary/update',
       payload: {
         name: fields.name,
         desc: fields.desc,
@@ -418,7 +417,7 @@ class DictionaryManager extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      dictionary: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
@@ -449,6 +448,7 @@ class DictionaryManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              rowKey = {this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

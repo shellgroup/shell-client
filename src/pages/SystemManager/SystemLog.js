@@ -51,7 +51,7 @@ const CreateForm = Form.create()(props => {
     <Modal
       destroyOnClose
       title="异常信息"
-      width={'940px'}
+      width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -136,9 +136,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ systemlog, loading }) => ({
+  systemlog,
+  loading: loading.models.systemlog,
 }))
 @Form.create()
 class SystemLog extends PureComponent {
@@ -149,36 +149,37 @@ class SystemLog extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    key: "id",
   };
 
   columns = [
     {
       title: '用户名',
-      dataIndex: 'name',
+      dataIndex: 'username',
     },
     {
       title: '用户操作',
-      dataIndex: 'dept',
+      dataIndex: 'operation',
     },
     {
       title: '请求方法',
-      dataIndex: 'email',
+      dataIndex: 'method',
     },
     {
       title: '请求参数',
-      dataIndex: 'phone',
+      dataIndex: 'params',
     },
     {
       title: '执行时长（毫秒）',
-      dataIndex: 'status',
+      dataIndex: 'time',
     },
     {
       title: 'IP地址',
-      dataIndex: 'status',
+      dataIndex: 'ip',
     },
     {
       title: '创建时间',
-      dataIndex: 'updatedAt',
+      dataIndex: 'createDate',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
@@ -195,7 +196,7 @@ class SystemLog extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'systemlog/fetch',
     });
   }
 
@@ -220,7 +221,7 @@ class SystemLog extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'systemlog/fetch',
       payload: params,
     });
   };
@@ -232,7 +233,7 @@ class SystemLog extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'systemlog/fetch',
       payload: {},
     });
   };
@@ -252,7 +253,7 @@ class SystemLog extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'systemlog/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -292,7 +293,7 @@ class SystemLog extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'systemlog/fetch',
         payload: values,
       });
     });
@@ -314,7 +315,7 @@ class SystemLog extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'systemlog/add',
       payload: {
         desc: fields.desc,
       },
@@ -327,7 +328,7 @@ class SystemLog extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
+      type: 'systemlog/update',
       payload: {
         name: fields.name,
         desc: fields.desc,
@@ -398,7 +399,7 @@ class SystemLog extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      systemlog: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
@@ -427,6 +428,7 @@ class SystemLog extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              rowKey = {this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

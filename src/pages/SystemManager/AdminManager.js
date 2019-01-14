@@ -81,7 +81,7 @@ const CreateForm = Form.create()(props => {
     <Modal
       destroyOnClose
       title="新增管理员"
-      width={'940px'}
+      width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -163,19 +163,6 @@ class UpdateForm extends PureComponent {
     super(props);
     console.log(props,"((((((((((((((");
 
-    values:
-      createTime: "2016-11-11 11:11:11"
-    deptId: 1
-    deptName: "人人开源集团"
-    email: "root@renren.io"
-    mobile: "13612345678"
-    roleIdList: null
-    salt: "YzcmCZNvbXocrsz9dm8e"
-    status: 1
-    userId: 1
-    username: "admin"
-
-
     this.state = {
       formVals: {
         name: props.values.username,
@@ -199,46 +186,78 @@ class UpdateForm extends PureComponent {
     };
 
     this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 15 },
     };
   }
 
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
+
+
+
+
+
+  renderContent = (formVals) => {
+    const { form } = this.props;
+      return [
+        //编辑
+        <FormItem {...this.formLayout} label="用户名">
+          {form.getFieldDecorator('name', {
+            rules: [{ required: true, message: '请输入至少2个字符的用户名 ！', min: 8 }],
+            initialValue: formVals.name,
+          })(<Input placeholder="请输入"/>)}
+        </FormItem>,
+        <FormItem {...this.formLayout} label="邮&emsp;箱">
+          {form.getFieldDecorator('email', {
+            rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
+            initialValue: formVals.email,
+          })(<Input placeholder="请输入"/>)}
+        </FormItem>,
+        <FormItem {...this.formLayout} label="手&emsp;机">
+          {form.getFieldDecorator('mobile', {
+            rules: [{ required: true, message: '请输入至少两个字符的手机！', min: 2 }],
+            initialValue: formVals.mobile,
+          })(<Input placeholder="请输入"/>)}
+        </FormItem>,
+
+        <FormItem {...this.formLayout} label="状&emsp;态">
+            {form.getFieldDecorator('status', {
+                rules: [{ required: false}]
+              })(
+                <div>
+                  <RadioGroup defaultValue={formVals.status}>
+                    <Radio value={1}>A</Radio>
+                    <Radio value={2}>B</Radio>
+                  </RadioGroup>
+                </div>
+              )}
+        </FormItem>
+
+
+
+
+      ];
   };
 
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
 
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
 
+  render() {
+    const { updateModalVisible, handleUpdateModalVisible, values } = this.props;
+    const { formVals } = this.state;
+
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="更新管理员"
+        width={940}
+        visible={updateModalVisible}
+        onCancel={() => handleUpdateModalVisible(false, values)}
+        afterClose={() => handleUpdateModalVisible()}
+      >
+        {this.renderContent( formVals)}
+      </Modal>
+    );
+  }
 
 }
 

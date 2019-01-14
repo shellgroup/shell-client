@@ -51,7 +51,7 @@ const CreateForm = Form.create()(props => {
     <Modal
       destroyOnClose
       title="新增管理员"
-      width={'940px'}
+      width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -145,9 +145,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ parame, loading }) => ({
+  parame,
+  loading: loading.models.parame,
 }))
 @Form.create()
 class ParameterManager extends PureComponent {
@@ -158,20 +158,21 @@ class ParameterManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    key: "id",
   };
 
   columns = [
     {
       title: '编码',
-      dataIndex: 'name',
+      dataIndex: 'paramKey',
     },
     {
       title: '值',
-      dataIndex: 'dept',
+      dataIndex: 'paramValue',
     },
     {
       title: '备注',
-      dataIndex: 'phone',
+      dataIndex: 'remark',
     },
     {
       title: '操作',
@@ -188,7 +189,7 @@ class ParameterManager extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'parame/fetch',
     });
   }
 
@@ -213,7 +214,7 @@ class ParameterManager extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'parame/fetch',
       payload: params,
     });
   };
@@ -225,7 +226,7 @@ class ParameterManager extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'parame/fetch',
       payload: {},
     });
   };
@@ -245,7 +246,7 @@ class ParameterManager extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'parame/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -285,7 +286,7 @@ class ParameterManager extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'parame/fetch',
         payload: values,
       });
     });
@@ -307,7 +308,7 @@ class ParameterManager extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'parame/add',
       payload: {
         desc: fields.desc,
       },
@@ -320,7 +321,7 @@ class ParameterManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
+      type: 'parame/update',
       payload: {
         name: fields.name,
         desc: fields.desc,
@@ -391,7 +392,7 @@ class ParameterManager extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      parame: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
@@ -422,6 +423,7 @@ class ParameterManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              rowKey = {this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

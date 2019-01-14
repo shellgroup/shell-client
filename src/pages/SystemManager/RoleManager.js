@@ -51,7 +51,7 @@ const CreateForm = Form.create()(props => {
     <Modal
       destroyOnClose
       title="新增管理员"
-      width={'940px'}
+      width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}

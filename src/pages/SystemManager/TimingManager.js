@@ -35,7 +35,7 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['normal', 'disabled'];
+const statusMap = ['processing', 'default'];
 const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
@@ -51,7 +51,7 @@ const CreateForm = Form.create()(props => {
     <Modal
       destroyOnClose
       title="新增管理员"
-      width={'940px'}
+      width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -150,9 +150,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ timing, loading }) => ({
+  timing,
+  loading: loading.models.timing,
 }))
 @Form.create()
 class TimingManager extends PureComponent {
@@ -163,24 +163,31 @@ class TimingManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    key: "jobId",
   };
 
   columns = [
     {
       title: 'BEAN名称',
-      dataIndex: 'name',
+      dataIndex: 'beanName',
     },
     {
       title: '参数',
-      dataIndex: 'dept',
+      dataIndex: 'params',
     },
     {
       title: 'CRON表达式',
-      dataIndex: 'email',
+      dataIndex: 'cronExpression',
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      sorter: true,
+      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '备注',
-      dataIndex: 'phone',
+      dataIndex: 'remark',
     },
     {
       title: '状态',
@@ -220,7 +227,7 @@ class TimingManager extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'timing/fetch',
     });
   }
 
@@ -245,7 +252,7 @@ class TimingManager extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'timing/fetch',
       payload: params,
     });
   };
@@ -257,7 +264,7 @@ class TimingManager extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'timing/fetch',
       payload: {},
     });
   };
@@ -277,7 +284,7 @@ class TimingManager extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'timing/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -317,7 +324,7 @@ class TimingManager extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'timing/fetch',
         payload: values,
       });
     });
@@ -339,7 +346,7 @@ class TimingManager extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'timing/add',
       payload: {
         desc: fields.desc,
       },
@@ -352,7 +359,7 @@ class TimingManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
+      type: 'timing/update',
       payload: {
         name: fields.name,
         desc: fields.desc,
@@ -429,7 +436,7 @@ class TimingManager extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      timing: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
@@ -471,6 +478,7 @@ class TimingManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              rowKey = {this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

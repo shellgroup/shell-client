@@ -45,6 +45,35 @@ export async function queryRole(params) {
 export async function queryDept(params) {
   return request(`${baseURL}/sys/dept/list?${stringify(params)}`);
 }
+//查询系统日志列表
+export async function querySystemlog(params) {
+  return request(`${baseURL}/sys/log/list?${stringify(params)}`);
+}
+//查询字典列表
+export async function queryDictionary(params) {
+  return request(`${baseURL}/sys/dict/list?${stringify(params)}`);
+}
+//查询字典列表
+export async function queryParame(params) {
+  return request(`${baseURL}/sys/config/list?${stringify(params)}`);
+}
+//查询定时任务列表
+export async function queryTiming(params) {
+  return request(`${baseURL}/sys/schedule/list?${stringify(params)}`);
+}
+//查询所有菜单列表
+export async function queryMenulist(params) {
+  return request(`${baseURL}/sys/menu/list?${stringify(params)}`);
+}
+
+//查询文件上传列表
+export async function fileUploadList(params) {
+  return request(`${baseURL}/sys/oss/list?${stringify(params)}`);
+}
+
+fileUploadList
+
+
 
 
 

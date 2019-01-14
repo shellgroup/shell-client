@@ -51,7 +51,7 @@ const CreateForm = Form.create()(props => {
     <Modal
       destroyOnClose
       title="新增管理员"
-      width={'940px'}
+      width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -166,9 +166,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ menulist, loading }) => ({
+  menulist,
+  loading: loading.models.menulist,
 }))
 @Form.create()
 class MenuManager extends PureComponent {
@@ -179,6 +179,7 @@ class MenuManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    key: "id",
   };
 
   columns = [
@@ -221,7 +222,7 @@ class MenuManager extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'menulist/fetch',
     });
   }
 
@@ -246,7 +247,7 @@ class MenuManager extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'menulist/fetch',
       payload: params,
     });
   };
@@ -258,7 +259,7 @@ class MenuManager extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'menulist/fetch',
       payload: {},
     });
   };
@@ -278,7 +279,7 @@ class MenuManager extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'menulist/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -318,7 +319,7 @@ class MenuManager extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'menulist/fetch',
         payload: values,
       });
     });
@@ -340,7 +341,7 @@ class MenuManager extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'menulist/add',
       payload: {
         desc: fields.desc,
       },
@@ -353,7 +354,7 @@ class MenuManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
+      type: 'menulist/update',
       payload: {
         name: fields.name,
         desc: fields.desc,
@@ -371,7 +372,7 @@ class MenuManager extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      menulist: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
@@ -402,6 +403,7 @@ class MenuManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              rowKey = {this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

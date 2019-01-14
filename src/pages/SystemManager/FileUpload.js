@@ -51,7 +51,7 @@ const CreateForm = Form.create()(props => {
     <Modal
       destroyOnClose
       title="新增管理员"
-      width={'940px'}
+      width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -150,9 +150,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ fileupload, loading }) => ({
+  fileupload,
+  loading: loading.models.fileupload,
 }))
 @Form.create()
 class FileUpload extends PureComponent {
@@ -163,6 +163,7 @@ class FileUpload extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    key: "id",
   };
 
   columns = [
@@ -189,7 +190,7 @@ class FileUpload extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'fileupload/fetch',
     });
   }
 
@@ -214,7 +215,7 @@ class FileUpload extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'fileupload/fetch',
       payload: params,
     });
   };
@@ -226,7 +227,7 @@ class FileUpload extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'fileupload/fetch',
       payload: {},
     });
   };
@@ -246,7 +247,7 @@ class FileUpload extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'fileupload/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -286,7 +287,7 @@ class FileUpload extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'fileupload/fetch',
         payload: values,
       });
     });
@@ -308,7 +309,7 @@ class FileUpload extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
+      type: 'fileupload/add',
       payload: {
         desc: fields.desc,
       },
@@ -321,7 +322,7 @@ class FileUpload extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
+      type: 'fileupload/update',
       payload: {
         name: fields.name,
         desc: fields.desc,
@@ -339,7 +340,7 @@ class FileUpload extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      fileupload: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
@@ -373,6 +374,7 @@ class FileUpload extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
+              rowKey = {this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
