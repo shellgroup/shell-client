@@ -161,7 +161,10 @@ class DepartmentManager extends PureComponent {
     stepFormValues: {},
     key: "deptId",
   };
-
+  constructor(props){
+    super(props);
+    console.log(props,66666666666)
+  }
   columns = [
     {
       title: '部门名称',

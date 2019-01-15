@@ -80,11 +80,11 @@ export default class BaseMenu extends PureComponent {
   getMenuItemPath = item => {
     const { name } = item;
     const itemPath = this.conversionPath(item.path);
-    const { perms} = item;
+    const { parmsList} = item;
     const icon = getIcon(item.icon);
     const { target } = item;
 
-    console.log(perms,"许可参数");
+    console.log(parmsList,"许可参数");
     // Is it a http link
     if (/^https?:\/\//.test(itemPath)) {
       return (
@@ -97,7 +97,10 @@ export default class BaseMenu extends PureComponent {
     const { location, isMobile, onCollapse } = this.props;
     return (
       <Link
-        to={itemPath}
+        to={{
+          pathname:itemPath,
+          state:parmsList
+        }}
         target={target}
         replace={itemPath === location.pathname}
         onClick={
