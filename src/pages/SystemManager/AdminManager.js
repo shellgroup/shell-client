@@ -59,7 +59,7 @@ const CreateForm = Form.create()(props => {
   }
 
 
-  const treeData = [{
+  const treeData = /*[{
     title: 'Node1',
     value: '0-0',
     key: '0-0',
@@ -76,7 +76,36 @@ const CreateForm = Form.create()(props => {
     title: 'Node2',
     value: '0-1',
     key: '0-1',
-  }];
+  }]*/
+    [{
+        value: "1",
+        key: "1",
+        title: "人人开源集团",
+        children: [
+          {
+            value: "2",
+            key: "2",
+            title: "长沙分公司",
+          },
+          {
+            value: "3",
+            key: "3",
+            title: "上海分公司",
+            children: [
+              {
+                value: "4",
+                key: "4",
+                title: "技术部",
+              },
+              {
+                value: "5",
+                key: "5",
+                title: "销售部",
+              }
+            ]
+          }
+        ]
+      }];
   return (
     <Modal
       destroyOnClose
@@ -108,15 +137,15 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
         {form.getFieldDecorator('dept', {
-          rules: [{ required: true, message: '请选择所属部门！', min: 2 }],
+          rules: [{ required: true, message: '请选择所属部门！' }],
         })(
           <TreeSelect
             className={styles.width}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             treeData={treeData}
             dropdownMatchSelectWidth={false}
+            treeDefaultExpandAll={false}
             placeholder="请选择部门"
-            treeDefaultExpandAll
             onChange={onChangeTreeSelect}
           />
         )}
@@ -202,9 +231,14 @@ class UpdateForm extends PureComponent {
         //编辑
         <FormItem {...this.formLayout} label="用户名">
           {form.getFieldDecorator('name', {
-            rules: [{ required: true, message: '请输入至少2个字符的用户名 ！', min: 8 }],
+            rules: [{ required: true, message: '请输入至少2个字符的用户名 ！', min: 2 }],
             initialValue: formVals.name,
           })(<Input placeholder="请输入"/>)}
+        </FormItem>,
+        <FormItem {...this.formLayout} label="密&emsp;码">
+          {form.getFieldDecorator('password', {
+            rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
+          })(<Input placeholder="请输入" />)}
         </FormItem>,
         <FormItem {...this.formLayout} label="邮&emsp;箱">
           {form.getFieldDecorator('email', {
@@ -262,8 +296,10 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ usr, loading }) => ({
+@connect(({ usr, loading ,dept, role}) => ({
   usr,
+  dept,
+  role,
   loading: loading.models.usr,
 }))
 @Form.create()
@@ -278,7 +314,10 @@ class AdminManager extends PureComponent {
     key: "userId",
     val: undefined,
   }
-
+  constructor(props){
+    super(props);
+    console.log(props,66666666666)
+  }
   columns = [
     {
       title: '用户名',
@@ -441,11 +480,16 @@ class AdminManager extends PureComponent {
       });
     });
   };
-
-  handleModalVisible = flag => {
+  //新建用户
+  handleModalVisible = (flag, cd) => {
     this.setState({
       modalVisible: !!flag,
     });
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dept/fetch',
+    })
   };
 
   handleUpdateModalVisible = (flag, record) => {

@@ -53,7 +53,7 @@ export async function querySystemlog(params) {
 export async function queryDictionary(params) {
   return request(`${baseURL}/sys/dict/list?${stringify(params)}`);
 }
-//查询字典列表
+//查询参数列表
 export async function queryParame(params) {
   return request(`${baseURL}/sys/config/list?${stringify(params)}`);
 }

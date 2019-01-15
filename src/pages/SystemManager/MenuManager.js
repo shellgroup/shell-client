@@ -179,7 +179,7 @@ class MenuManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "id",
+    key: "menuId",
   };
 
   columns = [
@@ -189,7 +189,7 @@ class MenuManager extends PureComponent {
     },
     {
       title: '图标',
-      dataIndex: 'dept',
+      dataIndex: 'icon',
     },
     {
       title: '类型',
@@ -197,15 +197,15 @@ class MenuManager extends PureComponent {
     },
     {
       title: '排序',
-      dataIndex: 'desc',
+      dataIndex: 'orderNum',
     },
     {
       title: '路由',
-      dataIndex: 'router',
+      dataIndex: 'path',
     },
     {
       title: '授权标识',
-      dataIndex: 'auth',
+      dataIndex: 'perms',
     },
     {
       title: '操作',

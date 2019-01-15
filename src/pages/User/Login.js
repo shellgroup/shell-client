@@ -5,6 +5,8 @@ import Link from 'umi/link';
 import { Checkbox, Alert, Icon } from 'antd';
 import Login from '@/components/Login';
 import styles from './Login.less';
+import {getFakeCaptcha} from "../../services/api";
+import {baseURL} from "../../services/baseurl";
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
 
@@ -22,15 +24,14 @@ class LoginPage extends Component {
     this.setState({ type });
   };
   //获取验证码
-  onGetCaptcha = () =>
-    new Promise((resolve, reject) => {
+  onGetCaptcha = () => new Promise((resolve, reject) => {
           const { dispatch } = this.props;
           dispatch({
             type: 'login/getCaptcha',
           })
             .then(resolve)
             .catch(reject);
-    });
+        });
 
   handleSubmit = (err, values) => {
     const { type } = this.state;
@@ -54,6 +55,7 @@ class LoginPage extends Component {
 
   renderMessage = content => (
     <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
+
   );
 
   render() {
@@ -70,9 +72,8 @@ class LoginPage extends Component {
           }}
         >
           <Tab key="account" tab={formatMessage({ id: 'app.login.tab-login-credentials' })}>
-            {login.code == '500' &&
-              !submitting &&
-              this.renderMessage(login.msg)
+            {(login.code == '500' &&
+              !submitting)?this.renderMessage(login.msg):null
             }
             <UserName
               name="userName"
@@ -111,7 +112,7 @@ class LoginPage extends Component {
           <Submit loading={submitting}>
             <FormattedMessage id="app.login.login" />
           </Submit>
-          
+
         </Login>
       </div>
     );
