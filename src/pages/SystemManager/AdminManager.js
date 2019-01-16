@@ -79,7 +79,7 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="用户名">
-        {form.getFieldDecorator('name', {
+        {form.getFieldDecorator('username', {
           rules: [{ required: true, message: '请输入至少2个字符的用户名！', min: 2 }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
@@ -99,7 +99,7 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
-        {form.getFieldDecorator('dept', {
+        {form.getFieldDecorator('deptId', {
           rules: [{ required: true, message: '请选择所属部门！' }],
         })(
           <TreeSelect
@@ -114,7 +114,7 @@ const CreateForm = Form.create()(props => {
         )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角&emsp;色">
-        {form.getFieldDecorator('role', {
+        {form.getFieldDecorator('roleIdList', {
           rules: [{ required: false}],
         })(
           <Select
@@ -133,8 +133,8 @@ const CreateForm = Form.create()(props => {
           initialValue: statusValue,
         })(
             <RadioGroup>
-              <Radio value={0}>正常</Radio>
-              <Radio value={1}>停用</Radio>
+              <Radio value={1}>正常</Radio>
+              <Radio value={0}>停用</Radio>
             </RadioGroup>
         )}
       </FormItem>
@@ -214,8 +214,38 @@ class UpdateForm extends PureComponent {
             initialValue: formVals.mobile,
           })(<Input placeholder="请输入"/>)}
         </FormItem>,
-
-        {/*<FormItem {...this.formLayout} label="状&emsp;态">
+        <FormItem {...this.formLayout} label="所属部门">
+          {form.getFieldDecorator('deptId', {
+            rules: [{ required: true, message: '请选择所属部门！' }],
+            initialValue: formVals.deptId,
+          })(
+            <TreeSelect
+              className={styles.width}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              treeData={child(deptData)}
+              dropdownMatchSelectWidth={false}
+              treeDefaultExpandAll={false}
+              placeholder="请选择部门"
+              onChange={onChangeTreeSelect}
+            />
+          )}
+        </FormItem>,
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角&emsp;色">
+            {form.getFieldDecorator('roleIdList', {
+                rules: [{ required: false}],
+                initialValue: formVals.deptId,
+              })(
+                <Select
+                  mode="multiple"
+                  style={{ width: '100%' }}
+                  placeholder="请选择角色"
+                  onChange={handleChange}
+                >
+                  {roleValues}
+                </Select>
+              )}
+        </FormItem>,
+        <FormItem {...this.formLayout} label="状&emsp;态">
             {form.getFieldDecorator('status', {
                 rules: [{ required: false}]
               })(
@@ -226,7 +256,7 @@ class UpdateForm extends PureComponent {
                   </RadioGroup>
                 </div>
               )}
-        </FormItem>*/}
+        </FormItem>
 
 
 
@@ -274,7 +304,7 @@ class AdminManager extends PureComponent {
     formValues: {},
     stepFormValues: {},
     key: "userId",  //列表的唯一键
-    statusValue: 0, //状态默认选中正常 0正常 1停用
+    statusValue: 1, //状态默认选中正常 0正常 1停用
     roleData:[], //角色下拉菜单数据
     deptData:[]  //部门树菜单数据
   }
@@ -462,27 +492,26 @@ class AdminManager extends PureComponent {
       deptData:dept.data.list,
     });
   };
+  handleAdd = fields => {
+    console.log(fields,777777777);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usr/add',
+      payload: fields,
+    });
+
+    message.success('添加成功');
+    this.handleModalVisible();
+  };
+  //修改用户信息
   handleUpdateModalVisible = (flag, record) => {
-    console.log(record,flag,"****************")
+    console.log(record,flag,"修改用户信息——————————————————————")
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
     });
   };
 
-  handleAdd = fields => {
-    console.log(fields,777777777);
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usr/add',
-      payload: {
-        desc: fields.desc,
-      },
-    });
-
-    message.success('添加成功');
-    this.handleModalVisible();
-  };
 
   handleUpdate = fields => {
     const { dispatch } = this.props;

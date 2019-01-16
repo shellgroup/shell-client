@@ -28,10 +28,7 @@ export async function queryRule(params) {
 export async function addRule(params) {
   return request(`${baseURL}/sys/user/save`, {
     method: 'POST',
-    body: {
-      ...params,
-      method: 'post',
-    },
+    body: params
   });
 }
 
