@@ -20,7 +20,8 @@ import {
   Badge,
   Divider,
   Steps,
-  Radio, TreeSelect,
+  Radio,
+  TreeSelect,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import TreeSeltctInput from '@/components/TreeSeltctInput'
@@ -41,8 +42,8 @@ const statusMap = ['default', 'processing'];
 const status = ['停用', '正常'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, onChangeTreeSelect, handleChange} = props;
-  console.log(props,8888);
+  const { modalVisible, form, handleAdd, handleModalVisible, onChangeTreeSelect, handleChange, deptData, roleData, statusValue} = props;
+
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -51,61 +52,23 @@ const CreateForm = Form.create()(props => {
     });
   };
 
-  const Option = Select.Option;
-
-  const children = [];
-  for (let i = 10; i < 36; i++) {
-    children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+  //处理角色数据
+  const roleValues = [];
+  for (let i = 0; i < roleData.length; i++) {
+    roleValues.push(<Option key={roleData[i].roleId}>{roleData[i].roleName}</Option>);
   }
-
-
-  const treeData = /*[{
-    title: 'Node1',
-    value: '0-0',
-    key: '0-0',
-    children: [{
-      title: 'Child Node1',
-      value: '0-0-1',
-      key: '0-0-1',
-    }, {
-      title: 'Child Node2',
-      value: '0-0-2',
-      key: '0-0-2',
-    }],
-  }, {
-    title: 'Node2',
-    value: '0-1',
-    key: '0-1',
-  }]*/
-    [{
-        value: "1",
-        key: "1",
-        title: "人人开源集团",
-        children: [
-          {
-            value: "2",
-            key: "2",
-            title: "长沙分公司",
-          },
-          {
-            value: "3",
-            key: "3",
-            title: "上海分公司",
-            children: [
-              {
-                value: "4",
-                key: "4",
-                title: "技术部",
-              },
-              {
-                value: "5",
-                key: "5",
-                title: "销售部",
-              }
-            ]
-          }
-        ]
-      }];
+  //处理部门数据
+  function child(data){
+      for(let i =0; i < data.length; i++){
+        data[i].value = data[i].deptId;
+        data[i].key = data[i].deptId;
+        data[i].title = data[i].name;
+        if(data[i].children){
+          data[i].children = child(data[i].children);
+        }
+      }
+      return data;
+  }
   return (
     <Modal
       destroyOnClose
@@ -142,7 +105,7 @@ const CreateForm = Form.create()(props => {
           <TreeSelect
             className={styles.width}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            treeData={treeData}
+            treeData={child(deptData)}
             dropdownMatchSelectWidth={false}
             treeDefaultExpandAll={false}
             placeholder="请选择部门"
@@ -160,20 +123,19 @@ const CreateForm = Form.create()(props => {
             placeholder="请选择角色"
             onChange={handleChange}
           >
-            {children}
+            {roleValues}
           </Select>
         )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状&emsp;态">
         {form.getFieldDecorator('status', {
           rules: [{ required: false}],
+          initialValue: statusValue,
         })(
-          <div>
-            <RadioGroup defaultValue={1}>
-              <Radio value={1}>A</Radio>
-              <Radio value={2}>B</Radio>
+            <RadioGroup>
+              <Radio value={0}>正常</Radio>
+              <Radio value={1}>停用</Radio>
             </RadioGroup>
-          </div>
         )}
       </FormItem>
     </Modal>
@@ -253,7 +215,7 @@ class UpdateForm extends PureComponent {
           })(<Input placeholder="请输入"/>)}
         </FormItem>,
 
-        <FormItem {...this.formLayout} label="状&emsp;态">
+        {/*<FormItem {...this.formLayout} label="状&emsp;态">
             {form.getFieldDecorator('status', {
                 rules: [{ required: false}]
               })(
@@ -264,7 +226,7 @@ class UpdateForm extends PureComponent {
                   </RadioGroup>
                 </div>
               )}
-        </FormItem>
+        </FormItem>*/}
 
 
 
@@ -296,11 +258,11 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ usr, loading ,dept, role}) => ({
+@connect(({ usr,dept, role, loading}) => ({
   usr,
   dept,
   role,
-  loading: loading.models.usr,
+  loading: loading.effects["usr/fetch","dept/fetch","role/fetch"],
 }))
 @Form.create()
 class AdminManager extends PureComponent {
@@ -311,13 +273,12 @@ class AdminManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "userId",
-    val: undefined,
+    key: "userId",  //列表的唯一键
+    statusValue: 0, //状态默认选中正常 0正常 1停用
+    roleData:[], //角色下拉菜单数据
+    deptData:[]  //部门树菜单数据
   }
-  constructor(props){
-    super(props);
-    console.log(props,66666666666)
-  }
+
   columns = [
     {
       title: '用户名',
@@ -374,6 +335,12 @@ class AdminManager extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'usr/fetch',
+    });
+    dispatch({
+      type: 'dept/fetch',
+    });
+    dispatch({
+      type: 'role/fetch',
     });
   }
 
@@ -481,17 +448,20 @@ class AdminManager extends PureComponent {
     });
   };
   //新建用户
-  handleModalVisible = (flag, cd) => {
+  handleModalVisible = (flag) => {
+
+    console.log(this.props,66666666666)
+    const {
+      dept,
+      role
+    } = this.props
+
     this.setState({
       modalVisible: !!flag,
+      roleData:role.data.list,
+      deptData:dept.data.list,
     });
-
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'dept/fetch',
-    })
   };
-
   handleUpdateModalVisible = (flag, record) => {
     console.log(record,flag,"****************")
     this.setState({
@@ -595,7 +565,10 @@ class AdminManager extends PureComponent {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
       onChangeTreeSelect:this.onChangeTreeSelect,
-      handleChange:this.handleChange
+      handleChange:this.handleChange,
+      roleData:this.state.roleData,
+      deptData:this.state.deptData,
+      statusValue:this.state.statusValue
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
