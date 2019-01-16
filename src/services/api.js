@@ -31,7 +31,13 @@ export async function addRule(params) {
     body: params
   });
 }
-
+//删除管理员
+export async function removeRule(params) {
+  return request(`${baseURL}/sys/user/delete`, {
+    method: 'POST',
+    body: params
+  });
+}
 
 //查询角色列表
 export async function queryRole(params) {
@@ -68,7 +74,7 @@ export async function fileUploadList(params) {
   return request(`${baseURL}/sys/oss/list?${stringify(params)}`);
 }
 
-fileUploadList
+
 
 
 
@@ -84,15 +90,7 @@ export async function queryActivities() {
 
 
 
-export async function removeRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    body: {
-      ...params,
-      method: 'delete',
-    },
-  });
-}
+
 
 
 export async function updateRule(params) {

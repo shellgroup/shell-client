@@ -54,9 +54,12 @@ const CreateForm = Form.create()(props => {
 
   //处理角色数据
   const roleValues = [];
-  for (let i = 0; i < roleData.length; i++) {
-    roleValues.push(<Option key={roleData[i].roleId}>{roleData[i].roleName}</Option>);
+  if(roleData){
+    for (let i = 0; i < roleData.length; i++) {
+      roleValues.push(<Option key={roleData[i].roleId}>{roleData[i].roleName}</Option>);
+    }
   }
+
   //处理部门数据
   function child(data){
       for(let i =0; i < data.length; i++){
@@ -187,8 +190,9 @@ class UpdateForm extends PureComponent {
 
 
 
-  renderContent = (formVals) => {
+  renderContent = (formVals, roleValues, deptData) => {
     const { form } = this.props;
+    console.log(formVals, roleValues, deptData," ^&&&&&&&&&&&&&&&&&&&^%%");
       return [
         //编辑
         <FormItem {...this.formLayout} label="用户名">
@@ -222,54 +226,66 @@ class UpdateForm extends PureComponent {
             <TreeSelect
               className={styles.width}
               dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-              treeData={child(deptData)}
+              treeData={deptData}
               dropdownMatchSelectWidth={false}
               treeDefaultExpandAll={false}
               placeholder="请选择部门"
-              onChange={onChangeTreeSelect}
+              // onChange={onChangeTreeSelect}
             />
           )}
         </FormItem>,
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角&emsp;色">
             {form.getFieldDecorator('roleIdList', {
                 rules: [{ required: false}],
-                initialValue: formVals.deptId,
+                initialValue: formVals.roleIdList,
               })(
                 <Select
                   mode="multiple"
                   style={{ width: '100%' }}
                   placeholder="请选择角色"
-                  onChange={handleChange}
+                  // defaultValue={formVals.roleIdList}
+                  // onChange={handleChange}
                 >
                   {roleValues}
                 </Select>
               )}
         </FormItem>,
-        <FormItem {...this.formLayout} label="状&emsp;态">
-            {form.getFieldDecorator('status', {
-                rules: [{ required: false}]
-              })(
-                <div>
-                  <RadioGroup defaultValue={formVals.status}>
-                    <Radio value={1}>A</Radio>
-                    <Radio value={2}>B</Radio>
-                  </RadioGroup>
-                </div>
-              )}
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状&emsp;态">
+          {form.getFieldDecorator('status', {
+            rules: [{ required: false}],
+            initialValue: formVals.status,
+          })(
+            <RadioGroup>
+              <Radio value={1}>正常</Radio>
+              <Radio value={0}>停用</Radio>
+            </RadioGroup>
+          )}
         </FormItem>
-
-
-
-
       ];
   };
 
 
 
   render() {
-    const { updateModalVisible, handleUpdateModalVisible, values } = this.props;
+    const { updateModalVisible, handleUpdateModalVisible, values, roleData, deptData} = this.props;
     const { formVals } = this.state;
-
+    //处理角色数据
+    const roleValues = [];
+    for (let i = 0; i < roleData.length; i++) {
+      roleValues.push(<Option key={roleData[i].roleId}>{roleData[i].roleName}</Option>);
+    }
+    //处理部门数据
+    function child(data){
+      for(let i =0; i < data.length; i++){
+        data[i].value = data[i].deptId;
+        data[i].key = data[i].deptId;
+        data[i].title = data[i].name;
+        if(data[i].children){
+          data[i].children = child(data[i].children);
+        }
+      }
+      return data;
+    }
     return (
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
@@ -280,7 +296,7 @@ class UpdateForm extends PureComponent {
         onCancel={() => handleUpdateModalVisible(false, values)}
         afterClose={() => handleUpdateModalVisible()}
       >
-        {this.renderContent( formVals)}
+        {this.renderContent( formVals, roleValues, child(deptData))}
       </Modal>
     );
   }
@@ -355,7 +371,7 @@ class AdminManager extends PureComponent {
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <a onClick={() => this.deleted(record)}>删除</a>
         </Fragment>
       ),
     },
@@ -505,12 +521,28 @@ class AdminManager extends PureComponent {
   };
   //修改用户信息
   handleUpdateModalVisible = (flag, record) => {
+    const {
+      dept,
+      role
+    } = this.props
     console.log(record,flag,"修改用户信息——————————————————————")
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
+      roleData:role.data.list,
+      deptData:dept.data.list,
     });
   };
+  //删除单个用户信息
+  deleted = (record) =>{
+    const userid = record.userId;
+    console.log(userid,"userid+)))))))))))))))))))))))))))))",[userid]);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usr/remove',
+      payload:[userid]
+    });
+  }
 
 
   handleUpdate = fields => {
@@ -602,6 +634,8 @@ class AdminManager extends PureComponent {
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
+      roleData:this.state.roleData,
+      deptData:this.state.deptData,
     };
     console.log(data,"表格数据");
     return (
