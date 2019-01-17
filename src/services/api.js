@@ -74,8 +74,13 @@ export async function fileUploadList(params) {
   return request(`${baseURL}/sys/oss/list?${stringify(params)}`);
 }
 
-
-
+//修改用户信息
+export async function updateRule(params) {
+  return request(`${baseURL}/sys/user/update`, {
+    method: 'POST',
+    body: params
+  });
+}
 
 
 
@@ -93,15 +98,7 @@ export async function queryActivities() {
 
 
 
-export async function updateRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    body: {
-      ...params,
-      method: 'update',
-    },
-  });
-}
+
 
 export async function fakeSubmitForm(params) {
   return request('/api/forms', {

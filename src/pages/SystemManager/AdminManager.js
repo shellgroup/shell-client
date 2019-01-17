@@ -26,7 +26,7 @@ import {
 import StandardTable from '@/components/StandardTable';
 import TreeSeltctInput from '@/components/TreeSeltctInput'
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-
+import { tips } from '../../utils/utils'
 import styles from './AdminManager.less';
 
 const FormItem = Form.Item;
@@ -34,6 +34,7 @@ const { Step } = Steps;
 const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
+const confirm = Modal.confirm;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
@@ -165,8 +166,7 @@ class UpdateForm extends PureComponent {
         deptName: props.values.deptName,
         email: props.values.email,
         mobile: props.values.mobile,
-        roleIdList: null,
-        salt: "YzcmCZNvbXocrsz9dm8e",
+        roleIdList: props.values.roleIdList,
         status: props.values.status,
         userId: props.values.userId,
         username: props.values.username,
@@ -186,38 +186,73 @@ class UpdateForm extends PureComponent {
   }
 
 
-
-
-
-
-  renderContent = (formVals, roleValues, deptData) => {
+  render() {
+    const { updateModalVisible, handleUpdateModalVisible, values, roleData, deptData, handleUpdate} = this.props;
+    const { formVals } = this.state;
     const { form } = this.props;
-    console.log(formVals, roleValues, deptData," ^&&&&&&&&&&&&&&&&&&&^%%");
-      return [
-        //编辑
+    //处理角色数据
+    const roleValues = [];
+    for (let i = 0; i < roleData.length; i++) {
+      roleValues.push(<Option key={roleData[i].roleId} value={roleData[i].roleId}>{roleData[i].roleName}</Option>);
+    }
+    //处理部门数据
+    function child(data){
+      for(let i =0; i < data.length; i++){
+        data[i].value = data[i].deptId;
+        data[i].key = data[i].deptId;
+        data[i].title = data[i].name;
+        if(data[i].children){
+          data[i].children = child(data[i].children);
+        }
+      }
+      return data;
+    }
+
+
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleUpdate(fieldsValue);
+      });
+    };
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="更新管理员"
+        width={940}
+        visible={updateModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleUpdateModalVisible(false)}
+      >
+        {form.getFieldDecorator('userId', {
+          rules: [{ required: false}],
+          initialValue: formVals.userId,
+        })(<Input type={"hidden"}/>)}
         <FormItem {...this.formLayout} label="用户名">
-          {form.getFieldDecorator('name', {
+          {form.getFieldDecorator('username', {
             rules: [{ required: true, message: '请输入至少2个字符的用户名 ！', min: 2 }],
             initialValue: formVals.name,
           })(<Input placeholder="请输入"/>)}
-        </FormItem>,
+        </FormItem>
         <FormItem {...this.formLayout} label="密&emsp;码">
           {form.getFieldDecorator('password', {
             rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
           })(<Input placeholder="请输入" />)}
-        </FormItem>,
+        </FormItem>
         <FormItem {...this.formLayout} label="邮&emsp;箱">
           {form.getFieldDecorator('email', {
             rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
             initialValue: formVals.email,
           })(<Input placeholder="请输入"/>)}
-        </FormItem>,
+        </FormItem>
         <FormItem {...this.formLayout} label="手&emsp;机">
           {form.getFieldDecorator('mobile', {
             rules: [{ required: true, message: '请输入至少两个字符的手机！', min: 2 }],
             initialValue: formVals.mobile,
           })(<Input placeholder="请输入"/>)}
-        </FormItem>,
+        </FormItem>
         <FormItem {...this.formLayout} label="所属部门">
           {form.getFieldDecorator('deptId', {
             rules: [{ required: true, message: '请选择所属部门！' }],
@@ -233,24 +268,22 @@ class UpdateForm extends PureComponent {
               // onChange={onChangeTreeSelect}
             />
           )}
-        </FormItem>,
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角&emsp;色">
-            {form.getFieldDecorator('roleIdList', {
-                rules: [{ required: false}],
-                initialValue: formVals.roleIdList,
-              })(
-                <Select
-                  mode="multiple"
-                  style={{ width: '100%' }}
-                  placeholder="请选择角色"
-                  // defaultValue={formVals.roleIdList}
-                  // onChange={handleChange}
-                >
-                  {roleValues}
-                </Select>
-              )}
-        </FormItem>,
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状&emsp;态">
+        </FormItem>
+        <FormItem {...this.formLayout} label="角&emsp;色">
+          {form.getFieldDecorator('roleIdList', {
+            rules: [{ required: false}],
+            initialValue:formVals.roleIdList
+          })(
+            <Select
+              mode="multiple"
+              style={{ width: '100%' }}
+              placeholder="请选择角色"
+            >
+              {roleValues}
+            </Select>
+          )}
+        </FormItem>
+        <FormItem {...this.formLayout} label="状&emsp;态">
           {form.getFieldDecorator('status', {
             rules: [{ required: false}],
             initialValue: formVals.status,
@@ -261,42 +294,6 @@ class UpdateForm extends PureComponent {
             </RadioGroup>
           )}
         </FormItem>
-      ];
-  };
-
-
-
-  render() {
-    const { updateModalVisible, handleUpdateModalVisible, values, roleData, deptData} = this.props;
-    const { formVals } = this.state;
-    //处理角色数据
-    const roleValues = [];
-    for (let i = 0; i < roleData.length; i++) {
-      roleValues.push(<Option key={roleData[i].roleId}>{roleData[i].roleName}</Option>);
-    }
-    //处理部门数据
-    function child(data){
-      for(let i =0; i < data.length; i++){
-        data[i].value = data[i].deptId;
-        data[i].key = data[i].deptId;
-        data[i].title = data[i].name;
-        if(data[i].children){
-          data[i].children = child(data[i].children);
-        }
-      }
-      return data;
-    }
-    return (
-      <Modal
-        bodyStyle={{ padding: '32px 40px 48px' }}
-        destroyOnClose
-        title="更新管理员"
-        width={940}
-        visible={updateModalVisible}
-        onCancel={() => handleUpdateModalVisible(false, values)}
-        afterClose={() => handleUpdateModalVisible()}
-      >
-        {this.renderContent( formVals, roleValues, child(deptData))}
       </Modal>
     );
   }
@@ -371,7 +368,7 @@ class AdminManager extends PureComponent {
         <Fragment>
           <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
           <Divider type="vertical" />
-          <a onClick={() => this.deleted(record)}>删除</a>
+          <a onClick={() => this.showDeleteConfirm(record)}>删除</a>
         </Fragment>
       ),
     },
@@ -495,8 +492,6 @@ class AdminManager extends PureComponent {
   };
   //新建用户
   handleModalVisible = (flag) => {
-
-    console.log(this.props,66666666666)
     const {
       dept,
       role
@@ -509,14 +504,17 @@ class AdminManager extends PureComponent {
     });
   };
   handleAdd = fields => {
-    console.log(fields,777777777);
-    const { dispatch } = this.props;
+    console.log(fields,"__________添加用户的参数");
+    const { dispatch, usr} = this.props;
     dispatch({
       type: 'usr/add',
       payload: fields,
+      callback:(res)=>{
+        tips(res);
+      }
     });
 
-    message.success('添加成功');
+    //message.success('添加成功');
     this.handleModalVisible();
   };
   //修改用户信息
@@ -534,13 +532,32 @@ class AdminManager extends PureComponent {
     });
   };
   //删除单个用户信息
+  showDeleteConfirm= (record) =>{
+    let that = this;
+    confirm({
+      title: '删除确认',
+      content: '你确定进行【删除】操作吗？',
+      okText: '确定',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        that.deleted(record);
+      },
+      onCancel() {
+        console.log('取消删除');
+      },
+    });
+  }
   deleted = (record) =>{
     const userid = record.userId;
-    console.log(userid,"userid+)))))))))))))))))))))))))))))",[userid]);
+    console.log(userid,"所删除用户的ID");
     const { dispatch } = this.props;
     dispatch({
       type: 'usr/remove',
-      payload:[userid]
+      payload:[userid],
+      callback:(res)=>{
+        tips(res);
+      }
     });
   }
 
@@ -549,11 +566,7 @@ class AdminManager extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'usr/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
-      },
+      payload:fields,
     });
 
     message.success('配置成功');

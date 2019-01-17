@@ -2,6 +2,7 @@ import moment from 'moment';
 import React from 'react';
 import nzh from 'nzh/cn';
 import { parse, stringify } from 'qs';
+import {Modal} from "antd";
 
 export function fixedZero(val) {
   return val * 1 < 10 ? `0${val}` : val;
@@ -150,6 +151,19 @@ export function isUrl(path) {
   return reg.test(path);
 }
 
+export function tips(res){
+  if(res.code == 0){
+    Modal.success({
+      title: '成功提示！',
+      content: res.msg,
+    });
+  }else{
+    Modal.error({
+      title: '错误提示！',
+      content: res.msg,
+    });
+  }
+}
 export function formatWan(val) {
   const v = val * 1;
   if (!v || Number.isNaN(v)) return '';
