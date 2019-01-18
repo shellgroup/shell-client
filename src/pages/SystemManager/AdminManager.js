@@ -43,7 +43,18 @@ const statusMap = ['default', 'processing'];
 const status = ['停用', '正常'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, onChangeTreeSelect, handleChange, deptData, roleData, statusValue} = props;
+  const {
+    modalVisible,
+    form,
+    handleAdd,
+    handleModalVisible,
+    onChangeTreeSelect,
+    handleChange,
+    deptData,
+    roleData,
+    statusValue,
+    that
+  } = props;
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -73,6 +84,32 @@ const CreateForm = Form.create()(props => {
       }
       return data;
   }
+
+
+  function handleConfirmBlur(e){
+    const value = e.target.value;
+    that.setState({ confirmDirty: that.state.confirmDirty || !!value });
+  };
+
+  function compareToFirstPassword(rule, value, callback){
+    console.log(form)
+    console.log(value,form.getFieldValue('password'));
+    if (value && value !== form.getFieldValue('password')) {
+      callback('两次输入的密码不一致!');
+    } else {
+      callback();
+    }
+  }
+
+  function validateToNextPassword(rule, value, callback){
+    console.log(value);
+    if (value && that.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
+  }
+
+
   return (
     <Modal
       destroyOnClose
@@ -89,18 +126,38 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密&emsp;码">
         {form.getFieldDecorator('password', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
-        })(<Input placeholder="请输入" />)}
+          rules: [{
+            required: true, message: '请输入至少6个字符的密码!', min:6
+          }, {
+            validator: validateToNextPassword,
+          }],
+        })(
+          <Input type="password" placeholder="请输入"/>
+        )}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认密码">
+        {form.getFieldDecorator('confirm', {
+          rules: [{
+            required: true, message: '请在次输入您的密码!',
+          }, {
+            validator: compareToFirstPassword,
+          }],
+        })(
+          <Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="邮&emsp;箱">
         {form.getFieldDecorator('email', {
-          rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
+          rules: [
+            {type: 'email', message: '您输入的邮箱格式不正确！',},
+            {required: true, message: '请输入您的邮箱！',}
+          ],
+        })(<Input placeholder="请输入"/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="手&emsp;机">
         {form.getFieldDecorator('mobile', {
-          rules: [{ required: true, message: '请输入至少两个字符的手机！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
+          rules: [{ required: true, message: '请输入11位手机号码！', min: 11}],
+        })(<Input placeholder="请输入" maxLength={11}/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
         {form.getFieldDecorator('deptId', {
@@ -177,6 +234,7 @@ class UpdateForm extends PureComponent {
         frequency: 'month',
       },
       currentStep: 0,
+      confirmDirty:false
     };
 
     this.formLayout = {
@@ -187,7 +245,7 @@ class UpdateForm extends PureComponent {
 
 
   render() {
-    const { updateModalVisible, handleUpdateModalVisible, values, roleData, deptData, handleUpdate} = this.props;
+    const { updateModalVisible, handleUpdateModalVisible, values, roleData, deptData, handleUpdate, that} = this.props;
     const { formVals } = this.state;
     const { form } = this.props;
     //处理角色数据
@@ -209,6 +267,29 @@ class UpdateForm extends PureComponent {
     }
 
 
+    function handleConfirmBlur(e){
+      const value = e.target.value;
+      that.setState({ confirmDirtyUp: that.state.confirmDirtyUp || !!value });
+    };
+
+    function compareToFirstPassword(rule, value, callback){
+      console.log(form)
+      console.log(value,form.getFieldValue('password'));
+      if (value && value !== form.getFieldValue('password')) {
+        callback('两次输入的密码不一致!');
+      } else {
+        callback();
+      }
+    }
+
+    function validateToNextPassword(rule, value, callback){
+      console.log(value);
+      if (value && that.state.confirmDirtyUp) {
+        form.validateFields(['confirm'], { force: true });
+      }
+      callback();
+    }
+
     const okHandle = () => {
       form.validateFields((err, fieldsValue) => {
         if (err) return;
@@ -216,6 +297,7 @@ class UpdateForm extends PureComponent {
         handleUpdate(fieldsValue);
       });
     };
+
     return (
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
@@ -232,30 +314,57 @@ class UpdateForm extends PureComponent {
         })(<Input type={"hidden"}/>)}
         <FormItem {...this.formLayout} label="用户名">
           {form.getFieldDecorator('username', {
-            rules: [{ required: true, message: '请输入至少2个字符的用户名 ！', min: 2 }],
+            rules: [{ required: false, message: '请输入至少2个字符的用户名 ！', min: 2 }],
             initialValue: formVals.name,
-          })(<Input placeholder="请输入"/>)}
+          })(<Input placeholder="请输入" disabled={true}/>)}
         </FormItem>
+
+
         <FormItem {...this.formLayout} label="密&emsp;码">
           {form.getFieldDecorator('password', {
-            rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
-          })(<Input placeholder="请输入" />)}
+            rules: [{
+              required: false, message: '请输入至少6个字符的密码!', min:6
+            }, {
+              validator: validateToNextPassword,
+            }],
+          })(
+            <Input type="password" placeholder="请输入"/>
+          )}
         </FormItem>
+        <FormItem {...this.formLayout} label="确认密码">
+          {form.getFieldDecorator('confirm', {
+            rules: [{
+              required: false, message: '请在次输入您的密码!',
+            }, {
+              validator: compareToFirstPassword,
+            }],
+          })(
+            <Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />
+          )}
+        </FormItem>
+
+
         <FormItem {...this.formLayout} label="邮&emsp;箱">
           {form.getFieldDecorator('email', {
-            rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
+            rules: [
+              {type: 'email', message: '您输入的邮箱格式不正确！',},
+              {required: false, message: '请输入您的邮箱！',}
+            ],
             initialValue: formVals.email,
           })(<Input placeholder="请输入"/>)}
+
         </FormItem>
         <FormItem {...this.formLayout} label="手&emsp;机">
           {form.getFieldDecorator('mobile', {
-            rules: [{ required: true, message: '请输入至少两个字符的手机！', min: 2 }],
+            rules: [
+              { required: false, message: '请输入11位手机号码！', min: 11 }
+              ],
             initialValue: formVals.mobile,
-          })(<Input placeholder="请输入"/>)}
+          })(<Input placeholder="请输入" maxLength={11}/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="所属部门">
           {form.getFieldDecorator('deptId', {
-            rules: [{ required: true, message: '请选择所属部门！' }],
+            rules: [{ required: false, message: '请选择所属部门！' }],
             initialValue: formVals.deptId,
           })(
             <TreeSelect
@@ -319,7 +428,61 @@ class AdminManager extends PureComponent {
     key: "userId",  //列表的唯一键
     statusValue: 1, //状态默认选中正常 0正常 1停用
     roleData:[], //角色下拉菜单数据
-    deptData:[]  //部门树菜单数据
+    deptData:[],  //部门树菜单数据
+    confirmDirty: false, //确认密码
+    confirmDirtyUp: false, //确认密码
+    Delete:false,
+    Save:false,
+    Update:false,
+  };
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const that = this;
+    dispatch({
+      type: 'usr/fetch',
+    });
+    dispatch({
+      type: 'dept/fetch',
+      callback:(res)=>{
+        if(res.code == 0){
+          that.setState({
+            deptData:res.list,
+          });
+        }
+      }
+    });
+    dispatch({
+      type: 'role/fetch',
+      callback:(res)=>{
+        if(res.code == 0){
+          that.setState({
+            roleData:res.list,
+          });
+        }
+      }
+    });
+
+    const ruleList = this.props.location.state;
+    for(let i =0; i<ruleList.length;i++){
+      // "sys:user:info", "sys:user:list", "sys:user:delete", "sys:user:update", "sys:user:save", "sys:role:select"
+      if(ruleList[i].indexOf("sys:user:save")!=-1){
+        that.setState({
+          Save:true,
+        });
+      }
+      if(ruleList[i].indexOf("sys:user:delete")!=-1){
+
+        that.setState({
+          Delete:true,
+        });
+      }
+      if(ruleList[i].indexOf("sys:user:update")!=-1){
+        that.setState({
+          Update:true,
+        });
+      }
+    }
   }
 
   columns = [
@@ -359,33 +522,26 @@ class AdminManager extends PureComponent {
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      sorter: true,
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      // sorter: true,
+      // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
-          <Divider type="vertical" />
-          <a onClick={() => this.showDeleteConfirm(record)}>删除</a>
+          {this.state.Update && (
+            <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
+          )}
+          {this.state.Update && this.state.Delete && (
+            <Divider type="vertical" />
+          )}
+          {this.state.Delete && (
+            <a onClick={() => this.showDeleteConfirm(record)}>删除</a>
+          )}
         </Fragment>
       ),
     },
   ];
-
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usr/fetch',
-    });
-    dispatch({
-      type: 'dept/fetch',
-    });
-    dispatch({
-      type: 'role/fetch',
-    });
-  }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -396,7 +552,7 @@ class AdminManager extends PureComponent {
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
-
+console.log(6666);
     const params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
@@ -422,6 +578,9 @@ class AdminManager extends PureComponent {
     dispatch({
       type: 'usr/fetch',
       payload: {},
+      callback:(res)=>{
+        tips(res);
+      }
     });
   };
 
@@ -432,29 +591,7 @@ class AdminManager extends PureComponent {
     });
   };
 
-  handleMenuClick = e => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
 
-    if (selectedRows.length === 0) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'usr/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
-  };
   onChangeTreeSelect = (value) => {
     console.log(value);
   }
@@ -467,6 +604,7 @@ class AdminManager extends PureComponent {
     });
   };
 
+
   handleSearch = e => {
     e.preventDefault();
 
@@ -475,18 +613,25 @@ class AdminManager extends PureComponent {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
+      // const values = {
+      //   ...fieldsValue,
+      //   updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+      //   username:fieldsValue.name,
+      //   deptId:fieldsValue.deptNo,
+      //   mobile:fieldsValue.phone
+      // };
+      const payload = {
+        username:fieldsValue.name,
+        deptId:fieldsValue.deptNo,
+        mobile:fieldsValue.phone
+      }
       this.setState({
-        formValues: values,
+        formValues: payload,
       });
 
       dispatch({
         type: 'usr/fetch',
-        payload: values,
+        payload: payload,
       });
     });
   };
@@ -510,7 +655,7 @@ class AdminManager extends PureComponent {
       type: 'usr/add',
       payload: fields,
       callback:(res)=>{
-        tips(res);
+        tips(res,this,"usr/fetch");
       }
     });
 
@@ -531,7 +676,7 @@ class AdminManager extends PureComponent {
       deptData:dept.data.list,
     });
   };
-  //删除单个用户信息
+  //删除用户信息
   showDeleteConfirm= (record) =>{
     let that = this;
     confirm({
@@ -549,17 +694,52 @@ class AdminManager extends PureComponent {
     });
   }
   deleted = (record) =>{
-    const userid = record.userId;
-    console.log(userid,"所删除用户的ID");
     const { dispatch } = this.props;
     dispatch({
       type: 'usr/remove',
-      payload:[userid],
+      payload:[record.userId],
       callback:(res)=>{
-        tips(res);
+        tips(res,this,"usr/fetch");
       }
     });
+  };
+  //批量删除
+  showDeletesConfirm= () =>{
+    let that = this;
+    confirm({
+      title: '删除确认',
+      content: '你确定进行【删除】操作吗？',
+      okText: '确定',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk() {
+        that.handleMenuClick();
+      },
+      onCancel() {
+        console.log('取消删除');
+        that.setState({
+          selectedRows: [],
+        });
+      },
+    });
   }
+  handleMenuClick = () => {
+    const { dispatch } = this.props;
+    const { selectedRows } = this.state;
+
+    if (selectedRows.length === 0) return;
+    console.log(selectedRows.map(row => row.key));
+    dispatch({
+      type: 'usr/remove',
+      payload: selectedRows.map(row => row.userId),
+      callback: (res) => {
+        tips(res,this,"usr/fetch");
+        this.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  };
 
 
   handleUpdate = fields => {
@@ -567,9 +747,14 @@ class AdminManager extends PureComponent {
     dispatch({
       type: 'usr/update',
       payload:fields,
+      callback: (res) => {
+        tips(res,this,"usr/fetch");
+        this.setState({
+          selectedRows: [],
+        });
+      },
     });
-
-    message.success('配置成功');
+    //message.success('配置成功');
     this.handleUpdateModalVisible();
   };
 
@@ -585,12 +770,22 @@ class AdminManager extends PureComponent {
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-
+          <Col md={8} sm={24}>
+            <FormItem label="手机">
+              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                重置
+              </Button>
+              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                展开 <Icon type="down" />
+              </a>
             </span>
           </Col>
         </Row>
@@ -606,11 +801,32 @@ class AdminManager extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="规则名称">
+            <FormItem label="用户名">
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-
+          <Col md={8} sm={24}>
+            <FormItem label="手机">
+              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="所属部门">
+              {getFieldDecorator('deptNo', {
+                rules: [{ required: false, message: '请选择所属部门！' }],
+              })(
+                <TreeSelect
+                  className={styles.width}
+                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                  treeData={this.state.deptData}
+                  dropdownMatchSelectWidth={false}
+                  treeDefaultExpandAll={false}
+                  placeholder="请选择部门"
+                  // onChange={onChangeTreeSelect}
+                />
+              )}
+            </FormItem>
+          </Col>
         </Row>
 
         <div style={{ overflow: 'hidden' }}>
@@ -618,6 +834,12 @@ class AdminManager extends PureComponent {
             <Button type="primary" htmlType="submit">
               查询
             </Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              重置
+            </Button>
+            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+              收起 <Icon type="up" />
+            </a>
           </div>
         </div>
       </Form>
@@ -642,27 +864,32 @@ class AdminManager extends PureComponent {
       handleChange:this.handleChange,
       roleData:this.state.roleData,
       deptData:this.state.deptData,
-      statusValue:this.state.statusValue
+      statusValue:this.state.statusValue,
+      that:this,
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
       roleData:this.state.roleData,
       deptData:this.state.deptData,
+      that:this,
     };
     console.log(data,"表格数据");
+
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {selectedRows.length > 0 && (
+              {this.state.Save && (
+                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                  新建
+                </Button>
+              )}
+              {selectedRows.length > 0 && this.state.Delete && (
                 <span>
-                  <Button>批量删除</Button>
+                  <Button onClick={this.showDeletesConfirm}>批量删除</Button>
                 </span>
               )}
             </div>

@@ -163,7 +163,7 @@ class DepartmentManager extends PureComponent {
   };
   constructor(props){
     super(props);
-    console.log(props,66666666666)
+    console.log(props.location.state,66666666666)
   }
   columns = [
     {

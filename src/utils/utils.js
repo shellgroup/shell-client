@@ -151,7 +151,7 @@ export function isUrl(path) {
   return reg.test(path);
 }
 
-export function tips(res){
+export function tips(res,that,path){
   if(res.code == 0){
     Modal.success({
       title: '成功提示！',
@@ -161,6 +161,12 @@ export function tips(res){
     Modal.error({
       title: '错误提示！',
       content: res.msg,
+    });
+  }
+  if(path && that){
+    const { dispatch } = that.props;
+    dispatch({
+      type: path,
     });
   }
 }

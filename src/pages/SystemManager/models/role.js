@@ -11,13 +11,14 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       const response = yield call(queryRole, payload);
       console.log(response,"***************角色列表数据");
       yield put({
         type: 'save',
         payload: response,
       });
+      if (callback) callback(response);
     },
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addRule, payload);

@@ -84,7 +84,7 @@ export default class BaseMenu extends PureComponent {
     const icon = getIcon(item.icon);
     const { target } = item;
 
-    console.log(parmsList,"许可参数");
+
     // Is it a http link
     if (/^https?:\/\//.test(itemPath)) {
       return (
