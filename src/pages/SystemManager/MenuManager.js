@@ -91,7 +91,6 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-
     </Modal>
   );
 });
@@ -161,8 +160,6 @@ class UpdateForm extends PureComponent {
       currentStep: currentStep + 1,
     });
   };
-
-
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -179,7 +176,7 @@ class MenuManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "menuId",
+    key: 'menuId',
   };
 
   columns = [
@@ -189,7 +186,7 @@ class MenuManager extends PureComponent {
     },
     {
       title: '图标',
-      dataIndex: 'icon',
+      render: record => <Icon type={record.icon} />,
     },
     {
       title: '类型',
@@ -366,10 +363,6 @@ class MenuManager extends PureComponent {
     this.handleUpdateModalVisible();
   };
 
-
-
-
-
   render() {
     const {
       menulist: { data },
@@ -388,7 +381,7 @@ class MenuManager extends PureComponent {
       <PageHeaderWrapper>
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}></div>
+            <div className={styles.tableListForm} />
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
@@ -403,7 +396,7 @@ class MenuManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              rowKey = {this.state.key}
+              rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

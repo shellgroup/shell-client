@@ -15,7 +15,7 @@ export default {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      console.log(response,'登录返回的参数和传的参数',payload);
+      console.log(response, '登录返回的参数和传的参数', payload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -44,7 +44,7 @@ export default {
 
     *getCaptcha({ payload }, { call }) {
       //请求验证码
-      const response =  yield call(getFakeCaptcha);
+      const response = yield call(getFakeCaptcha);
       return response;
     },
 
@@ -75,8 +75,8 @@ export default {
         ...state,
         status: payload.status,
         type: payload.type,
-        code:payload.code,
-        msg:payload.msg
+        code: payload.code,
+        msg: payload.msg,
       };
     },
   },

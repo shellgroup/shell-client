@@ -145,8 +145,6 @@ class UpdateForm extends PureComponent {
       currentStep: currentStep + 1,
     });
   };
-
-
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -163,7 +161,7 @@ class FileUpload extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "id",
+    key: 'id',
   };
 
   columns = [
@@ -334,10 +332,6 @@ class FileUpload extends PureComponent {
     this.handleUpdateModalVisible();
   };
 
-
-
-
-
   render() {
     const {
       fileupload: { data },
@@ -356,7 +350,7 @@ class FileUpload extends PureComponent {
       <PageHeaderWrapper>
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}></div>
+            <div className={styles.tableListForm} />
             <div className={styles.tableListOperator}>
               <Button type="primary" onClick={() => this.handleModalVisible(true)}>
                 云存储配置
@@ -374,7 +368,7 @@ class FileUpload extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              rowKey = {this.state.key}
+              rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

@@ -13,7 +13,7 @@ export default {
   effects: {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(queryRole, payload);
-      console.log(response,"***************角色列表数据");
+      console.log(response, '***************角色列表数据');
       yield put({
         type: 'save',
         payload: response,

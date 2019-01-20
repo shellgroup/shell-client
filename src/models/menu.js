@@ -2,7 +2,7 @@ import memoizeOne from 'memoize-one';
 import isEqual from 'lodash/isEqual';
 import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
-import {queryMenus} from "../services/api";
+import { queryMenus } from '../services/api';
 
 const { check } = Authorized;
 
@@ -103,7 +103,7 @@ export default {
       //请求菜单数据
       const response = yield call(queryMenus);
       const menuData = response.menuList;
-      console.log("菜单列表",menuData);
+      console.log('菜单列表', menuData);
       const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
       yield put({
         type: 'save',

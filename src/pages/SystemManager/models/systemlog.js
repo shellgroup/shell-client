@@ -13,7 +13,7 @@ export default {
   effects: {
     *fetch({ payload }, { call, put }) {
       const response = yield call(querySystemlog, payload);
-      console.log(response,"***************系统日志列表数据");
+      console.log(response, '***************系统日志列表数据');
       yield put({
         type: 'save',
         payload: response,

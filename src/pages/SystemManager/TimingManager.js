@@ -145,8 +145,6 @@ class UpdateForm extends PureComponent {
       currentStep: currentStep + 1,
     });
   };
-
-
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -163,7 +161,7 @@ class TimingManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "jobId",
+    key: 'jobId',
   };
 
   columns = [
@@ -200,7 +198,7 @@ class TimingManager extends PureComponent {
         {
           text: status[1],
           value: 1,
-        }
+        },
       ],
       render(val) {
         return <Badge status={statusMap[val]} text={status[val]} />;
@@ -411,7 +409,6 @@ class TimingManager extends PureComponent {
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-
         </Row>
 
         <div style={{ overflow: 'hidden' }}>
@@ -422,7 +419,6 @@ class TimingManager extends PureComponent {
             <Button style={{ marginLeft: 8 }} type="primary" htmlType="submit">
               日志列表
             </Button>
-
           </div>
         </div>
       </Form>
@@ -478,7 +474,7 @@ class TimingManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              rowKey = {this.state.key}
+              rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

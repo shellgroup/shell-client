@@ -112,7 +112,6 @@ class BasicLayout extends React.PureComponent {
     return getAuthority(pathname, routeData);
   };
 
-
   getPageTitle = (pathname, breadcrumbNameMap) => {
     const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
 

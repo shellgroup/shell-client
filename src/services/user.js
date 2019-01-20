@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import baseUrl from "./baseurl";
+import baseUrl from './baseurl';
 
 export async function query() {
   return request('/api/users');

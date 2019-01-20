@@ -1,6 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import {
   Row,
   Col,
@@ -10,28 +9,18 @@ import {
   Select,
   Icon,
   Button,
-  Dropdown,
-  Menu,
-  InputNumber,
-  DatePicker,
   Modal,
-  Switch,
-  message,
   Badge,
   Divider,
-  Steps,
   Radio,
   TreeSelect,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
-import TreeSeltctInput from '@/components/TreeSeltctInput'
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { tips } from '../../utils/utils'
+import { tips, disablesBtns, showDeleteConfirmParames } from '../../utils/utils';
 import styles from './AdminManager.less';
-
+const showDeleteTipsParames = showDeleteConfirmParames();
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const confirm = Modal.confirm;
@@ -53,7 +42,7 @@ const CreateForm = Form.create()(props => {
     deptData,
     roleData,
     statusValue,
-    that
+    that,
   } = props;
 
   const okHandle = () => {
@@ -66,34 +55,33 @@ const CreateForm = Form.create()(props => {
 
   //处理角色数据
   const roleValues = [];
-  if(roleData){
+  if (roleData) {
     for (let i = 0; i < roleData.length; i++) {
       roleValues.push(<Option key={roleData[i].roleId}>{roleData[i].roleName}</Option>);
     }
   }
 
   //处理部门数据
-  function child(data){
-      for(let i =0; i < data.length; i++){
-        data[i].value = data[i].deptId;
-        data[i].key = data[i].deptId;
-        data[i].title = data[i].name;
-        if(data[i].children){
-          data[i].children = child(data[i].children);
-        }
+  function child(data) {
+    for (let i = 0; i < data.length; i++) {
+      data[i].value = data[i].deptId;
+      data[i].key = data[i].deptId;
+      data[i].title = data[i].name;
+      if (data[i].children) {
+        data[i].children = child(data[i].children);
       }
-      return data;
+    }
+    return data;
   }
 
-
-  function handleConfirmBlur(e){
+  function handleConfirmBlur(e) {
     const value = e.target.value;
     that.setState({ confirmDirty: that.state.confirmDirty || !!value });
-  };
+  }
 
-  function compareToFirstPassword(rule, value, callback){
-    console.log(form)
-    console.log(value,form.getFieldValue('password'));
+  function compareToFirstPassword(rule, value, callback) {
+    console.log(form);
+    console.log(value, form.getFieldValue('password'));
     if (value && value !== form.getFieldValue('password')) {
       callback('两次输入的密码不一致!');
     } else {
@@ -101,14 +89,13 @@ const CreateForm = Form.create()(props => {
     }
   }
 
-  function validateToNextPassword(rule, value, callback){
+  function validateToNextPassword(rule, value, callback) {
     console.log(value);
     if (value && that.state.confirmDirty) {
       form.validateFields(['confirm'], { force: true });
     }
     callback();
   }
-
 
   return (
     <Modal
@@ -126,38 +113,43 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密&emsp;码">
         {form.getFieldDecorator('password', {
-          rules: [{
-            required: true, message: '请输入至少6个字符的密码!', min:6
-          }, {
-            validator: validateToNextPassword,
-          }],
-        })(
-          <Input type="password" placeholder="请输入"/>
-        )}
+          rules: [
+            {
+              required: true,
+              message: '请输入至少6个字符的密码!',
+              min: 6,
+            },
+            {
+              validator: validateToNextPassword,
+            },
+          ],
+        })(<Input type="password" placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认密码">
         {form.getFieldDecorator('confirm', {
-          rules: [{
-            required: true, message: '请在次输入您的密码!',
-          }, {
-            validator: compareToFirstPassword,
-          }],
-        })(
-          <Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />
-        )}
+          rules: [
+            {
+              required: true,
+              message: '请在次输入您的密码!',
+            },
+            {
+              validator: compareToFirstPassword,
+            },
+          ],
+        })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="邮&emsp;箱">
         {form.getFieldDecorator('email', {
           rules: [
-            {type: 'email', message: '您输入的邮箱格式不正确！',},
-            {required: true, message: '请输入您的邮箱！',}
+            { type: 'email', message: '您输入的邮箱格式不正确！' },
+            { required: true, message: '请输入您的邮箱！' },
           ],
-        })(<Input placeholder="请输入"/>)}
+        })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="手&emsp;机">
         {form.getFieldDecorator('mobile', {
-          rules: [{ required: true, message: '请输入11位手机号码！', min: 11}],
-        })(<Input placeholder="请输入" maxLength={11}/>)}
+          rules: [{ required: true, message: '请输入11位手机号码！', min: 11 }],
+        })(<Input placeholder="请输入" maxLength={11} />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
         {form.getFieldDecorator('deptId', {
@@ -170,13 +162,13 @@ const CreateForm = Form.create()(props => {
             dropdownMatchSelectWidth={false}
             treeDefaultExpandAll={false}
             placeholder="请选择部门"
-            onChange={onChangeTreeSelect}
+            //onChange={onChangeTreeSelect}
           />
         )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角&emsp;色">
         {form.getFieldDecorator('roleIdList', {
-          rules: [{ required: false}],
+          rules: [{ required: false }],
         })(
           <Select
             mode="multiple"
@@ -190,13 +182,13 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状&emsp;态">
         {form.getFieldDecorator('status', {
-          rules: [{ required: false}],
+          rules: [{ required: false }],
           initialValue: statusValue,
         })(
-            <RadioGroup>
-              <Radio value={1}>正常</Radio>
-              <Radio value={0}>停用</Radio>
-            </RadioGroup>
+          <RadioGroup>
+            <Radio value={1}>正常</Radio>
+            <Radio value={0}>停用</Radio>
+          </RadioGroup>
         )}
       </FormItem>
     </Modal>
@@ -213,8 +205,6 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-    console.log(props,"((((((((((((((");
-
     this.state = {
       formVals: {
         name: props.values.username,
@@ -234,7 +224,7 @@ class UpdateForm extends PureComponent {
         frequency: 'month',
       },
       currentStep: 0,
-      confirmDirty:false
+      confirmDirty: false,
     };
 
     this.formLayout = {
@@ -243,38 +233,48 @@ class UpdateForm extends PureComponent {
     };
   }
 
-
   render() {
-    const { updateModalVisible, handleUpdateModalVisible, values, roleData, deptData, handleUpdate, that} = this.props;
+    const {
+      updateModalVisible,
+      handleUpdateModalVisible,
+      values,
+      roleData,
+      deptData,
+      handleUpdate,
+      that,
+    } = this.props;
     const { formVals } = this.state;
     const { form } = this.props;
     //处理角色数据
     const roleValues = [];
     for (let i = 0; i < roleData.length; i++) {
-      roleValues.push(<Option key={roleData[i].roleId} value={roleData[i].roleId}>{roleData[i].roleName}</Option>);
+      roleValues.push(
+        <Option key={roleData[i].roleId} value={roleData[i].roleId}>
+          {roleData[i].roleName}
+        </Option>
+      );
     }
     //处理部门数据
-    function child(data){
-      for(let i =0; i < data.length; i++){
+    function child(data) {
+      for (let i = 0; i < data.length; i++) {
         data[i].value = data[i].deptId;
         data[i].key = data[i].deptId;
         data[i].title = data[i].name;
-        if(data[i].children){
+        if (data[i].children) {
           data[i].children = child(data[i].children);
         }
       }
       return data;
     }
 
-
-    function handleConfirmBlur(e){
+    function handleConfirmBlur(e) {
       const value = e.target.value;
       that.setState({ confirmDirtyUp: that.state.confirmDirtyUp || !!value });
-    };
+    }
 
-    function compareToFirstPassword(rule, value, callback){
-      console.log(form)
-      console.log(value,form.getFieldValue('password'));
+    function compareToFirstPassword(rule, value, callback) {
+      console.log(form);
+      console.log(value, form.getFieldValue('password'));
       if (value && value !== form.getFieldValue('password')) {
         callback('两次输入的密码不一致!');
       } else {
@@ -282,7 +282,7 @@ class UpdateForm extends PureComponent {
       }
     }
 
-    function validateToNextPassword(rule, value, callback){
+    function validateToNextPassword(rule, value, callback) {
       console.log(value);
       if (value && that.state.confirmDirtyUp) {
         form.validateFields(['confirm'], { force: true });
@@ -309,58 +309,58 @@ class UpdateForm extends PureComponent {
         onCancel={() => handleUpdateModalVisible(false)}
       >
         {form.getFieldDecorator('userId', {
-          rules: [{ required: false}],
+          rules: [{ required: false }],
           initialValue: formVals.userId,
-        })(<Input type={"hidden"}/>)}
+        })(<Input type={'hidden'} />)}
         <FormItem {...this.formLayout} label="用户名">
           {form.getFieldDecorator('username', {
             rules: [{ required: false, message: '请输入至少2个字符的用户名 ！', min: 2 }],
             initialValue: formVals.name,
-          })(<Input placeholder="请输入" disabled={true}/>)}
+          })(<Input placeholder="请输入" disabled={true} />)}
         </FormItem>
-
 
         <FormItem {...this.formLayout} label="密&emsp;码">
           {form.getFieldDecorator('password', {
-            rules: [{
-              required: false, message: '请输入至少6个字符的密码!', min:6
-            }, {
-              validator: validateToNextPassword,
-            }],
-          })(
-            <Input type="password" placeholder="请输入"/>
-          )}
+            rules: [
+              {
+                required: false,
+                message: '请输入至少6个字符的密码!',
+                min: 6,
+              },
+              {
+                validator: validateToNextPassword,
+              },
+            ],
+          })(<Input type="password" placeholder="请输入" />)}
         </FormItem>
         <FormItem {...this.formLayout} label="确认密码">
           {form.getFieldDecorator('confirm', {
-            rules: [{
-              required: false, message: '请在次输入您的密码!',
-            }, {
-              validator: compareToFirstPassword,
-            }],
-          })(
-            <Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />
-          )}
+            rules: [
+              {
+                required: false,
+                message: '请在次输入您的密码!',
+              },
+              {
+                validator: compareToFirstPassword,
+              },
+            ],
+          })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />)}
         </FormItem>
-
 
         <FormItem {...this.formLayout} label="邮&emsp;箱">
           {form.getFieldDecorator('email', {
             rules: [
-              {type: 'email', message: '您输入的邮箱格式不正确！',},
-              {required: false, message: '请输入您的邮箱！',}
+              { type: 'email', message: '您输入的邮箱格式不正确！' },
+              { required: false, message: '请输入您的邮箱！' },
             ],
             initialValue: formVals.email,
-          })(<Input placeholder="请输入"/>)}
-
+          })(<Input placeholder="请输入" />)}
         </FormItem>
         <FormItem {...this.formLayout} label="手&emsp;机">
           {form.getFieldDecorator('mobile', {
-            rules: [
-              { required: false, message: '请输入11位手机号码！', min: 11 }
-              ],
+            rules: [{ required: false, message: '请输入11位手机号码！', min: 11 }],
             initialValue: formVals.mobile,
-          })(<Input placeholder="请输入" maxLength={11}/>)}
+          })(<Input placeholder="请输入" maxLength={11} />)}
         </FormItem>
         <FormItem {...this.formLayout} label="所属部门">
           {form.getFieldDecorator('deptId', {
@@ -380,21 +380,17 @@ class UpdateForm extends PureComponent {
         </FormItem>
         <FormItem {...this.formLayout} label="角&emsp;色">
           {form.getFieldDecorator('roleIdList', {
-            rules: [{ required: false}],
-            initialValue:formVals.roleIdList
+            rules: [{ required: false }],
+            initialValue: formVals.roleIdList,
           })(
-            <Select
-              mode="multiple"
-              style={{ width: '100%' }}
-              placeholder="请选择角色"
-            >
+            <Select mode="multiple" style={{ width: '100%' }} placeholder="请选择角色">
               {roleValues}
             </Select>
           )}
         </FormItem>
         <FormItem {...this.formLayout} label="状&emsp;态">
           {form.getFieldDecorator('status', {
-            rules: [{ required: false}],
+            rules: [{ required: false }],
             initialValue: formVals.status,
           })(
             <RadioGroup>
@@ -406,15 +402,14 @@ class UpdateForm extends PureComponent {
       </Modal>
     );
   }
-
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ usr,dept, role, loading}) => ({
+@connect(({ usr, dept, role, loading }) => ({
   usr,
   dept,
   role,
-  loading: loading.effects["usr/fetch","dept/fetch","role/fetch"],
+  loading: loading.effects[('usr/fetch', 'dept/fetch', 'role/fetch')],
 }))
 @Form.create()
 class AdminManager extends PureComponent {
@@ -425,15 +420,16 @@ class AdminManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "userId",  //列表的唯一键
+    key: 'userId', //列表的唯一键
     statusValue: 1, //状态默认选中正常 0正常 1停用
-    roleData:[], //角色下拉菜单数据
-    deptData:[],  //部门树菜单数据
+    roleData: [], //角色下拉菜单数据
+    deptData: [], //部门树菜单数据
     confirmDirty: false, //确认密码
     confirmDirtyUp: false, //确认密码
-    Delete:false,
-    Save:false,
-    Update:false,
+    DeleteBtn: false,
+    SaveBtn: false,
+    UpdateBtn: false,
+    ShowList: false,
   };
 
   componentDidMount() {
@@ -444,45 +440,26 @@ class AdminManager extends PureComponent {
     });
     dispatch({
       type: 'dept/fetch',
-      callback:(res)=>{
-        if(res.code == 0){
+      callback: res => {
+        if (res.code == 0) {
           that.setState({
-            deptData:res.list,
+            deptData: res.list,
           });
         }
-      }
+      },
     });
     dispatch({
       type: 'role/fetch',
-      callback:(res)=>{
-        if(res.code == 0){
+      callback: res => {
+        if (res.code == 0) {
           that.setState({
-            roleData:res.list,
+            roleData: res.list,
           });
         }
-      }
+      },
     });
-
-    const ruleList = this.props.location.state;
-    for(let i =0; i<ruleList.length;i++){
-      // "sys:user:info", "sys:user:list", "sys:user:delete", "sys:user:update", "sys:user:save", "sys:role:select"
-      if(ruleList[i].indexOf("sys:user:save")!=-1){
-        that.setState({
-          Save:true,
-        });
-      }
-      if(ruleList[i].indexOf("sys:user:delete")!=-1){
-
-        that.setState({
-          Delete:true,
-        });
-      }
-      if(ruleList[i].indexOf("sys:user:update")!=-1){
-        that.setState({
-          Update:true,
-        });
-      }
-    }
+    //调用utils里面的disablesBtns方法判断是否有权限
+    disablesBtns(this);
   }
 
   columns = [
@@ -513,7 +490,7 @@ class AdminManager extends PureComponent {
         {
           text: status[1],
           value: 1,
-        }
+        },
       ],
       render(val) {
         return <Badge status={statusMap[val]} text={status[val]} />;
@@ -529,14 +506,16 @@ class AdminManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          {this.state.Update && (
-            <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
+          {this.state.UpdateBtn && (
+            <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>
+              修改
+            </Button>
           )}
-          {this.state.Update && this.state.Delete && (
-            <Divider type="vertical" />
-          )}
-          {this.state.Delete && (
-            <a onClick={() => this.showDeleteConfirm(record)}>删除</a>
+          {this.state.UpdateBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+          {this.state.DeleteBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>
+              删除
+            </Button>
           )}
         </Fragment>
       ),
@@ -552,7 +531,6 @@ class AdminManager extends PureComponent {
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
-console.log(6666);
     const params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
@@ -578,9 +556,9 @@ console.log(6666);
     dispatch({
       type: 'usr/fetch',
       payload: {},
-      callback:(res)=>{
+      callback: res => {
         tips(res);
-      }
+      },
     });
   };
 
@@ -591,19 +569,17 @@ console.log(6666);
     });
   };
 
-
-  onChangeTreeSelect = (value) => {
+  onChangeTreeSelect = value => {
     console.log(value);
-  }
-  handleChange = (value) =>{
+  };
+  handleChange = value => {
     console.log(value);
-  }
+  };
   handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
     });
   };
-
 
   handleSearch = e => {
     e.preventDefault();
@@ -613,50 +589,40 @@ console.log(6666);
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
-      // const values = {
-      //   ...fieldsValue,
-      //   updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      //   username:fieldsValue.name,
-      //   deptId:fieldsValue.deptNo,
-      //   mobile:fieldsValue.phone
-      // };
-      const payload = {
-        username:fieldsValue.name,
-        deptId:fieldsValue.deptNo,
-        mobile:fieldsValue.phone
-      }
+      const values = {
+        username: fieldsValue.name,
+        deptId: fieldsValue.deptNo,
+        mobile: fieldsValue.phone,
+      };
       this.setState({
-        formValues: payload,
+        formValues: values,
       });
 
       dispatch({
         type: 'usr/fetch',
-        payload: payload,
+        payload: values,
       });
     });
   };
   //新建用户
-  handleModalVisible = (flag) => {
-    const {
-      dept,
-      role
-    } = this.props
+  handleModalVisible = flag => {
+    const { dept, role } = this.props;
 
     this.setState({
       modalVisible: !!flag,
-      roleData:role.data.list,
-      deptData:dept.data.list,
+      roleData: role.data.list,
+      deptData: dept.data.list,
     });
   };
   handleAdd = fields => {
-    console.log(fields,"__________添加用户的参数");
-    const { dispatch, usr} = this.props;
+    console.log(fields, '__________添加用户的参数');
+    const { dispatch, usr } = this.props;
     dispatch({
       type: 'usr/add',
       payload: fields,
-      callback:(res)=>{
-        tips(res,this,"usr/fetch");
-      }
+      callback: res => {
+        tips(res, this, 'usr/fetch');
+      },
     });
 
     //message.success('添加成功');
@@ -664,27 +630,20 @@ console.log(6666);
   };
   //修改用户信息
   handleUpdateModalVisible = (flag, record) => {
-    const {
-      dept,
-      role
-    } = this.props
-    console.log(record,flag,"修改用户信息——————————————————————")
+    const { dept, role } = this.props;
+    console.log(record, flag, '修改用户信息——————————————————————');
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
-      roleData:role.data.list,
-      deptData:dept.data.list,
+      roleData: role.data.list,
+      deptData: dept.data.list,
     });
   };
   //删除用户信息
-  showDeleteConfirm= (record) =>{
+  showDeleteConfirm = record => {
     let that = this;
     confirm({
-      title: '删除确认',
-      content: '你确定进行【删除】操作吗？',
-      okText: '确定',
-      okType: 'danger',
-      cancelText: '取消',
+      ...showDeleteTipsParames,
       onOk() {
         that.deleted(record);
       },
@@ -692,26 +651,23 @@ console.log(6666);
         console.log('取消删除');
       },
     });
-  }
-  deleted = (record) =>{
+  };
+  deleted = record => {
     const { dispatch } = this.props;
     dispatch({
       type: 'usr/remove',
-      payload:[record.userId],
-      callback:(res)=>{
-        tips(res,this,"usr/fetch");
-      }
+      payload: [record.userId],
+      callback: res => {
+        tips(res, this, 'usr/fetch');
+      },
     });
   };
   //批量删除
-  showDeletesConfirm= () =>{
+  showDeletesConfirm = () => {
+    console.log(showDeleteConfirmParames);
     let that = this;
     confirm({
-      title: '删除确认',
-      content: '你确定进行【删除】操作吗？',
-      okText: '确定',
-      okType: 'danger',
-      cancelText: '取消',
+      ...showDeleteTipsParames,
       onOk() {
         that.handleMenuClick();
       },
@@ -722,7 +678,7 @@ console.log(6666);
         });
       },
     });
-  }
+  };
   handleMenuClick = () => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
@@ -732,8 +688,8 @@ console.log(6666);
     dispatch({
       type: 'usr/remove',
       payload: selectedRows.map(row => row.userId),
-      callback: (res) => {
-        tips(res,this,"usr/fetch");
+      callback: res => {
+        tips(res, this, 'usr/fetch');
         this.setState({
           selectedRows: [],
         });
@@ -741,14 +697,13 @@ console.log(6666);
     });
   };
 
-
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
       type: 'usr/update',
-      payload:fields,
-      callback: (res) => {
-        tips(res,this,"usr/fetch");
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'usr/fetch');
         this.setState({
           selectedRows: [],
         });
@@ -860,21 +815,21 @@ console.log(6666);
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
-      onChangeTreeSelect:this.onChangeTreeSelect,
-      handleChange:this.handleChange,
-      roleData:this.state.roleData,
-      deptData:this.state.deptData,
-      statusValue:this.state.statusValue,
-      that:this,
+      onChangeTreeSelect: this.onChangeTreeSelect,
+      handleChange: this.handleChange,
+      roleData: this.state.roleData,
+      deptData: this.state.deptData,
+      statusValue: this.state.statusValue,
+      that: this,
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
-      roleData:this.state.roleData,
-      deptData:this.state.deptData,
-      that:this,
+      roleData: this.state.roleData,
+      deptData: this.state.deptData,
+      that: this,
     };
-    console.log(data,"表格数据");
+    console.log(data, '表格数据');
 
     return (
       <PageHeaderWrapper>
@@ -882,12 +837,12 @@ console.log(6666);
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              {this.state.Save && (
+              {this.state.SaveBtn && (
                 <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                   新建
                 </Button>
               )}
-              {selectedRows.length > 0 && this.state.Delete && (
+              {selectedRows.length > 0 && this.state.DeleteBtn && (
                 <span>
                   <Button onClick={this.showDeletesConfirm}>批量删除</Button>
                 </span>
@@ -896,8 +851,8 @@ console.log(6666);
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
-              rowKey = {this.state.key}
+              data={this.state.ShowList ? data : {}}
+              rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

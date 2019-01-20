@@ -9,13 +9,12 @@ import baseUrl from '../../services/baseurl';
 const FormItem = Form.Item;
 
 class WrapFormItem extends Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       count: 0,
-      src: this.onGetCaptcha()
+      src: this.onGetCaptcha(),
     };
   }
 
@@ -37,13 +36,11 @@ class WrapFormItem extends Component {
       return;
     }
     if (result instanceof Promise) {
-      result.then(
-        (res) => {
-          this.setState({
-            src: res
-          })
-        }
-      );
+      result.then(res => {
+        this.setState({
+          src: res,
+        });
+      });
     }
   };
 
@@ -91,13 +88,7 @@ class WrapFormItem extends Component {
               {getFieldDecorator(name, options)(<Input {...customprops} {...inputProps} />)}
             </Col>
             <Col span={8}>
-
-              <img
-                src={this.state.src}
-                className={styles.getCaptcha}
-                onClick={this.onGetCaptcha}
-              />
-
+              <img src={this.state.src} className={styles.getCaptcha} onClick={this.onGetCaptcha} />
             </Col>
           </Row>
         </FormItem>

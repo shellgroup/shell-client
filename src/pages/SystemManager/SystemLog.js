@@ -61,7 +61,6 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请输入至少2个字符的用户名！', min: 2 }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-
     </Modal>
   );
 });
@@ -131,8 +130,6 @@ class UpdateForm extends PureComponent {
       currentStep: currentStep + 1,
     });
   };
-
-
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -149,7 +146,7 @@ class SystemLog extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "id",
+    key: 'id',
   };
 
   columns = [
@@ -377,7 +374,6 @@ class SystemLog extends PureComponent {
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-
         </Row>
 
         <div style={{ overflow: 'hidden' }}>
@@ -385,7 +381,6 @@ class SystemLog extends PureComponent {
             <Button type="primary" htmlType="submit">
               查询
             </Button>
-
           </div>
         </div>
       </Form>
@@ -417,7 +412,6 @@ class SystemLog extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-
               {selectedRows.length > 0 && (
                 <span>
                   <Button>导出</Button>
@@ -428,7 +422,7 @@ class SystemLog extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              rowKey = {this.state.key}
+              rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

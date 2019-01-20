@@ -20,10 +20,13 @@ import {
   Divider,
   Steps,
   Radio,
+  TreeSelect,
 } from 'antd';
 import TreeTable from '@/components/TreeTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-
+import { tips, disablesBtns, showDeleteConfirmParames } from '../../utils/utils';
+const showDeleteTipsParames = showDeleteConfirmParames();
+const confirm = Modal.confirm;
 import styles from './DepartmentManager.less';
 
 const FormItem = Form.Item;
@@ -39,7 +42,7 @@ const statusMap = ['normal', 'disabled'];
 const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, deptData } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -47,31 +50,53 @@ const CreateForm = Form.create()(props => {
       handleAdd(fieldsValue);
     });
   };
+
+  //处理部门数据
+  function child(data) {
+    for (let i = 0; i < data.length; i++) {
+      data[i].value = data[i].deptId;
+      data[i].key = data[i].deptId;
+      data[i].title = data[i].name;
+      if (data[i].children) {
+        data[i].children = child(data[i].children);
+      }
+    }
+    return data;
+  }
   return (
     <Modal
       destroyOnClose
-      title="新增管理员"
+      title="新增部门"
       width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="部门名称">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少2个字符的用户名！', min: 2 }],
+        {form.getFieldDecorator('name', {
+          rules: [{ required: true, message: '请输入您的部门名称！' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上级部门">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
-        })(<Input placeholder="请输入" />)}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
+        {form.getFieldDecorator('parentId', {
+          rules: [{ required: false, message: '请选择所属部门！' }],
+        })(
+          <TreeSelect
+            className={styles.width}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            treeData={child(deptData)}
+            dropdownMatchSelectWidth={false}
+            treeDefaultExpandAll={false}
+            placeholder="请选择部门"
+            //onChange={onChangeTreeSelect}
+          />
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排&emsp;&emsp;序">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
+        {form.getFieldDecorator('orderNum', {
+          rules: [{ required: false }],
+        })(<InputNumber min={0} placeholder="请输入" />)}
       </FormItem>
-
     </Modal>
   );
 });
@@ -86,63 +111,111 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-
+    console.log(props, 66666666666);
     this.state = {
       formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
+        children: props.values.children,
+        delFlag: props.values.delFlag,
+        deptId: props.values.deptId,
         key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
+        name: props.values.name,
+        open: props.values.open,
+        orderNum: props.values.orderNum,
+        parentId: props.values.parentId,
+        parentName: props.values.parentName,
+        title: props.values.title,
+        value: props.values.value,
       },
       currentStep: 0,
+      confirmDirty: false,
     };
 
     this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 15 },
     };
   }
 
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
+  render() {
+    const {
+      updateModalVisible,
+      handleUpdateModalVisible,
+      values,
+      roleData,
+      deptData,
+      handleUpdate,
+      that,
+    } = this.props;
+    const { formVals } = this.state;
+    const { form } = this.props;
+
+    //处理部门数据
+    function child(data) {
+      for (let i = 0; i < data.length; i++) {
+        data[i].value = data[i].deptId;
+        data[i].key = data[i].deptId;
+        data[i].title = data[i].name;
+        if (data[i].children) {
+          data[i].children = child(data[i].children);
         }
-      );
-    });
-  };
+      }
+      return data;
+    }
 
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleUpdate(fieldsValue);
+      });
+    };
 
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="更新部门"
+        width={940}
+        visible={updateModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleUpdateModalVisible(false)}
+      >
+        {form.getFieldDecorator('deptId', {
+          rules: [{ required: false }],
+          initialValue: formVals.deptId,
+        })(<Input type={'hidden'} />)}
 
-
+        <FormItem {...this.formLayout} label="部门名称">
+          {form.getFieldDecorator('name', {
+            rules: [{ required: true, message: '请输入您的部门名称！' }],
+            initialValue: formVals.name,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem {...this.formLayout} label="所属部门">
+          {form.getFieldDecorator('parentId', {
+            rules: [{ required: false, message: '请选择所属部门！' }],
+            initialValue: formVals.parentId,
+          })(
+            <TreeSelect
+              className={styles.width}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              treeData={deptData}
+              dropdownMatchSelectWidth={false}
+              treeDefaultExpandAll={false}
+              placeholder="请选择部门"
+              // onChange={onChangeTreeSelect}
+            />
+          )}
+        </FormItem>
+        <FormItem {...this.formLayout} label="排&emsp;&emsp;序">
+          {form.getFieldDecorator('orderNum', {
+            rules: [{ required: false }],
+            initialValue: formVals.orderNum,
+          })(<InputNumber min={0} placeholder="请输入" />)}
+        </FormItem>
+      </Modal>
+    );
+  }
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -159,19 +232,17 @@ class DepartmentManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "deptId",
+    key: 'deptId',
+    deptData: [], //部门树菜单数据
   };
-  constructor(props){
-    super(props);
-    console.log(props.location.state,66666666666)
-  }
+
   columns = [
     {
       title: '部门名称',
       dataIndex: 'name',
     },
     {
-      title: '上级部门管',
+      title: '上级部门',
       dataIndex: 'parentName',
     },
     {
@@ -182,9 +253,13 @@ class DepartmentManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
+          <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>
+            修改
+          </Button>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>
+            删除
+          </Button>
         </Fragment>
       ),
     },
@@ -192,8 +267,19 @@ class DepartmentManager extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
+    const that = this;
     dispatch({
       type: 'dept/fetch',
+    });
+    dispatch({
+      type: 'dept/fetch',
+      callback: res => {
+        if (res.code == 0) {
+          that.setState({
+            deptData: res.list,
+          });
+        }
+      },
     });
   }
 
@@ -311,14 +397,18 @@ class DepartmentManager extends PureComponent {
 
   handleAdd = fields => {
     const { dispatch } = this.props;
+    if (!fields.parentId) {
+      fields.parentId = 0;
+    }
     dispatch({
       type: 'dept/add',
-      payload: {
-        desc: fields.desc,
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'dept/fetch');
       },
     });
 
-    message.success('添加成功');
+    //message.success('添加成功');
     this.handleModalVisible();
   };
 
@@ -326,20 +416,58 @@ class DepartmentManager extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'dept/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'dept/fetch');
+        this.setState({
+          selectedRows: [],
+        });
       },
     });
-
-    message.success('配置成功');
+    //message.success('配置成功');
     this.handleUpdateModalVisible();
   };
 
-
-
-
+  //删除用户信息
+  showDeleteConfirm = record => {
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.deleted(record);
+      },
+      onCancel() {
+        console.log('取消删除');
+      },
+    });
+  };
+  deleted = record => {
+    const { dispatch } = this.props;
+    console.log(3, record.deptId, this, 'dept/fetch');
+    dispatch({
+      type: 'dept/remove',
+      payload: record.deptId,
+      callback: res => {
+        tips(res, this, 'dept/fetch');
+      },
+    });
+  };
+  //批量删除
+  showDeletesConfirm = () => {
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.handleMenuClick();
+      },
+      onCancel() {
+        console.log('取消删除');
+        that.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  };
 
   render() {
     const {
@@ -350,16 +478,18 @@ class DepartmentManager extends PureComponent {
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
+      deptData: this.state.deptData,
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
+      deptData: this.state.deptData,
     };
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}></div>
+            <div className={styles.tableListForm} />
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
@@ -374,7 +504,7 @@ class DepartmentManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              rowKey = {this.state.key}
+              rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

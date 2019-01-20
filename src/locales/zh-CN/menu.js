@@ -36,8 +36,6 @@ export default {
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
 
-
-
   'menu.systemManager': '系统管理',
   'menu.systemManager.adminManager': '管理员管理',
   'menu.systemManager.departmentManager': '部门管理',
@@ -48,5 +46,5 @@ export default {
   'menu.systemManager.parameterManager': '参数管理',
   'menu.systemManager.fileUpload': '文件上传',
   'menu.systemManager.dictionaryManager': '字典管理',
-  'menu.systemManager.systemLog': '系统日志'
+  'menu.systemManager.systemLog': '系统日志',
 };

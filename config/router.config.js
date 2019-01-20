@@ -5,7 +5,7 @@ export default [
     component: '../layouts/UserLayout',
     routes: [
       { path: '/user', redirect: '/user/login' },
-      { path: '/user/login', component: './User/Login' }
+      { path: '/user/login', component: './User/Login' },
     ],
   },
   // app
@@ -40,8 +40,6 @@ export default [
         ],
       },
 
-
-
       /*S 页面路由开始*/
       // SystemManager
       {
@@ -55,7 +53,7 @@ export default [
             name: 'adminManager',
             //authority: ['admin'],
             component: './SystemManager/AdminManager',
-          } ,
+          },
           {
             path: '/system-manager/department-manager',
             name: 'departmentManager',
@@ -109,7 +107,7 @@ export default [
             name: '系统日志',
             //authority: ['admin'],
             component: './SystemManager/SystemLog',
-          }
+          },
         ],
       },
       /*E 页面路由开始*/

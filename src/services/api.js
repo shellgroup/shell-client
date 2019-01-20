@@ -1,18 +1,18 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
-import { baseURL } from "../services/baseurl";
+import { baseURL } from '../services/baseurl';
 
 //登录接口
 export async function fakeAccountLogin(params) {
   return request(`${baseURL}/sys/login`, {
     method: 'POST',
-    body: params
+    body: params,
   });
 }
 //动态读取菜单
 export async function queryMenus() {
   return request(`${baseURL}/sys/menu/nav`, {
-    method: 'GET'
+    method: 'GET',
   });
 }
 
@@ -20,33 +20,62 @@ export async function queryMenus() {
 export async function getFakeCaptcha() {
   return `${baseURL}/captcha.jpg?t=${new Date().getTime()}`;
 }
-//查询管理员管理列表
-export async function queryRule(params) {
-  return request(`${baseURL}/sys/user/list?${stringify(params)}`);
-}
+
 //新建管理员
-export async function addRule(params) {
+export async function addUser(params) {
   return request(`${baseURL}/sys/user/save`, {
     method: 'POST',
-    body: params
+    body: params,
   });
 }
 //删除管理员
-export async function removeRule(params) {
+export async function removeUser(params) {
   return request(`${baseURL}/sys/user/delete`, {
     method: 'POST',
-    body: params
+    body: params,
   });
+}
+//修改用户信息
+export async function updateUser(params) {
+  return request(`${baseURL}/sys/user/update`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//查询管理员管理列表
+export async function queryUser(params) {
+  return request(`${baseURL}/sys/user/list?${stringify(params)}`);
+}
+
+//新建部门
+export async function addDept(params) {
+  return request(`${baseURL}/sys/dept/save`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//删除部门信息
+export async function removeDept(params) {
+  return request(`${baseURL}/sys/dept/delete`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//修改部门信息
+export async function updateDept(params) {
+  return request(`${baseURL}/sys/dept/update`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//查询部门列表
+export async function queryDept(params) {
+  return request(`${baseURL}/sys/dept/list?${stringify(params)}`);
 }
 
 //查询角色列表
 export async function queryRole(params) {
   return request(`${baseURL}/sys/role/list?${stringify(params)}`);
-}
-
-//查询部门列表
-export async function queryDept(params) {
-  return request(`${baseURL}/sys/dept/list?${stringify(params)}`);
 }
 //查询系统日志列表
 export async function querySystemlog(params) {
@@ -74,17 +103,6 @@ export async function fileUploadList(params) {
   return request(`${baseURL}/sys/oss/list?${stringify(params)}`);
 }
 
-//修改用户信息
-export async function updateRule(params) {
-  return request(`${baseURL}/sys/user/update`, {
-    method: 'POST',
-    body: params
-  });
-}
-
-
-
-
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }
@@ -92,13 +110,6 @@ export async function queryProjectNotice() {
 export async function queryActivities() {
   return request('/api/activities');
 }
-
-
-
-
-
-
-
 
 export async function fakeSubmitForm(params) {
   return request('/api/forms', {
@@ -170,4 +181,3 @@ export async function fakeRegister(params) {
 export async function queryNotices() {
   return request('/api/notices');
 }
-

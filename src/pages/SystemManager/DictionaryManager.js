@@ -145,8 +145,6 @@ class UpdateForm extends PureComponent {
       currentStep: currentStep + 1,
     });
   };
-
-
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -163,7 +161,7 @@ class DictionaryManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "id",
+    key: 'id',
   };
 
   columns = [
@@ -395,7 +393,6 @@ class DictionaryManager extends PureComponent {
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-
         </Row>
 
         <div style={{ overflow: 'hidden' }}>
@@ -403,7 +400,6 @@ class DictionaryManager extends PureComponent {
             <Button type="primary" htmlType="submit">
               查询
             </Button>
-
           </div>
         </div>
       </Form>
@@ -448,7 +444,7 @@ class DictionaryManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              rowKey = {this.state.key}
+              rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

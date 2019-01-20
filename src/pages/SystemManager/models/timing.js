@@ -13,7 +13,7 @@ export default {
   effects: {
     *fetch({ payload }, { call, put }) {
       const response = yield call(queryTiming, payload);
-      console.log(response,"***************定时任务列表数据");
+      console.log(response, '***************定时任务列表数据');
       yield put({
         type: 'save',
         payload: response,

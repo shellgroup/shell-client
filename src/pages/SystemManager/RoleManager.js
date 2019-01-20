@@ -76,7 +76,6 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-
     </Modal>
   );
 });
@@ -146,8 +145,6 @@ class UpdateForm extends PureComponent {
       currentStep: currentStep + 1,
     });
   };
-
-
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -164,7 +161,7 @@ class RoleManager extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: "roleId",
+    key: 'roleId',
   };
 
   columns = [
@@ -382,7 +379,6 @@ class RoleManager extends PureComponent {
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-
         </Row>
 
         <div style={{ overflow: 'hidden' }}>
@@ -434,7 +430,7 @@ class RoleManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              rowKey = {this.state.key}
+              rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

@@ -80,10 +80,10 @@ export default class BaseMenu extends PureComponent {
   getMenuItemPath = item => {
     const { name } = item;
     const itemPath = this.conversionPath(item.path);
-    const { parmsList} = item;
+    //获取菜单数据中的权限数据 parmsList
+    const { parmsList } = item;
     const icon = getIcon(item.icon);
     const { target } = item;
-
 
     // Is it a http link
     if (/^https?:\/\//.test(itemPath)) {
@@ -98,8 +98,8 @@ export default class BaseMenu extends PureComponent {
     return (
       <Link
         to={{
-          pathname:itemPath,
-          state:parmsList
+          pathname: itemPath,
+          state: parmsList, //将parmsList传入页面的this.props.location
         }}
         target={target}
         replace={itemPath === location.pathname}

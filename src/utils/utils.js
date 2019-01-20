@@ -2,7 +2,7 @@ import moment from 'moment';
 import React from 'react';
 import nzh from 'nzh/cn';
 import { parse, stringify } from 'qs';
-import {Modal} from "antd";
+import { Modal } from 'antd';
 
 export function fixedZero(val) {
   return val * 1 < 10 ? `0${val}` : val;
@@ -150,26 +150,75 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(
 export function isUrl(path) {
   return reg.test(path);
 }
-
-export function tips(res,that,path){
-  if(res.code == 0){
+/*操作统一模态提醒*/
+export function tips(res, that, path) {
+  if (res.code == 0) {
     Modal.success({
       title: '成功提示！',
       content: res.msg,
     });
-  }else{
+  } else {
     Modal.error({
       title: '错误提示！',
       content: res.msg,
     });
   }
-  if(path && that){
+  if (path && that) {
     const { dispatch } = that.props;
     dispatch({
       type: path,
     });
   }
 }
+/*操作按钮授权*/
+export function disablesBtns(that) {
+  //arguments//
+  const ruleList = that.props.location.state;
+  for (let i = 0; i < ruleList.length; i++) {
+    if (ruleList[i].indexOf('save') != -1) {
+      that.setState({
+        SaveBtn: true,
+      });
+    }
+    if (ruleList[i].indexOf('delete') != -1) {
+      that.setState({
+        DeleteBtn: true,
+      });
+    }
+    if (ruleList[i].indexOf('update') != -1) {
+      that.setState({
+        UpdateBtn: true,
+      });
+    }
+    if (ruleList[i].indexOf('select') != -1) {
+      that.setState({
+        SelectBtn: true,
+      });
+    }
+    if (ruleList[i].indexOf('list') != -1) {
+      that.setState({
+        ShowList: true,
+      });
+    }
+    if (ruleList[i].indexOf('info') != -1) {
+      that.setState({
+        ShowInfo: true,
+      });
+    }
+  }
+}
+//统一删除模板
+
+export function showDeleteConfirmParames() {
+  return {
+    title: '删除确认',
+    content: '你确定进行【删除】操作吗？',
+    okText: '确定',
+    okType: 'danger',
+    cancelText: '取消',
+  };
+}
+
 export function formatWan(val) {
   const v = val * 1;
   if (!v || Number.isNaN(v)) return '';

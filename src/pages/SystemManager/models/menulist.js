@@ -13,7 +13,7 @@ export default {
   effects: {
     *fetch({ payload }, { call, put }) {
       const response = yield call(queryMenulist, payload);
-      console.log(response,"***************菜单列表数据");
+      console.log(response, '***************菜单列表数据');
       yield put({
         type: 'save',
         payload: response,
