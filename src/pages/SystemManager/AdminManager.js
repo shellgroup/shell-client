@@ -17,7 +17,7 @@ import {
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { tips, disablesBtns, showDeleteConfirmParames } from '../../utils/utils';
+import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
 import styles from './AdminManager.less';
 const showDeleteTipsParames = showDeleteConfirmParames();
 const FormItem = Form.Item;
@@ -61,18 +61,7 @@ const CreateForm = Form.create()(props => {
     }
   }
 
-  //处理部门数据
-  function child(data) {
-    for (let i = 0; i < data.length; i++) {
-      data[i].value = data[i].deptId;
-      data[i].key = data[i].deptId;
-      data[i].title = data[i].name;
-      if (data[i].children) {
-        data[i].children = child(data[i].children);
-      }
-    }
-    return data;
-  }
+
 
   function handleConfirmBlur(e) {
     const value = e.target.value;
@@ -254,18 +243,7 @@ class UpdateForm extends PureComponent {
         </Option>
       );
     }
-    //处理部门数据
-    function child(data) {
-      for (let i = 0; i < data.length; i++) {
-        data[i].value = data[i].deptId;
-        data[i].key = data[i].deptId;
-        data[i].title = data[i].name;
-        if (data[i].children) {
-          data[i].children = child(data[i].children);
-        }
-      }
-      return data;
-    }
+
 
     function handleConfirmBlur(e) {
       const value = e.target.value;
@@ -811,22 +789,22 @@ class AdminManager extends PureComponent {
       usr: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
       onChangeTreeSelect: this.onChangeTreeSelect,
       handleChange: this.handleChange,
-      roleData: this.state.roleData,
-      deptData: this.state.deptData,
-      statusValue: this.state.statusValue,
+      roleData: roleData,
+      deptData: deptData,
+      statusValue: statusValue,
       that: this,
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
-      roleData: this.state.roleData,
-      deptData: this.state.deptData,
+      roleData: roleData,
+      deptData: deptData,
       that: this,
     };
     console.log(data, '表格数据');
@@ -851,8 +829,8 @@ class AdminManager extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={this.state.ShowList ? data : {}}
-              rowKey={this.state.key}
+              data={ShowList ? data : {}}
+              rowKey={key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}

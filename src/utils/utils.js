@@ -218,6 +218,18 @@ export function showDeleteConfirmParames() {
     cancelText: '取消',
   };
 }
+//处理部门数据
+export function child(data) {
+  for (let i = 0; i < data.length; i++) {
+    data[i].value = data[i].deptId;
+    data[i].key = data[i].deptId;
+    data[i].title = data[i].name;
+    if (data[i].children) {
+      data[i].children = child(data[i].children);
+    }
+  }
+  return data;
+}
 
 export function formatWan(val) {
   const v = val * 1;

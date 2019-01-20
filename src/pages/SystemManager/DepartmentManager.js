@@ -24,7 +24,7 @@ import {
 } from 'antd';
 import TreeTable from '@/components/TreeTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { tips, disablesBtns, showDeleteConfirmParames } from '../../utils/utils';
+import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
 const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
 import styles from './DepartmentManager.less';
@@ -51,18 +51,6 @@ const CreateForm = Form.create()(props => {
     });
   };
 
-  //处理部门数据
-  function child(data) {
-    for (let i = 0; i < data.length; i++) {
-      data[i].value = data[i].deptId;
-      data[i].key = data[i].deptId;
-      data[i].title = data[i].name;
-      if (data[i].children) {
-        data[i].children = child(data[i].children);
-      }
-    }
-    return data;
-  }
   return (
     <Modal
       destroyOnClose
@@ -111,7 +99,6 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-    console.log(props, 66666666666);
     this.state = {
       formVals: {
         children: props.values.children,
@@ -148,19 +135,6 @@ class UpdateForm extends PureComponent {
     } = this.props;
     const { formVals } = this.state;
     const { form } = this.props;
-
-    //处理部门数据
-    function child(data) {
-      for (let i = 0; i < data.length; i++) {
-        data[i].value = data[i].deptId;
-        data[i].key = data[i].deptId;
-        data[i].title = data[i].name;
-        if (data[i].children) {
-          data[i].children = child(data[i].children);
-        }
-      }
-      return data;
-    }
 
     const okHandle = () => {
       form.validateFields((err, fieldsValue) => {
@@ -474,16 +448,16 @@ class DepartmentManager extends PureComponent {
       dept: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues,deptData, key } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
-      deptData: this.state.deptData,
+      deptData: deptData,
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
-      deptData: this.state.deptData,
+      deptData: deptData,
     };
     return (
       <PageHeaderWrapper>
@@ -504,7 +478,7 @@ class DepartmentManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              rowKey={this.state.key}
+              rowKey={key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
