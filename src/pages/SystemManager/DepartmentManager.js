@@ -22,7 +22,7 @@ import {
   Radio,
   TreeSelect,
 } from 'antd';
-import TreeTable from '@/components/TreeTable';
+import TreeTableNoCheckBox from '@/components/TreeTableNoCheckBox';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
 const showDeleteTipsParames = showDeleteConfirmParames();
@@ -241,15 +241,11 @@ class DepartmentManager extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const that = this;
-    dispatch({
-      type: 'dept/fetch',
-    });
     dispatch({
       type: 'dept/fetch',
       callback: res => {
         if (res.code == 0) {
-          that.setState({
+          this.setState({
             deptData: res.list,
           });
         }
@@ -474,7 +470,7 @@ class DepartmentManager extends PureComponent {
                 </span>
               )}
             </div>
-            <TreeTable
+            <TreeTableNoCheckBox
               selectedRows={selectedRows}
               loading={loading}
               data={data}

@@ -231,6 +231,19 @@ export function child(data) {
   return data;
 }
 
+//处理部门数据
+export function menuChild(data) {
+  for (let i = 0; i < data.length; i++) {
+    data[i].key = data[i].menuId;
+    data[i].value = data[i].menuId;
+    data[i].title = data[i].name;
+    if (data[i].children) {
+      data[i].children = menuChild(data[i].children);
+    }
+  }
+  return data;
+}
+
 export function formatWan(val) {
   const v = val * 1;
   if (!v || Number.isNaN(v)) return '';

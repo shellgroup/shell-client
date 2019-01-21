@@ -73,6 +73,14 @@ export async function queryDept(params) {
   return request(`${baseURL}/sys/dept/list?${stringify(params)}`);
 }
 
+
+//新增角色
+export async function addRole(params) {
+  return request(`${baseURL}/sys/role/save`, {
+    method: 'POST',
+    body: params,
+  });
+}
 //查询角色列表
 export async function queryRole(params) {
   return request(`${baseURL}/sys/role/list?${stringify(params)}`);

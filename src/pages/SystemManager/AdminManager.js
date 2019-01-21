@@ -412,7 +412,6 @@ class AdminManager extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const that = this;
     dispatch({
       type: 'usr/fetch',
     });
@@ -420,7 +419,7 @@ class AdminManager extends PureComponent {
       type: 'dept/fetch',
       callback: res => {
         if (res.code == 0) {
-          that.setState({
+          this.setState({
             deptData: res.list,
           });
         }
@@ -430,7 +429,7 @@ class AdminManager extends PureComponent {
       type: 'role/fetch',
       callback: res => {
         if (res.code == 0) {
-          that.setState({
+          this.setState({
             roleData: res.list,
           });
         }

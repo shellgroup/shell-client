@@ -186,7 +186,7 @@ class MenuManager extends PureComponent {
     },
     {
       title: '图标',
-      render: record => <Icon type={record.icon} />,
+      render: record => (record.icon !=null && (<Icon type={record.icon} />)),
     },
     {
       title: '类型',
