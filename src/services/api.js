@@ -81,6 +81,20 @@ export async function addRole(params) {
     body: params,
   });
 }
+//删除角色信息
+export async function removeRole(params) {
+  return request(`${baseURL}/sys/role/delete`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//修改角色信息
+export async function updateRole(params) {
+  return request(`${baseURL}/sys/role/update`, {
+    method: 'POST',
+    body: params,
+  });
+}
 //查询角色列表
 export async function queryRole(params) {
   return request(`${baseURL}/sys/role/list?${stringify(params)}`);

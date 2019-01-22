@@ -1,4 +1,4 @@
-import { queryRole, addRole } from '@/services/api'; //, removeRule, addRule, updateRule
+import { queryRole, addRole, updateRole, removeRole } from '@/services/api'; //, removeRule, addRule, updateRule
 //RoleManager
 export default {
   namespace: 'role',
@@ -29,20 +29,20 @@ export default {
       if (callback) callback(response);
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
+      const response = yield call(removeRole, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
+      const response = yield call(updateRole, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
   },
 

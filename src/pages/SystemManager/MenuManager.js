@@ -19,12 +19,14 @@ import {
   Badge,
   Divider,
   Steps,
-  Radio,
+  Radio, TreeSelect,
 } from 'antd';
-import TreeTable from '@/components/TreeTable';
+import TreeTableNoCheckBox from '@/components/TreeTableNoCheckBox';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-
+import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
 import styles from './MenuManager.less';
+const showDeleteTipsParames = showDeleteConfirmParames();
+const confirm = Modal.confirm;
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -39,7 +41,7 @@ const statusMap = ['normal', 'disabled'];
 const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, statusMenuText, statusValue, deptData, menuList } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -50,26 +52,44 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="新增管理员"
+      title="新增菜单&按钮"
       width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="类&emsp;&emsp;型">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少2个字符的用户名！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="型&emsp;类">
+        {form.getFieldDecorator('status', {
+          rules: [{ required: false }],
+          initialValue: statusValue,
+        })(
+          <RadioGroup>
+            <Radio value={1}>菜单</Radio>
+            <Radio value={2}>按钮</Radio>
+            <Radio value={0}>目录</Radio>
+          </RadioGroup>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="菜单名称">
         {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
+          rules: [{ required: true, message: '请输入菜单名称！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上级菜单">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
-        })(<Input placeholder="请输入" />)}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="父级菜单">
+        {form.getFieldDecorator('deptId', {
+          rules: [{ required: true, message: '请选择父级菜单！' }],
+          initialValue: statusMenuText,
+        })(
+          <TreeSelect
+            className={styles.width}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            treeData={child(menuList)}
+            dropdownMatchSelectWidth={false}
+            treeDefaultExpandAll={false}
+            placeholder="请选择父级菜单"
+            //onChange={onChangeTreeSelect}
+          />
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="路&emsp;&emsp;由">
         {form.getFieldDecorator('desc', {
@@ -77,14 +97,14 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排&emsp;&emsp;序">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
+        {form.getFieldDecorator('orderNum', {
+          rules: [{ required: false }],
+        })(<InputNumber min={0} placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="授权标识">
         {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
-        })(<Input placeholder="请输入" />)}
+          rules: [{ required: false, message: '请输入授权标识！', min: 8 }],
+        })(<Input placeholder="多个用逗号分隔，如：sys:menu:save,sys:menu:update" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图&emsp;&emsp;标">
         {form.getFieldDecorator('desc', {
@@ -177,6 +197,14 @@ class MenuManager extends PureComponent {
     formValues: {},
     stepFormValues: {},
     key: 'menuId',
+    DeleteBtn: false,
+    SaveBtn: false,
+    UpdateBtn: false,
+    ShowList: false,
+    statusMenuText:"父级菜单",
+    statusValue:1,
+    menuList:[],
+    deptData:[]
   };
 
   columns = [
@@ -208,9 +236,17 @@ class MenuManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
-          <Divider type="vertical" />
-          <a href="">删除</a>
+          {this.state.UpdateBtn && (
+            <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>
+              修改
+            </Button>
+          )}
+          {this.state.UpdateBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+          {this.state.DeleteBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>
+              删除
+            </Button>
+          )}
         </Fragment>
       ),
     },
@@ -221,6 +257,28 @@ class MenuManager extends PureComponent {
     dispatch({
       type: 'menulist/fetch',
     });
+    dispatch({
+      type: 'dept/fetch',
+      callback: res => {
+        if (res.code == 0) {
+          this.setState({
+            deptData: child(res.list),
+          });
+        }
+      },
+    });
+    dispatch({
+      type: 'menu/getMenuData',
+      callback: res => {
+        if (res.code == 0) {
+          this.setState({
+            menuList: menuChild(res.list),
+          });
+        }
+      },
+    });
+    //调用utils里面的disablesBtns方法判断是否有权限
+    disablesBtns(this);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -368,10 +426,15 @@ class MenuManager extends PureComponent {
       menulist: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, statusMenuText, statusValue, deptData, menuList} = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
+      statusMenuText: statusMenuText,
+      statusValue: statusValue,
+      menuList: menuList,
+      deptData: deptData
+
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
@@ -383,16 +446,13 @@ class MenuManager extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm} />
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量删除</Button>
-                </span>
+              {this.state.SaveBtn && (
+                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                  新建
+                </Button>
               )}
             </div>
-            <TreeTable
+            <TreeTableNoCheckBox
               selectedRows={selectedRows}
               loading={loading}
               data={data}

@@ -208,6 +208,10 @@ class DepartmentManager extends PureComponent {
     stepFormValues: {},
     key: 'deptId',
     deptData: [], //部门树菜单数据
+    DeleteBtn: false,
+    SaveBtn: false,
+    UpdateBtn: false,
+    ShowList: false,
   };
 
   columns = [
@@ -227,13 +231,17 @@ class DepartmentManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>
-            修改
-          </Button>
-          <Divider type="vertical" />
-          <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>
-            删除
-          </Button>
+          {this.state.UpdateBtn && (
+            <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>
+              修改
+            </Button>
+          )}
+          {this.state.UpdateBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+          {this.state.DeleteBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>
+              删除
+            </Button>
+          )}
         </Fragment>
       ),
     },
@@ -251,6 +259,8 @@ class DepartmentManager extends PureComponent {
         }
       },
     });
+    //调用utils里面的disablesBtns方法判断是否有权限
+    disablesBtns(this);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -461,13 +471,10 @@ class DepartmentManager extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm} />
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量删除</Button>
-                </span>
+              {this.state.SaveBtn && (
+                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                  新建
+                </Button>
               )}
             </div>
             <TreeTableNoCheckBox

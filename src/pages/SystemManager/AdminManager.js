@@ -206,11 +206,6 @@ class UpdateForm extends PureComponent {
         status: props.values.status,
         userId: props.values.userId,
         username: props.values.username,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
       },
       currentStep: 0,
       confirmDirty: false,
@@ -436,6 +431,7 @@ class AdminManager extends PureComponent {
       },
     });
     //调用utils里面的disablesBtns方法判断是否有权限
+    console.log(this,"quanxian__________________________");
     disablesBtns(this);
   }
 

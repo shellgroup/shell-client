@@ -173,34 +173,38 @@ export function tips(res, that, path) {
 /*操作按钮授权*/
 export function disablesBtns(that) {
   //arguments//
-  const ruleList = that.props.location.state;
-  for (let i = 0; i < ruleList.length; i++) {
-    if (ruleList[i].indexOf('save') != -1) {
+  const data = that.props.location.state;
+  console.log(data,666666666666+"data");
+  if(!data){
+    return;
+  }
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].indexOf('save') != -1) {
       that.setState({
         SaveBtn: true,
       });
     }
-    if (ruleList[i].indexOf('delete') != -1) {
+    if (data[i].indexOf('delete') != -1) {
       that.setState({
         DeleteBtn: true,
       });
     }
-    if (ruleList[i].indexOf('update') != -1) {
+    if (data[i].indexOf('update') != -1) {
       that.setState({
         UpdateBtn: true,
       });
     }
-    if (ruleList[i].indexOf('select') != -1) {
+    if (data[i].indexOf('select') != -1) {
       that.setState({
         SelectBtn: true,
       });
     }
-    if (ruleList[i].indexOf('list') != -1) {
+    if (data[i].indexOf('list') != -1) {
       that.setState({
         ShowList: true,
       });
     }
-    if (ruleList[i].indexOf('info') != -1) {
+    if (data[i].indexOf('info') != -1) {
       that.setState({
         ShowInfo: true,
       });

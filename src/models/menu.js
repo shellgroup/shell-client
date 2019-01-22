@@ -97,7 +97,7 @@ export default {
   },
 
   effects: {
-    *getMenuData({ payload }, { call, put }) {
+    *getMenuData({ payload, callback }, { call, put }) {
       const { routes, authority } = payload;
       //const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
       //请求菜单数据
@@ -109,6 +109,7 @@ export default {
         type: 'save',
         payload: { menuData, breadcrumbNameMap },
       });
+      if (callback) callback(menuData);
     },
   },
 

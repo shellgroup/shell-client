@@ -26,7 +26,8 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
 import styles from './RoleManager.less';
-
+const showDeleteTipsParames = showDeleteConfirmParames();
+const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -96,7 +97,7 @@ const CreateForm = Form.create()(props => {
       </FormItem>
 
       <div className={styles.treeContext}>
-        <FormItem labelCol={{ span: 7 }} wrapperCol={{ span: 13 }} label="菜单授权">
+        <FormItem labelCol={{ span: 10 }} wrapperCol={{ span: 10 }} label="菜单授权">
           {form.getFieldDecorator('menuIdList')(
             <Tree
               checkable
@@ -112,7 +113,7 @@ const CreateForm = Form.create()(props => {
             </Tree>
           )}
         </FormItem>
-        <FormItem labelCol={{ span: 7 }} wrapperCol={{ span: 13 }} label="数据授权">
+        <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="数据授权">
           {form.getFieldDecorator('deptIdList')(
             <Tree
               checkable
@@ -143,61 +144,138 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-
+    this.props.that.setState({
+      menuCheckedKeys: props.values.menuIdList,
+      deptCheckedKeys: props.values.deptIdList,
+    });
     this.state = {
       formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
+        createTime: props.values.createTime,
+        deptId: props.values.deptId,
+        deptName: props.values.deptName,
+        roleId: props.values.roleId,
+        roleName: props.values.roleName,
+        remark: props.values.remark,
       },
       currentStep: 0,
+      confirmDirty: false,
     };
-
     this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 15 },
     };
   }
 
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
-  };
+  render() {
+    const {
+      updateModalVisible,
+      handleUpdateModalVisible,
+      deptData,
+      menuList,
+      handleUpdate,
+      that,
+    } = this.props;
 
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
+    const { formVals } = this.state;
+    const { form } = this.props;
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleUpdate(fieldsValue);
+      });
+    };
+    const renderTreeNodes = data => data.map((item) => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode {...item} />;
     });
-  };
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="更新角色"
+        width={940}
+        visible={updateModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleUpdateModalVisible(false)}
+      >
+        {form.getFieldDecorator('roleId', {
+          rules: [{ required: false }],
+          initialValue: formVals.roleId,
+        })(<Input type={'hidden'} />)}
+        <FormItem {...this.formLayout} label="角色名称">
+          {form.getFieldDecorator('roleName', {
+            rules: [{ required: true, message: '请输入角色名称！'}],
+            initialValue: formVals.roleName,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem {...this.formLayout} label="备&emsp;&emsp;注">
+          {form.getFieldDecorator('remark', {
+            rules: [{ required: false, message: '请输入备注信息！'}],
+            initialValue: formVals.remark,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem {...this.formLayout} label="所属部门">
+          {form.getFieldDecorator('deptId', {
+            rules: [{ required: false, message: '请选择所属部门！' }],
+            initialValue: formVals.deptId,
+          })(
+            <TreeSelect
+              className={styles.width}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              treeData={deptData}
+              dropdownMatchSelectWidth={false}
+              treeDefaultExpandAll={false}
+              placeholder="请选择部门"
+              //onChange={onChangeTreeSelect}
+            />
+          )}
+        </FormItem>
 
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
+        <div className={styles.treeContext}>
+          <FormItem labelCol={{ span: 10 }} wrapperCol={{ span: 10 }} label="菜单授权">
+            {form.getFieldDecorator('menuIdList')(
+              <Tree
+                checkable
+                onExpand={that.onExpandMenu}
+                expandedKeys={that.state.menuExpandedKeys}
+                autoExpandParent={that.state.autoExpandParent}
+                onCheck={that.onCheckMenu}
+                checkedKeys={that.state.menuCheckedKeys}
+                onSelect={that.onSelectMenu}
+                selectedKeys={that.state.menuSelectedKeys}
+              >
+                {renderTreeNodes(menuList)}
+              </Tree>
+            )}
+          </FormItem>
+          <FormItem labelCol={{ span: 8 }} wrapperCol={{ span: 10 }} label="数据授权">
+            {form.getFieldDecorator('deptIdList')(
+              <Tree
+                checkable
+                onExpand={that.onExpandDept}
+                expandedKeys={that.state.deptExpandedKeys}
+                autoExpandParent={that.state.autoExpandParent}
+                onCheck={that.onCheckDept}
+                checkedKeys={that.state.deptCheckedKeys}
+                onSelect={that.onSelectDept}
+                selectedKeys={that.state.deptSelectedKeys}
+              >
+                {renderTreeNodes(deptData)}
+              </Tree>
+            )}
+          </FormItem>
+        </div>
+
+      </Modal>
+    );
+  }
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -226,6 +304,10 @@ class RoleManager extends PureComponent {
     deptCheckedKeys: [],
     deptSelectedKeys: [],
     deptExpandedKeys: [],
+    DeleteBtn: false,
+    SaveBtn: false,
+    UpdateBtn: false,
+    ShowList: false,
   };
 
   columns = [
@@ -251,9 +333,17 @@ class RoleManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
-          <Divider type="vertical" />
-          <a href="">删除</a>
+          {this.state.UpdateBtn && (
+            <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>
+              修改
+            </Button>
+          )}
+          {this.state.UpdateBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+          {this.state.DeleteBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>
+              删除
+            </Button>
+          )}
         </Fragment>
       ),
     },
@@ -284,6 +374,8 @@ class RoleManager extends PureComponent {
         }
       },
     });
+    //调用utils里面的disablesBtns方法判断是否有权限
+    disablesBtns(this);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -370,8 +462,8 @@ class RoleManager extends PureComponent {
       if (err) return;
 
       const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        roleName: fieldsValue.name,
+        deptId: fieldsValue.deptNo,
       };
 
       this.setState({
@@ -411,6 +503,10 @@ class RoleManager extends PureComponent {
       payload: fields,
       callback: res => {
         tips(res, this, 'role/fetch');
+        this.setState({
+          deptCheckedKeys: [],
+          menuCheckedKeys: [],
+        });
       },
     });
 
@@ -420,18 +516,82 @@ class RoleManager extends PureComponent {
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
+    fields.deptIdList = this.state.deptCheckedKeys;
+    fields.menuIdList = this.state.menuCheckedKeys;
+    console.log(fields,66666);
     dispatch({
       type: 'role/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'role/fetch');
+        this.setState({
+          deptCheckedKeys: [],
+          menuCheckedKeys: [],
+        });
       },
     });
 
-    message.success('配置成功');
+    //message.success('配置成功');
     this.handleUpdateModalVisible();
   };
+  //删除角色信息
+  showDeleteConfirm = record => {
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.deleted(record);
+      },
+      onCancel() {
+        console.log('取消删除');
+      },
+    });
+  };
+  deleted = record => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'role/remove',
+      payload: [record.roleId],
+      callback: res => {
+        tips(res, this, 'role/fetch');
+      },
+    });
+  };
+  //批量删除
+  showDeletesConfirm = () => {
+    console.log(showDeleteConfirmParames);
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.handleMenuClick();
+      },
+      onCancel() {
+        console.log('取消删除');
+        that.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  };
+  handleMenuClick = () => {
+    const { dispatch } = this.props;
+    const { selectedRows } = this.state;
+
+    if (selectedRows.length === 0) return;
+    console.log(selectedRows.map(row => row.key));
+    dispatch({
+      type: 'role/remove',
+      payload: selectedRows.map(row => row.roleId),
+      callback: res => {
+        tips(res, this, 'role/fetch');
+        this.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  };
+
 
   renderSimpleForm() {
     const {
@@ -441,11 +601,27 @@ class RoleManager extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名">
+            <FormItem label="角色名称">
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-
+          <Col md={8} sm={24}>
+            <FormItem label="所属部门">
+              {getFieldDecorator('deptNo', {
+                rules: [{ required: false, message: '请选择所属部门！' }],
+              })(
+                <TreeSelect
+                  className={styles.width}
+                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                  treeData={this.state.deptData}
+                  dropdownMatchSelectWidth={false}
+                  treeDefaultExpandAll={false}
+                  placeholder="请选择部门"
+                  // onChange={onChangeTreeSelect}
+                />
+              )}
+            </FormItem>
+          </Col>
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
@@ -466,8 +642,25 @@ class RoleManager extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="规则名称">
+            <FormItem label="角色名称">
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="所属部门">
+              {getFieldDecorator('deptNo', {
+                rules: [{ required: false, message: '请选择所属部门！' }],
+              })(
+                <TreeSelect
+                  className={styles.width}
+                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                  treeData={this.state.deptData}
+                  dropdownMatchSelectWidth={false}
+                  treeDefaultExpandAll={false}
+                  placeholder="请选择部门"
+                  // onChange={onChangeTreeSelect}
+                />
+              )}
             </FormItem>
           </Col>
         </Row>
@@ -547,6 +740,7 @@ class RoleManager extends PureComponent {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
       deptData: deptData,
+      menuList: menuList,
       that:this
     };
     return (
@@ -555,12 +749,14 @@ class RoleManager extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {selectedRows.length > 0 && (
+              {this.state.SaveBtn && (
+                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                  新建
+                </Button>
+              )}
+              {selectedRows.length > 0 && this.state.DeleteBtn && (
                 <span>
-                  <Button>批量删除</Button>
+                  <Button onClick={this.showDeletesConfirm}>批量删除</Button>
                 </span>
               )}
             </div>
