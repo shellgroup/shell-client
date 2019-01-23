@@ -1,4 +1,4 @@
-import { queryMenulist, queryMenus, queryIcon } from '@/services/api'; //, removeRule, addRule, updateRule
+import { queryMenulist, queryMenus, queryIcon, addMenu, removeMenu, updateMenu } from '@/services/api'; //, removeRule, addRule, updateRule
 //DictionaryManager
 export default {
   namespace: 'menulist',
@@ -20,47 +20,29 @@ export default {
       });
       if (callback) callback(response);
     },
-    *fetchNav({ callback }, { call, put }) {
-      const response = yield call(queryMenus);
-      console.log(response, '***************菜单数据');
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback(response);
-    },
-    *fetchIcon({ callback }, { call, put }) {
-      const response = yield call(queryIcon);
-      console.log(response, '***************icon数据');
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback(response);
-    },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
+      const response = yield call(addMenu, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
+      const response = yield call(removeMenu, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
+      const response = yield call(updateMenu, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
   },
 

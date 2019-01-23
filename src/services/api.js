@@ -100,7 +100,28 @@ export async function queryRole(params) {
   return request(`${baseURL}/sys/role/list?${stringify(params)}`);
 }
 
+//添加菜单
+export async function addMenu(params) {
+  return request(`${baseURL}/sys/menu/save`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//删除菜单
+export async function removeMenu(params) {
+  return request(`${baseURL}/sys/menu/delete`, {
+    method: 'POST',
+    body: params,
+  });
+}
 
+//修改角色信息
+export async function updateMenu(params) {
+  return request(`${baseURL}/sys/menu/update`, {
+    method: 'POST',
+    body: params,
+  });
+}
 //查询所有菜单列表
 export async function queryMenulist(params) {
   return request(`${baseURL}/sys/menu/list?${stringify(params)}`);

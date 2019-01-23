@@ -19,7 +19,7 @@ import {
   Badge,
   Divider,
   Steps,
-  Radio, TreeSelect,
+  Radio, TreeSelect, Tree,
 } from 'antd';
 import TreeTableNoCheckBox from '@/components/TreeTableNoCheckBox';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -53,8 +53,6 @@ const CreateForm = Form.create()(props => {
     let arr =[];
     Object.keys(data)
       .map((key) => {
-        console.log(key,999);
-
         const OGP = (<OptGroup key={key} label={key}>
             {
               data[key].map((it)=>{
@@ -73,19 +71,6 @@ const CreateForm = Form.create()(props => {
 
   }
 
-  // return(
-  //   <OptGroup label={item}>
-  //     {
-  //       data[item].map((it)=>{
-  //           return(
-  //             <Option key={it.id} value={it.icon}>{it.icon}</Option>
-  //           )
-  //         }
-  //       )
-  //     }
-  //   </OptGroup>
-  // )
-
   return (
     <Modal
       destroyOnClose
@@ -96,7 +81,7 @@ const CreateForm = Form.create()(props => {
       onCancel={() => handleModalVisible()}
     >
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="型&emsp;&emsp;类">
-        {form.getFieldDecorator('status', {
+        {form.getFieldDecorator('type', {
           rules: [{ required: false }],
           initialValue: menuType,
         })(
@@ -108,12 +93,12 @@ const CreateForm = Form.create()(props => {
         )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label={ menuNameText }>
-        {form.getFieldDecorator('desc', {
+        {form.getFieldDecorator('name', {
           rules: [{ required: true, message: '请输入菜单名称！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="父级菜单">
-        {form.getFieldDecorator('deptId', {
+        {form.getFieldDecorator('parentId', {
           rules: [{ required: true, message: '请选择父级菜单！' }],
           initialValue: statusMenuText,
         })(
@@ -130,7 +115,7 @@ const CreateForm = Form.create()(props => {
         )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="路&emsp;&emsp;由">
-        {form.getFieldDecorator('desc', {
+        {form.getFieldDecorator('path', {
           rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
@@ -140,16 +125,14 @@ const CreateForm = Form.create()(props => {
         })(<InputNumber min={0} placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="授权标识">
-        {form.getFieldDecorator('desc', {
+        {form.getFieldDecorator('perms', {
           rules: [{ required: false, message: '请输入授权标识！', min: 8 }],
         })(<Input placeholder="多个用逗号分隔，如：sys:menu:save,sys:menu:update" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图&emsp;&emsp;标">
-        {form.getFieldDecorator('sss',)(
+        {form.getFieldDecorator('icon',)(
           <Select
-            //defaultValue="lucy"
             style={{ width: 200 }}
-            //onChange={handleChange}
           >
             {iconData?renderOptGroup(iconData):null}
           </Select>
@@ -169,61 +152,172 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-
+    this.props.that.setState({
+      menuCheckedKeys: props.values.menuIdList,
+      deptCheckedKeys: props.values.deptIdList,
+    });
+    console.log(props,9999999990000);
     this.state = {
       formVals: {
+        children: props.values.children,
+        exact: props.values.exact,
+        icon: props.values.icon,
+        locale: props.values.locale,
+        menuId: props.values.menuId,
         name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
+        open: props.values.open,
+        orderNum: props.values.orderNum,
+        parentId: props.values.parentId,
+        parentName: props.values.parentName,
+        parmsList: props.values.parmsList,
+        path: props.values.path,
+        perms: props.values.perms,
+        type: props.values.type,
       },
       currentStep: 0,
+      confirmDirty: false,
     };
-
     this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 15 },
     };
   }
 
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
-  };
+  render() {
+    const {
+      updateModalVisible,
+      handleUpdateModalVisible,
+      handleUpdate,
+      onChangeMenuType,
+      iconData,
+      menuData,
+      disables,
+      menuNameText,
+      that,
+    } = this.props;
 
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
+    const { formVals } = this.state;
+    const { form } = this.props;
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleUpdate(fieldsValue);
+      });
+    };
+    const renderOptGroup = data => {
+      let arr =[];
+      Object.keys(data)
+        .map((key) => {
+          const OGP = (<OptGroup key={key} label={key}>
+            {
+              data[key].map((it)=>{
+                return(
+                  <Option key={it.id} value={it.icon}>
+                    <Icon type={it.icon}/> {it.icon}
+                  </Option>
+                );
+              })
+            }
+          </OptGroup>)
 
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
+          arr.push(OGP);
+        });
+      return arr;
+
+    }
+    const renderTreeNodes = data => data.map((item) => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode {...item} />;
     });
-  };
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="更新角色"
+        width={940}
+        visible={updateModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleUpdateModalVisible(false)}
+      >
+        {form.getFieldDecorator('menuId', {
+          rules: [{ required: false }],
+          initialValue: formVals.menuId,
+        })(<Input type={'hidden'} />)}
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="型&emsp;&emsp;类">
+          {form.getFieldDecorator('type', {
+            rules: [{ required: false }],
+            initialValue: formVals.type,
+          })(
+            <RadioGroup onChange={onChangeMenuType} >
+              <Radio value={1}>菜单</Radio>
+              <Radio value={2}>按钮</Radio>
+              <Radio value={0}>目录</Radio>
+            </RadioGroup>
+          )}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label={ menuNameText }>
+          {form.getFieldDecorator('name', {
+            rules: [{ required: true, message: '请输入菜单名称！'}],
+            initialValue: formVals.name,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="父级菜单">
+          {form.getFieldDecorator('parentId', {
+            rules: [{ required: true, message: '请选择父级菜单！' }],
+            initialValue: formVals.parentId,
+          })(
+            <TreeSelect
+              className={styles.width}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              treeData={menuData}
+              disabled={disables}
+              dropdownMatchSelectWidth={false}
+              treeDefaultExpandAll={false}
+              placeholder="请选择父级菜单"
+              //onChange={onChangeTreeSelect}
+            />
+          )}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="路&emsp;&emsp;由">
+          {form.getFieldDecorator('path', {
+            rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
+            initialValue: formVals.path,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排&emsp;&emsp;序">
+          {form.getFieldDecorator('orderNum', {
+            rules: [{ required: false }],
+            initialValue: formVals.orderNum,
+          })(<InputNumber min={0} placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="授权标识">
+          {form.getFieldDecorator('perms', {
+            rules: [{ required: false, message: '请输入授权标识！', min: 8 }],
+            initialValue: formVals.perms,
+          })(<Input placeholder="多个用逗号分隔，如：sys:menu:save,sys:menu:update" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图&emsp;&emsp;标">
+          {form.getFieldDecorator('icon',{
+            initialValue: formVals.icon,
+          })(
+            <Select
+              style={{ width: 200 }}
+            >
+              {iconData?renderOptGroup(iconData):null}
+            </Select>
+          )}
+        </FormItem>
+
+      </Modal>
+    );
+  }
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -464,29 +558,56 @@ class MenuManager extends PureComponent {
 
   handleAdd = fields => {
     const { dispatch } = this.props;
+    console.log(fields,8888888);
+    if(this.state.menuType==1){
+      fields.parentId = 0;
+    }
+    console.log(this.state.menuType,fields,9999);
     dispatch({
       type: 'menulist/add',
-      payload: {
-        desc: fields.desc,
-      },
+      payload: fields,
+      callback:(res)=>{
+        tips(res, this, 'menulist/fetch',"menu");
+      }
     });
 
-    message.success('添加成功');
+    //message.success('添加成功');
     this.handleModalVisible();
   };
-
+//删除角色信息
+  showDeleteConfirm = record => {
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.deleted(record);
+      },
+      onCancel() {
+        console.log('取消删除');
+      },
+    });
+  };
+  deleted = record => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'menulist/remove',
+      payload: record.menuId,
+      callback: res => {
+        tips(res, this, 'menulist/fetch',"menu");
+      },
+    });
+  };
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
       type: 'menulist/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'menulist/fetch',"menu");
       },
     });
 
-    message.success('配置成功');
+    //message.success('配置成功');
     this.handleUpdateModalVisible();
   };
 
@@ -512,6 +633,14 @@ class MenuManager extends PureComponent {
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
+      statusMenuText: statusMenuText,
+      menuType: menuType,
+      menuData: menuData,
+      iconData: iconData,
+      that:this,
+      onChangeMenuType:this.onChangeMenuType,
+      menuNameText:menuNameText,
+      disables:disables
     };
     return (
       <PageHeaderWrapper>

@@ -1,4 +1,4 @@
-let flag = 'pro'; // dev开发版  pro生产版
+let flag = 'dev'; // dev开发版  pro生产版
 module.exports = {
   baseURL:
     flag === 'pro'

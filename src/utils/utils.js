@@ -151,7 +151,7 @@ export function isUrl(path) {
   return reg.test(path);
 }
 /*操作统一模态提醒*/
-export function tips(res, that, path) {
+export function tips(res, that, path, menu) {
   if (res.code == 0) {
     Modal.success({
       title: '成功提示！',
@@ -163,12 +163,16 @@ export function tips(res, that, path) {
       content: res.msg,
     });
   }
+  if (menu == "menu") {
+    window.location.reload();
+  }
   if (path && that) {
     const { dispatch } = that.props;
     dispatch({
       type: path,
     });
   }
+
 }
 /*操作按钮授权*/
 export function disablesBtns(that) {
