@@ -1,4 +1,4 @@
-import { queryMenulist } from '@/services/api'; //, removeRule, addRule, updateRule
+import { queryMenulist, queryMenus, queryIcon } from '@/services/api'; //, removeRule, addRule, updateRule
 //DictionaryManager
 export default {
   namespace: 'menulist',
@@ -14,6 +14,24 @@ export default {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(queryMenulist, payload);
       console.log(response, '***************菜单列表数据');
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+    *fetchNav({ callback }, { call, put }) {
+      const response = yield call(queryMenus);
+      console.log(response, '***************菜单数据');
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+    *fetchIcon({ callback }, { call, put }) {
+      const response = yield call(queryIcon);
+      console.log(response, '***************icon数据');
       yield put({
         type: 'save',
         payload: response,

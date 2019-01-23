@@ -99,6 +99,20 @@ export async function updateRole(params) {
 export async function queryRole(params) {
   return request(`${baseURL}/sys/role/list?${stringify(params)}`);
 }
+
+
+//查询所有菜单列表
+export async function queryMenulist(params) {
+  return request(`${baseURL}/sys/menu/list?${stringify(params)}`);
+}
+//查询icon图标
+export async function queryIcon() {
+  return request(`${baseURL}/sys/icon/list`,{
+    method: 'POST',
+  });
+}
+
+
 //查询系统日志列表
 export async function querySystemlog(params) {
   return request(`${baseURL}/sys/log/list?${stringify(params)}`);
@@ -115,10 +129,7 @@ export async function queryParame(params) {
 export async function queryTiming(params) {
   return request(`${baseURL}/sys/schedule/list?${stringify(params)}`);
 }
-//查询所有菜单列表
-export async function queryMenulist(params) {
-  return request(`${baseURL}/sys/menu/list?${stringify(params)}`);
-}
+
 
 //查询文件上传列表
 export async function fileUploadList(params) {

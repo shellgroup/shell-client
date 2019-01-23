@@ -174,7 +174,6 @@ export function tips(res, that, path) {
 export function disablesBtns(that) {
   //arguments//
   const data = that.props.location.state;
-  console.log(data,666666666666+"data");
   if(!data){
     return;
   }
@@ -224,6 +223,9 @@ export function showDeleteConfirmParames() {
 }
 //处理部门数据
 export function child(data) {
+  if(!data){
+    return;
+  }
   for (let i = 0; i < data.length; i++) {
     data[i].value = data[i].deptId;
     data[i].key = data[i].deptId;
@@ -235,8 +237,11 @@ export function child(data) {
   return data;
 }
 
-//处理部门数据
+//处理菜单列表数据
 export function menuChild(data) {
+  if(!data){
+    return;
+  }
   for (let i = 0; i < data.length; i++) {
     data[i].key = data[i].menuId;
     data[i].value = data[i].menuId;

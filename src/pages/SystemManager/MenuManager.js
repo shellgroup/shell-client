@@ -23,7 +23,7 @@ import {
 } from 'antd';
 import TreeTableNoCheckBox from '@/components/TreeTableNoCheckBox';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
+import { tips, disablesBtns, showDeleteConfirmParames, menuChild } from '../../utils/utils';
 import styles from './MenuManager.less';
 const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
@@ -31,7 +31,7 @@ const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
-const { Option } = Select;
+const { Option, OptGroup } = Select;
 const RadioGroup = Radio.Group;
 const getValue = obj =>
   Object.keys(obj)
@@ -41,7 +41,7 @@ const statusMap = ['normal', 'disabled'];
 const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, statusMenuText, statusValue, deptData, menuList } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, statusMenuText, menuType, menuNameText, iconData, disables, menuData, onChangeMenuType } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -49,6 +49,43 @@ const CreateForm = Form.create()(props => {
       handleAdd(fieldsValue);
     });
   };
+  const renderOptGroup = data => {
+    let arr =[];
+    Object.keys(data)
+      .map((key) => {
+        console.log(key,999);
+
+        const OGP = (<OptGroup key={key} label={key}>
+            {
+              data[key].map((it)=>{
+                return(
+                  <Option key={it.id} value={it.icon}>
+                    <Icon type={it.icon}/> {it.icon}
+                  </Option>
+                );
+              })
+            }
+          </OptGroup>)
+
+        arr.push(OGP);
+      });
+    return arr;
+
+  }
+
+  // return(
+  //   <OptGroup label={item}>
+  //     {
+  //       data[item].map((it)=>{
+  //           return(
+  //             <Option key={it.id} value={it.icon}>{it.icon}</Option>
+  //           )
+  //         }
+  //       )
+  //     }
+  //   </OptGroup>
+  // )
+
   return (
     <Modal
       destroyOnClose
@@ -58,19 +95,19 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="型&emsp;类">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="型&emsp;&emsp;类">
         {form.getFieldDecorator('status', {
           rules: [{ required: false }],
-          initialValue: statusValue,
+          initialValue: menuType,
         })(
-          <RadioGroup>
+          <RadioGroup onChange={onChangeMenuType} >
             <Radio value={1}>菜单</Radio>
             <Radio value={2}>按钮</Radio>
             <Radio value={0}>目录</Radio>
           </RadioGroup>
         )}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="菜单名称">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label={ menuNameText }>
         {form.getFieldDecorator('desc', {
           rules: [{ required: true, message: '请输入菜单名称！'}],
         })(<Input placeholder="请输入" />)}
@@ -83,7 +120,8 @@ const CreateForm = Form.create()(props => {
           <TreeSelect
             className={styles.width}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            treeData={child(menuList)}
+            treeData={menuData}
+            disabled={disables}
             dropdownMatchSelectWidth={false}
             treeDefaultExpandAll={false}
             placeholder="请选择父级菜单"
@@ -107,9 +145,15 @@ const CreateForm = Form.create()(props => {
         })(<Input placeholder="多个用逗号分隔，如：sys:menu:save,sys:menu:update" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图&emsp;&emsp;标">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
-        })(<Input placeholder="请输入" />)}
+        {form.getFieldDecorator('sss',)(
+          <Select
+            //defaultValue="lucy"
+            style={{ width: 200 }}
+            //onChange={handleChange}
+          >
+            {iconData?renderOptGroup(iconData):null}
+          </Select>
+        )}
       </FormItem>
     </Modal>
   );
@@ -185,7 +229,7 @@ class UpdateForm extends PureComponent {
 /* eslint react/no-multi-comp:0 */
 @connect(({ menulist, loading }) => ({
   menulist,
-  loading: loading.models.menulist,
+  loading: loading.effects[('menulist/fetch', 'menuicon/fetch', 'menunav/fetch')],
 }))
 @Form.create()
 class MenuManager extends PureComponent {
@@ -202,9 +246,11 @@ class MenuManager extends PureComponent {
     UpdateBtn: false,
     ShowList: false,
     statusMenuText:"父级菜单",
-    statusValue:1,
-    menuList:[],
-    deptData:[]
+    menuNameText:"菜单名称",
+    disables:false,
+    menuType:1,
+    menuData:[],
+    iconData:[]
   };
 
   columns = [
@@ -258,21 +304,21 @@ class MenuManager extends PureComponent {
       type: 'menulist/fetch',
     });
     dispatch({
-      type: 'dept/fetch',
+      type: 'menuicon/fetch',
       callback: res => {
         if (res.code == 0) {
           this.setState({
-            deptData: child(res.list),
+            iconData: res.list,
           });
         }
       },
     });
     dispatch({
-      type: 'menu/getMenuData',
+      type: 'menunav/fetch',
       callback: res => {
         if (res.code == 0) {
           this.setState({
-            menuList: menuChild(res.list),
+            menuData: menuChild(res.menuList),
           });
         }
       },
@@ -325,7 +371,30 @@ class MenuManager extends PureComponent {
       expandForm: !expandForm,
     });
   };
-
+  onChangeMenuType = (e) => {
+    let value = e.target.value;
+    if(value == 0){
+      this.setState({
+        menuNameText:"目录名称",
+        statusMenuText: "父级菜单",
+        disables:true,
+      })
+    }else if(value == 1){
+      this.setState({
+        menuNameText:"菜单名称",
+        disables:false,
+      })
+    }else if(value == 2){
+      this.setState({
+        menuNameText:"按钮名称",
+        disables:false,
+      })
+    }
+    console.log('MenuType', e.target.value);
+    // this.setState({
+    //   value3: e.target.value,
+    // });
+  }
   handleMenuClick = e => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
@@ -426,14 +495,18 @@ class MenuManager extends PureComponent {
       menulist: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, statusMenuText, statusValue, deptData, menuList} = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, statusMenuText, menuType, iconData, menuData, key, disables, menuNameText} = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
       statusMenuText: statusMenuText,
-      statusValue: statusValue,
-      menuList: menuList,
-      deptData: deptData
+      menuType: menuType,
+      menuData: menuData,
+      iconData: iconData,
+      that:this,
+      onChangeMenuType:this.onChangeMenuType,
+      menuNameText:menuNameText,
+      disables:disables
 
     };
     const updateMethods = {
@@ -456,7 +529,7 @@ class MenuManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              rowKey={this.state.key}
+              rowKey={key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
