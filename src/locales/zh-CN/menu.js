@@ -47,4 +47,5 @@ export default {
   'menu.systemManager.fileUpload': '文件上传',
   'menu.systemManager.dictionaryManager': '字典管理',
   'menu.systemManager.systemLog': '系统日志',
+  'menu.systemManager.testPage': '测试页面'
 };

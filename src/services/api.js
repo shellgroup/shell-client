@@ -2,6 +2,15 @@ import { stringify } from 'qs';
 import request from '@/utils/request';
 import { baseURL } from '../services/baseurl';
 
+//测试接口
+export async function queryTest(params) {
+  return request(`${baseURL}/sys/icon/list`, {
+    method: 'POST',
+    body: params
+  });
+}
+
+
 //登录接口
 export async function fakeAccountLogin(params) {
   return request(`${baseURL}/sys/login`, {
@@ -9,6 +18,7 @@ export async function fakeAccountLogin(params) {
     body: params,
   });
 }
+
 //动态读取菜单
 export async function queryMenus() {
   return request(`${baseURL}/sys/menu/nav`, {
