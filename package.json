@@ -1,7 +1,7 @@
 {
-  "name": "ant-design-pro",
+  "name": "master-admin",
   "version": "2.1.1",
-  "description": "An out-of-box UI solution for enterprise applications",
+  "description": "后台管理系统",
   "private": true,
   "scripts": {
     "presite": "node ./scripts/generateMock.js && cd functions && npm install",
