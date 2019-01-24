@@ -125,7 +125,7 @@ export async function removeMenu(params) {
   });
 }
 
-//修改角色信息
+//修改菜单信息
 export async function updateMenu(params) {
   return request(`${baseURL}/sys/menu/update`, {
     method: 'POST',
@@ -143,6 +143,55 @@ export async function queryIcon() {
   });
 }
 
+//查询定时任务列表
+export async function queryTiming(params) {
+  return request(`${baseURL}/sys/schedule/list?${stringify(params)}`);
+}
+//添加定时任务
+export async function addTiming(params) {
+  return request(`${baseURL}/sys/schedule/save`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//暂停任务
+export async function suspendTiming(params) {
+  return request(`${baseURL}/sys/schedule/pause`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//恢复任务
+export async function recoveryTiming(params) {
+  return request(`${baseURL}/sys/schedule/resume`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//执行任务
+export async function implementTiming(params) {
+  return request(`${baseURL}/sys/schedule/run`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//删除任务
+export async function removeTiming(params) {
+  return request(`${baseURL}/sys/schedule/delete`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//修改定时任务
+export async function updateTiming(params) {
+  return request(`${baseURL}/sys/schedule/update`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
+
+
 
 //查询系统日志列表
 export async function querySystemlog(params) {
@@ -156,10 +205,7 @@ export async function queryDictionary(params) {
 export async function queryParame(params) {
   return request(`${baseURL}/sys/config/list?${stringify(params)}`);
 }
-//查询定时任务列表
-export async function queryTiming(params) {
-  return request(`${baseURL}/sys/schedule/list?${stringify(params)}`);
-}
+
 
 
 //查询文件上传列表

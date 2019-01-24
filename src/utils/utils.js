@@ -158,6 +158,7 @@ export function tips(res, that, path, menu) {
       content: res.msg,
     });
   } else {
+    console.log(res,99999000000);
     Modal.error({
       title: '错误提示！',
       content: res.msg,
@@ -216,7 +217,48 @@ export function disablesBtns(that) {
 }
 //统一删除模板
 
-export function showDeleteConfirmParames() {
+export function showDeleteConfirmParames(index) {
+  if(index){
+    switch(index)
+    {
+      case 1:
+        return {
+          title: '暂停确认',
+          content: '你确定进行【暂停】操作吗？',
+          okText: '确定',
+          okType: 'danger',
+          cancelText: '取消',
+        };
+        break;
+      case 2:
+        return {
+          title: '恢复确认',
+          content: '你确定进行【恢复】操作吗？',
+          okText: '确定',
+          okType: 'danger',
+          cancelText: '取消',
+        };
+        break;
+      case 3:
+        return {
+          title: '执行确认',
+          content: '你确定进行【执行】操作吗？',
+          okText: '确定',
+          okType: 'danger',
+          cancelText: '取消',
+        };
+        break;
+      case 4:
+        return {
+          title: '删除确认',
+          content: '你确定进行【删除】操作吗？',
+          okText: '确定',
+          okType: 'danger',
+          cancelText: '取消',
+        };
+        break;
+    }
+  }
   return {
     title: '删除确认',
     content: '你确定进行【删除】操作吗？',

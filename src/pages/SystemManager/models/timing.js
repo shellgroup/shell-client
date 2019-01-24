@@ -1,4 +1,4 @@
-import { queryTiming } from '@/services/api'; //, removeRule, addRule, updateRule
+import { queryTiming, addTiming, updateTiming, implementTiming, removeTiming, suspendTiming, recoveryTiming } from '@/services/api'; //, removeRule, addRule, updateRule
 //TimingManager
 export default {
   namespace: 'timing',
@@ -11,37 +11,62 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       const response = yield call(queryTiming, payload);
       console.log(response, '***************定时任务列表数据');
       yield put({
         type: 'save',
         payload: response,
       });
+      if (callback) callback(response);
     },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
+      const response = yield call(addTiming, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
+      const response = yield call(removeTiming, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
+    },
+    *suspend({ payload, callback }, { call, put }) {
+      const response = yield call(suspendTiming, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+    *recovery({ payload, callback }, { call, put }) {
+      const response = yield call(recoveryTiming, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+    *implement({ payload, callback }, { call, put }) {
+      const response = yield call(implementTiming, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
+      const response = yield call(updateTiming, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
   },
 

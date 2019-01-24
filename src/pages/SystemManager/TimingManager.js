@@ -19,13 +19,14 @@ import {
   Badge,
   Divider,
   Steps,
-  Radio,
+  Radio, TreeSelect,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './TimingManager.less';
-
+import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
+const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -50,30 +51,35 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="新增管理员"
+      title="新增定时任务"
       width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="BEAN名称">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少2个字符的用户名！', min: 2 }],
+        {form.getFieldDecorator('beanName', {
+          rules: [{ required: false, message: '请输入BEAN名称！'}],
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="方法名称">
+        {form.getFieldDecorator('methodName', {
+          rules: [{ required: false, message: '请输入方法名称！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="参&emsp;数">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
+        {form.getFieldDecorator('params', {
+          rules: [{ required: false, message: '请输入参数！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="CRON表达式">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
+        {form.getFieldDecorator('cronExpression', {
+          rules: [{ required: false, message: '请输入CRON表达式！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备&emsp;注">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少两个字符的手机！', min: 2 }],
+        {form.getFieldDecorator('remark', {
+          rules: [{ required: false, message: '请输入备注！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
     </Modal>
@@ -90,61 +96,99 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-
     this.state = {
       formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
+        beanName: props.values.beanName,
+        createTime: props.values.createTime,
+        cronExpression: props.values.cronExpression,
+        jobId: props.values.jobId,
+        methodName: props.values.methodName,
+        params: props.values.params,
+        remark: props.values.remark,
+        status: props.values.status,
       },
       currentStep: 0,
+      confirmDirty: false,
     };
 
     this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 15 },
     };
   }
 
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
-  };
+  render() {
+    const {
+      updateModalVisible,
+      handleUpdateModalVisible,
+      handleUpdate,
+    } = this.props;
+    const { formVals } = this.state;
+    const { form } = this.props;
 
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleUpdate(fieldsValue);
+      });
+    };
 
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="更新定时任务"
+        width={940}
+        visible={updateModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleUpdateModalVisible(false)}
+      >
+        {form.getFieldDecorator('jobId', {
+          rules: [{ required: false }],
+          initialValue: formVals.jobId,
+        })(<Input type={'hidden'} />)}
+        {form.getFieldDecorator('createTime', {
+          rules: [{ required: false }],
+          initialValue: formVals.createTime,
+        })(<Input type={'hidden'} />)}
+        {form.getFieldDecorator('status', {
+          rules: [{ required: false }],
+          initialValue: formVals.status,
+        })(<Input type={'hidden'} />)}
+        <FormItem {...this.formLayout} label="BEAN名称">
+          {form.getFieldDecorator('beanName', {
+            rules: [{ required: false, message: '请输入BEAN名称！'}],
+            initialValue: formVals.beanName,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem {...this.formLayout} label="方法名称">
+          {form.getFieldDecorator('methodName', {
+            rules: [{ required: false, message: '请输入方法名称！'}],
+            initialValue: formVals.methodName,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem {...this.formLayout} label="参&emsp;数">
+          {form.getFieldDecorator('params', {
+            rules: [{ required: false, message: '请输入参数！'}],
+            initialValue: formVals.params,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem {...this.formLayout} label="CRON表达式">
+          {form.getFieldDecorator('cronExpression', {
+            rules: [{ required: false, message: '请输入CRON表达式！'}],
+            initialValue: formVals.cronExpression,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem {...this.formLayout} label="备&emsp;注">
+          {form.getFieldDecorator('remark', {
+            rules: [{ required: false, message: '请输入备注！'}],
+            initialValue: formVals.remark,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+      </Modal>
+    );
+  }
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -208,15 +252,15 @@ class TimingManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
+          <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>修改</Button>
           <Divider type="vertical" />
-          <a href="">暂停</a>
+          <Button type={'primary'} onClick={() => this.showDeleteConfirm(1,record)}>暂停</Button>
           <Divider type="vertical" />
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>恢复</a>
+          <Button type={'primary'} onClick={() => this.showDeleteConfirm(2,record)}>恢复</Button>
           <Divider type="vertical" />
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>执行</a>
+          <Button type={'primary'} onClick={() => this.showDeleteConfirm(3,record)}>执行</Button>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <Button type={'primary'} onClick={() => this.showDeleteConfirm(4,record)}>删除</Button>
         </Fragment>
       ),
     },
@@ -342,30 +386,83 @@ class TimingManager extends PureComponent {
   };
 
   handleAdd = fields => {
-    const { dispatch } = this.props;
+    console.log(fields, '__________添加用户的参数');
+    const { dispatch, usr } = this.props;
     dispatch({
       type: 'timing/add',
-      payload: {
-        desc: fields.desc,
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'timing/fetch');
       },
     });
 
-    message.success('添加成功');
+    //message.success('添加成功');
     this.handleModalVisible();
+  };
+
+  //删除&恢复&暂停&执行定时任务 1暂停 2恢复 3执行 4删除
+  showDeleteConfirm = (index, record) => {
+    let that = this;
+    const showDeleteTipsParames = showDeleteConfirmParames(index);
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+         that.deleted(index, record);
+      },
+      onCancel() {
+        console.log('取消操作');
+      },
+    });
+  };
+  deleted = (index, record) => {
+    const { dispatch } = this.props;
+    let path = "timing/remove";
+    if(index == 1){
+      path = "timing/suspend";
+    }else if(index == 2){
+      path = "timing/recovery";
+    }else if(index == 3){
+      path = "timing/implement";
+    }
+    dispatch({
+      type: path,
+      payload: [record.jobId],
+      callback: res => {
+        tips(res, this, 'timing/fetch');
+      },
+    });
+  };
+  //批量删除
+  showDeletesConfirm = () => {
+    console.log(showDeleteConfirmParames);
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.handleMenuClick();
+      },
+      onCancel() {
+        console.log('取消删除');
+        that.setState({
+          selectedRows: [],
+        });
+      },
+    });
   };
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
       type: 'timing/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
+      payload: fields,
+      callback: (res) => {
+        tips(res, this, 'timing/fetch');
+        this.setState({
+          selectedRows: [],
+        });
       },
     });
-
-    message.success('配置成功');
+    //message.success('配置成功');
     this.handleUpdateModalVisible();
   };
 
