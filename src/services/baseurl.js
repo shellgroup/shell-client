@@ -2,8 +2,8 @@ let flag = 'dev'; // dev开发版  pro生产版
 module.exports = {
   baseURL:
     flag === 'pro'
-      ? 'http://192.168.199.109:8080/renren-admin'
+      ? 'http://192.168.199.109:9001/master-admin'
       : flag === 'dev'
-      ? 'http://localhost:8080/renren-admin'
+      ? 'http://localhost:9001/master-admin'
       : null,
 };
