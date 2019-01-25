@@ -147,6 +147,10 @@ export async function queryIcon() {
 export async function queryTiming(params) {
   return request(`${baseURL}/sys/schedule/list?${stringify(params)}`);
 }
+//查询定时任务日志列表
+export async function queryTimingLog(params) {
+  return request(`${baseURL}/sys/scheduleLog/list?${stringify(params)}`);
+}
 //添加定时任务
 export async function addTiming(params) {
   return request(`${baseURL}/sys/schedule/save`, {

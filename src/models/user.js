@@ -17,7 +17,9 @@ export default {
       });
     },
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
+      const user = yield call(queryCurrent);
+      console.log(user.user,777777777777777777);
+      const  response = user.user;
       yield put({
         type: 'saveCurrentUser',
         payload: response,

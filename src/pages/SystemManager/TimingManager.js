@@ -22,10 +22,12 @@ import {
   Radio, TreeSelect,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
+import StandardTableNoCheckBox from '@/components/StandardTableNoCheckBox';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './TimingManager.less';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
+
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -191,6 +193,164 @@ class UpdateForm extends PureComponent {
   }
 }
 
+@connect(({ timingLog, loading }) => ({
+  timingLog,
+  loading: loading.models.timingLog,
+}))
+@Form.create()
+class LogListForm extends PureComponent {
+  static defaultProps = {
+    handleLogListModalVisible: () => {},
+    values: {},
+  };
+
+  constructor(props) {
+    super(props);
+    console.log(props,66666777888);
+    this.state = {
+      currentStep: 0,
+      confirmDirty: false,
+      formValues: {},
+      key:"logId"
+    };
+
+    let { dispatch } = this.props;
+    dispatch({
+      type: 'timingLog/fetch',
+    });
+  }
+  columns = [
+    {
+      title: '日志ID',
+      dataIndex: 'logId',
+      fixed: 'left',
+    },
+    {
+      title: '任务ID',
+      dataIndex: 'jobId',
+      fixed: 'left',
+    },
+    {
+      title: 'BEAN名称',
+      dataIndex: 'beanName',
+    },
+    {
+      title: '方法名称',
+      dataIndex: 'methodName',
+    },
+    {
+      title: '参数',
+      dataIndex: 'params',
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      filters: [
+        {
+          text: status[0],
+          value: 0,
+        },
+        {
+          text: status[1],
+          value: 1,
+        },
+      ],
+      render(val) {
+        return <Badge status={statusMap[val]} text={status[val]} />;
+      },
+    },
+    {
+      title: '耗时(单位：毫秒)',
+      dataIndex: 'times',
+    },
+    {
+      title: '执行时间',
+      dataIndex: 'createTime',
+      sorter: true,
+      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    },
+    {
+      title: '异常日志',
+      dataIndex: 'error',
+    }
+
+  ];
+  handleTableChange = (pagination, filtersArg, sorter) => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
+
+    const filters = Object.keys(filtersArg).reduce((obj, key) => {
+      const newObj = { ...obj };
+      newObj[key] = getValue(filtersArg[key]);
+      return newObj;
+    }, {});
+
+    const params = {
+      currentPage: pagination.current,
+      pageSize: pagination.pageSize,
+      ...formValues,
+      ...filters,
+    };
+    if (sorter.field) {
+      params.sorter = `${sorter.field}_${sorter.order}`;
+    }
+
+    dispatch({
+      type: 'timingLog/fetch',
+      payload: params,
+    });
+  };
+  render() {
+    const {
+      logListModalVisible,
+      handleLogListModalVisible,
+      timingLog: { data },
+      loading
+    } = this.props;
+    const {
+      form: { getFieldDecorator },
+    } = this.props;
+console.log(this.props,77889900);
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="日志列表"
+        width={1200}
+        visible={logListModalVisible}
+        onCancel={() => handleLogListModalVisible(false)}
+        footer={null}
+      >
+        <Form onSubmit={this.handleSearch} layout="inline">
+          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+            <Col md={8} sm={24}>
+              <FormItem label="BEAN名称">
+                {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+
+            <Col md={8} sm={24}>
+            <span className={styles.submitButtons}>
+              <Button type="primary" htmlType="submit">
+                查询
+              </Button>
+            </span>
+            </Col>
+          </Row>
+        </Form>
+        <StandardTableNoCheckBox
+          //selectedRows={selectedRows}
+          loading={loading}
+          data={data}
+          rowKey={this.state.key}
+          columns={this.columns}
+          //onSelectRow={this.handleSelectRows}
+          onChange={this.handleTableChange}
+        />
+      </Modal>
+    );
+  }
+}
 /* eslint react/no-multi-comp:0 */
 @connect(({ timing, loading }) => ({
   timing,
@@ -201,11 +361,19 @@ class TimingManager extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
+    logListModalVisible:false,
     expandForm: false,
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
     key: 'jobId',
+    DeleteBtn: false,
+    SaveBtn: false,
+    UpdateBtn: false,
+    ShowList: false,
+    PauseBtn: false,
+    ResumeBtn: false,
+    RunBtn: false,
   };
 
   columns = [
@@ -220,6 +388,10 @@ class TimingManager extends PureComponent {
     {
       title: 'CRON表达式',
       dataIndex: 'cronExpression',
+    },
+    {
+      title: '方法',
+      dataIndex: 'methodName',
     },
     {
       title: '创建时间',
@@ -271,6 +443,8 @@ class TimingManager extends PureComponent {
     dispatch({
       type: 'timing/fetch',
     });
+
+    disablesBtns(this);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -323,23 +497,43 @@ class TimingManager extends PureComponent {
     const { selectedRows } = this.state;
 
     if (selectedRows.length === 0) return;
-    switch (e.key) {
-      case 'remove':
+    let showDeleteTipsParames = null;
+    let path = "";
+    if(e.key == "suspend"){
+      path = "timing/suspend";
+      showDeleteTipsParames = showDeleteConfirmParames(1);
+    }else if(e.key == "recovery"){
+      path = "timing/recovery";
+      showDeleteTipsParames = showDeleteConfirmParames(2);
+    }else if(e.key == "implement"){
+      path = "timing/implement";
+      showDeleteTipsParames = showDeleteConfirmParames(3);
+    }else{
+      path = "timing/remove";
+      showDeleteTipsParames = showDeleteConfirmParames(4);
+    }
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
         dispatch({
-          type: 'timing/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
+          type: path,
+          payload: selectedRows.map(row => row.jobId),
+          callback: res => {
+            tips(res, that, 'timing/fetch');
+            that.setState({
               selectedRows: [],
             });
           },
         });
-        break;
-      default:
-        break;
-    }
+      },
+      onCancel() {
+        console.log('取消操作');
+        that.setState({
+          selectedRows: [],
+        });
+      },
+    });
   };
 
   handleSelectRows = rows => {
@@ -382,6 +576,11 @@ class TimingManager extends PureComponent {
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
+    });
+  };
+  handleLogListModalVisible = flag => {
+    this.setState({
+      logListModalVisible: !!flag,
     });
   };
 
@@ -432,23 +631,7 @@ class TimingManager extends PureComponent {
       },
     });
   };
-  //批量删除
-  showDeletesConfirm = () => {
-    console.log(showDeleteConfirmParames);
-    let that = this;
-    confirm({
-      ...showDeleteTipsParames,
-      onOk() {
-        that.handleMenuClick();
-      },
-      onCancel() {
-        console.log('取消删除');
-        that.setState({
-          selectedRows: [],
-        });
-      },
-    });
-  };
+
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
@@ -484,7 +667,7 @@ class TimingManager extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{ marginLeft: 8 }} type="primary" htmlType="submit">
+              <Button style={{ marginLeft: 8 }} type="primary" onClick={() => this.handleLogListModalVisible(true)}>
                 日志列表
               </Button>
             </span>
@@ -513,7 +696,7 @@ class TimingManager extends PureComponent {
             <Button type="primary" htmlType="submit">
               查询
             </Button>
-            <Button style={{ marginLeft: 8 }} type="primary" htmlType="submit">
+            <Button style={{ marginLeft: 8 }} type="primary" onClick={() => this.handleLogListModalVisible(true)}>
               日志列表
             </Button>
           </div>
@@ -532,12 +715,12 @@ class TimingManager extends PureComponent {
       timing: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, logListModalVisible } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">暂停</Menu.Item>
-        <Menu.Item key="remove">恢复</Menu.Item>
-        <Menu.Item key="approval">执行</Menu.Item>
+        <Menu.Item key="suspend">暂停</Menu.Item>
+        <Menu.Item key="recovery">恢复</Menu.Item>
+        <Menu.Item key="implement">执行</Menu.Item>
       </Menu>
     );
     const parentMethods = {
@@ -546,7 +729,11 @@ class TimingManager extends PureComponent {
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
-      handleUpdate: this.handleUpdate,
+      handleModalVisible: this.handleUpdate,
+    };
+    const logListMethods = {
+      handleModalVisible: this.handleLogListModalVisible,
+      handleLogListModalVisible: this.handleLogListModalVisible,
     };
     return (
       <PageHeaderWrapper>
@@ -557,6 +744,11 @@ class TimingManager extends PureComponent {
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
               </Button>
+              {selectedRows.length > 0 && !this.state.DeleteBtn && (
+                <span>
+                  <Button onClick={this.handleMenuClick}>批量删除</Button>
+                </span>
+              )}
               {selectedRows.length > 0 && (
                 <span>
                   <Dropdown overlay={menu}>
@@ -584,6 +776,12 @@ class TimingManager extends PureComponent {
             {...updateMethods}
             updateModalVisible={updateModalVisible}
             values={stepFormValues}
+          />
+        ) : null}
+        {logListModalVisible ? (
+          <LogListForm
+            {...logListMethods}
+            logListModalVisible={logListModalVisible}
           />
         ) : null}
       </PageHeaderWrapper>

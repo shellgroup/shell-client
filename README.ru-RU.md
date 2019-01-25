@@ -1,6 +1,6 @@
 [English](./README.md) | [简体中文](./README.zh-CN.md) | Русский
 
-<h1 align="center">Ant Design Pro</h1>
+<h1 align="center">Master Beta</h1>
 
 <div align="center">
 

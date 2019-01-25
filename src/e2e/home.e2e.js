@@ -1,4 +1,4 @@
-const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
+const BASE_URL = `http://localhost:${process.env.PORT || 19250}`;
 
 describe('Homepage', () => {
   beforeAll(async () => {
@@ -10,6 +10,6 @@ describe('Homepage', () => {
       timeout: 5000,
     });
     const text = await page.evaluate(() => document.getElementsByTagName('h1')[0].innerText);
-    expect(text).toContain('Ant Design Pro');
+    expect(text).toContain('Master Beta');
   });
 });

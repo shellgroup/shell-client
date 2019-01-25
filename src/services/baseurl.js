@@ -1,9 +1,5 @@
-let flag = 'pro'; // dev开发版  pro生产版
+let flag = 'pro'; // dev开发版  pro生产版 local本地
 module.exports = {
   baseURL:
-    flag === 'pro'
-      ? 'http://192.168.199.109:9001/master-admin'
-      : flag === 'dev'
-      ? 'http://localhost:9001/master-admin'
-      : null,
+    flag === 'pro'? '/api': flag === 'dev'? 'http://192.168.199.109:9001/master-admin': null,
 };

@@ -213,6 +213,21 @@ export function disablesBtns(that) {
         ShowInfo: true,
       });
     }
+    if (data[i].indexOf('pause') != -1) {
+      that.setState({
+        PauseBtn: true,
+      });
+    }
+    if (data[i].indexOf('resume') != -1) {
+      that.setState({
+        ResumeBtn: true,
+      });
+    }
+    if (data[i].indexOf('run') != -1) {
+      that.setState({
+        RunBtn: true,
+      });
+    }
   }
 }
 //统一删除模板
