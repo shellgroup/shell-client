@@ -223,12 +223,10 @@ class LogListForm extends PureComponent {
     {
       title: '日志ID',
       dataIndex: 'logId',
-      fixed: 'left',
     },
     {
       title: '任务ID',
       dataIndex: 'jobId',
-      fixed: 'left',
     },
     {
       title: 'BEAN名称',
@@ -271,7 +269,7 @@ class LogListForm extends PureComponent {
     },
     {
       title: '异常日志',
-      dataIndex: 'error',
+      render: record => ((<Button type={'primary'} onClick={() => this.showConfirm(record)}>查看</Button>)),
     }
 
   ];
@@ -316,12 +314,12 @@ console.log(this.props,77889900);
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
         title="日志列表"
-        width={1200}
+        width={1280}
         visible={logListModalVisible}
         onCancel={() => handleLogListModalVisible(false)}
         footer={null}
       >
-        <Form onSubmit={this.handleSearch} layout="inline">
+        <Form onSubmit={this.handleSearch} layout="inline" className={styles.submitselect}>
           <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
             <Col md={8} sm={24}>
               <FormItem label="BEAN名称">
@@ -330,7 +328,7 @@ console.log(this.props,77889900);
             </Col>
 
             <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
+            <span >
               <Button type="primary" htmlType="submit">
                 查询
               </Button>

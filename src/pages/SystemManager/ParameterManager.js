@@ -19,13 +19,16 @@ import {
   Badge,
   Divider,
   Steps,
-  Radio,
+  Radio, TreeSelect, Tree,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './ParameterManager.less';
+import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
 
+const showDeleteTipsParames = showDeleteConfirmParames();
+const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -50,25 +53,25 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="新增管理员"
+      title="新增参数"
       width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="编码">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少2个字符的用户名！', min: 2 }],
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="参数名">
+        {form.getFieldDecorator('paramKey', {
+          rules: [{ required: false, message: '请输入编码！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="值">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="参数值">
+        {form.getFieldDecorator('paramValue', {
+          rules: [{ required: false, message: '请输入值！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备注">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
+        {form.getFieldDecorator('remark', {
+          rules: [{ required: false, message: '请输入备注！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
     </Modal>
@@ -85,63 +88,80 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-
+    console.log(props,666);
     this.state = {
       formVals: {
-        name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
+        id: props.values.id,
+        paramKey: props.values.paramKey,
+        paramValue: props.values.paramValue,
+        remark: props.values.remark,
       },
       currentStep: 0,
+      confirmDirty: false,
     };
-
     this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 15 },
     };
   }
 
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
-  };
+  render() {
+    const {
+      updateModalVisible,
+      handleUpdateModalVisible,
+      deptData,
+      menuList,
+      handleUpdate,
+      that,
+    } = this.props;
 
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
+    const { formVals } = this.state;
+    const { form } = this.props;
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleUpdate(fieldsValue);
+      });
+    };
 
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="更新参数"
+        width={940}
+        visible={updateModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleUpdateModalVisible(false)}
+      >
+        {form.getFieldDecorator('id', {
+          rules: [{ required: false }],
+          initialValue: formVals.id,
+        })(<Input type={'hidden'} />)}
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="参数名">
+          {form.getFieldDecorator('paramKey', {
+            rules: [{ required: false, message: '请输入编码！'}],
+            initialValue: formVals.paramKey,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="参数值">
+          {form.getFieldDecorator('paramValue', {
+            rules: [{ required: false, message: '请输入值！'}],
+            initialValue: formVals.paramValue,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备注">
+          {form.getFieldDecorator('remark', {
+            rules: [{ required: false, message: '请输入备注！'}],
+            initialValue: formVals.remark,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+
+      </Modal>
+    );
+  }
 }
-
 /* eslint react/no-multi-comp:0 */
 @connect(({ parame, loading }) => ({
   parame,
@@ -161,11 +181,11 @@ class ParameterManager extends PureComponent {
 
   columns = [
     {
-      title: '编码',
+      title: '参数名',
       dataIndex: 'paramKey',
     },
     {
-      title: '值',
+      title: '参数值',
       dataIndex: 'paramValue',
     },
     {
@@ -176,9 +196,9 @@ class ParameterManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
+          <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>修改</Button>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>删除</Button>
         </Fragment>
       ),
     },
@@ -235,29 +255,62 @@ class ParameterManager extends PureComponent {
       expandForm: !expandForm,
     });
   };
-
-  handleMenuClick = e => {
+//删除参数信息
+  showDeleteConfirm = record => {
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.deleted(record);
+      },
+      onCancel() {
+        console.log('取消删除');
+      },
+    });
+  };
+  deleted = record => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'parame/remove',
+      payload: [record.id],
+      callback: res => {
+        tips(res, this, 'parame/fetch');
+      },
+    });
+  };
+  //批量删除
+  showDeletesConfirm = () => {
+    console.log(showDeleteConfirmParames);
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.handleMenuClick();
+      },
+      onCancel() {
+        console.log('取消删除');
+        that.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  };
+  handleMenuClick = () => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
 
     if (selectedRows.length === 0) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'parame/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
+    console.log(selectedRows.map(row => row.key));
+    dispatch({
+      type: 'parame/remove',
+      payload: selectedRows.map(row => row.id),
+      callback: res => {
+        tips(res, this, 'parame/fetch');
+        this.setState({
+          selectedRows: [],
         });
-        break;
-      default:
-        break;
-    }
+      },
+    });
   };
 
   handleSelectRows = rows => {
@@ -307,12 +360,12 @@ class ParameterManager extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'parame/add',
-      payload: {
-        desc: fields.desc,
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'parame/fetch');
       },
     });
-
-    message.success('添加成功');
+    //message.success('添加成功');
     this.handleModalVisible();
   };
 
@@ -320,14 +373,13 @@ class ParameterManager extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'parame/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'parame/fetch');
       },
     });
 
-    message.success('配置成功');
+    //message.success('配置成功');
     this.handleUpdateModalVisible();
   };
 
@@ -411,7 +463,7 @@ class ParameterManager extends PureComponent {
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>批量删除</Button>
+                  <Button onClick={this.showDeletesConfirm}>批量删除</Button>
                 </span>
               )}
             </div>

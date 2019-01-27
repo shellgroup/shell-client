@@ -25,6 +25,7 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './FileUpload.less';
+import {tips} from "../../utils/utils";
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -39,7 +40,7 @@ const statusMap = ['normal', 'disabled'];
 const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, that, btnType, configData } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -47,35 +48,204 @@ const CreateForm = Form.create()(props => {
       handleAdd(fieldsValue);
     });
   };
+  const viewArr = [
+    [
+      {
+        label:'域名',
+        name: 'qiniuDomain',
+        value: '',
+        message:'请输入七牛绑定的域名！',
+        placeholder:'七牛绑定的域名',
+        mark: 0
+      },
+      {
+        label:'路径前缀',
+        name: 'qiniuPrefix',
+        value: '',
+        message:'请输入路径前缀！',
+        placeholder:'不设置默认为空',
+        mark: 0
+      },
+      {
+        label:'AccessKey',
+        name: 'qiniuAccessKey',
+        value: '',
+        message:'请输入七牛AccessKey！',
+        placeholder:'七牛AccessKey',
+        mark: 0
+      },
+      {
+        label:'SecretKey',
+        name: 'qiniuSecretKey',
+        value: '',
+        message:'请输入七牛SecretKey！',
+        placeholder:'七牛SecretKey',
+        mark: 0
+      },
+      {
+        label:'空间名',
+        name: 'qiniuBucketName',
+        value: '',
+        message:'请输入七牛存储空间名！',
+        placeholder:'七牛存储空间名',
+        mark: 0
+      }
+    ],[
+      {
+        label:'域名',
+        name: 'aliyunDomain',
+        value: '',
+        message:'请输入阿里云绑定的域名！',
+        placeholder:'阿里云绑定的域名',
+        mark: 1
+      },
+      {
+        label:'路径前缀',
+        name: 'aliyunPrefix',
+        value: '',
+        message:'请输入路径前缀！',
+        placeholder:'不设置默认为空',
+        mark: 1
+      },
+      {
+        label:'EndPoint',
+        name: 'aliyunEndPoint',
+        value: '',
+        message:'请输入阿里云EndPoint！',
+        placeholder:'阿里云EndPoint',
+        mark: 1
+      },
+      {
+        label:'AccessKeyId',
+        name: 'aliyunAccessKeyId',
+        value: '',
+        message:'请输入阿里云AccessKeyId！',
+        placeholder:'阿里云AccessKeyId',
+        mark: 1
+      },
+      {
+        label:'AccessKeySecret',
+        name: 'aliyunAccessKeySecret',
+        value: '',
+        message:'请输入阿里云AccessKeySecret！',
+        placeholder:'阿里云AccessKeySecret',
+        mark: 1
+      },
+      {
+        label:'BucketName',
+        name: 'aliyunBucketName',
+        value: '',
+        message:'请输入阿里云BucketName！',
+        placeholder:'阿里云BucketName',
+        mark: 1
+      }
+    ],[
+      {
+        label:'域名',
+        name: 'qcloudDomain',
+        value: '',
+        message:'请输入腾讯云绑定的域名！',
+        placeholder:'腾讯云绑定的域名',
+        mark: 2
+      },
+      {
+        label:'路径前缀',
+        name: 'qcloudPrefix',
+        value: '',
+        message:'请输入路径前缀！',
+        placeholder:'不设置默认为空',
+        mark: 2
+      },
+      {
+        label:'AppId',
+        name: 'qcloudAppId',
+        value: '',
+        message:'请输入腾讯云AppId！',
+        placeholder:'腾讯云AppId',
+        mark: 2
+      },
+      {
+        label:'SecretId',
+        name: 'qcloudSecretId',
+        value: '',
+        message:'请输入腾讯云SecretId！',
+        placeholder:'腾讯云SecretId',
+        mark: 2
+      },
+      {
+        label:'SecretKey',
+        name: 'qcloudSecretKey',
+        value: '',
+        message:'请输入腾讯云SecretKey！',
+        placeholder:'腾讯云SecretKey',
+        mark: 2
+      },
+      {
+        label:'BucketName',
+        name: 'qcloudBucketName',
+        value: '',
+        message:'请输入腾讯云BucketName！',
+        placeholder:'腾讯云BucketName',
+        mark: 2
+      },
+      {
+        label:'Bucket所属地区',
+        name: 'qcloudRegion',
+        value: '',
+        message:'请输入Bucket所属地区！',
+        placeholder:'如：sh（可选值 ，华南：gz 华北：tj 华东：sh',
+        mark: 2
+      }
+    ]
+  ];
+  let dataArr = [];
+  const viewDataFunction = data =>{
+    for(let i =0;i<data.length;i++){
+      if(data[i] instanceof Array){
+        viewDataFunction(data[i]);
+      }else{
+        if(configData){
+          Object.keys(configData).map((key) => {
+            if(data[i].name == key){
+              data[i].value = configData[key];
+              data[i].mark == btnType && dataArr.push(
+                <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} key={i} label={data[i].label}>
+                  {form.getFieldDecorator(`${data[i].name}`, {
+                    rules: [{ required: false, message: `${data[i].message}`}],
+                    initialValue: data[i].value
+                  })(<Input placeholder={data[i].placeholder} />)}
+                </FormItem>
+              );
+            }
+          });
+        }
+      }
+    }
+    return dataArr;
+  }
+
   return (
     <Modal
       destroyOnClose
-      title="新增管理员"
+      title="云存储配置"
       width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="BEAN名称">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少2个字符的用户名！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="型&emsp;&emsp;类">
+        {form.getFieldDecorator('type', {
+          rules: [{ required: false }],
+          initialValue: btnType,
+        })(
+          <RadioGroup onChange={that.onChangebtnType} >
+            <Radio value={0}>七牛云</Radio>
+            <Radio value={1}>阿里云</Radio>
+            <Radio value={2}>腾讯云</Radio>
+          </RadioGroup>
+        )}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="参&emsp;数">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="CRON表达式">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备&emsp;注">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少两个字符的手机！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
+      {viewDataFunction(viewArr)}
     </Modal>
   );
 });
@@ -162,6 +332,8 @@ class FileUpload extends PureComponent {
     formValues: {},
     stepFormValues: {},
     key: 'id',
+    btnType: 0,
+    configData:{}
   };
 
   columns = [
@@ -190,8 +362,22 @@ class FileUpload extends PureComponent {
     dispatch({
       type: 'fileupload/fetch',
     });
+    dispatch({
+      type: 'fileupload/config',
+      callback:(res)=>{
+        this.setState({
+          configData:res.config
+        })
+      }
+    });
   }
+  onChangebtnType = (e) => {
+    let value = e.target.value;
+    this.setState({
+      btnType:value
+    })
 
+  }
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
     const { formValues } = this.state;
@@ -308,12 +494,13 @@ class FileUpload extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'fileupload/add',
-      payload: {
-        desc: fields.desc,
-      },
+      payload: fields,
+      callback:(res)=>{
+        tips(res, this, 'fileupload/fetch');
+      }
     });
 
-    message.success('添加成功');
+    //message.success('添加成功');
     this.handleModalVisible();
   };
 
@@ -337,10 +524,13 @@ class FileUpload extends PureComponent {
       fileupload: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, btnType, configData } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
+      that: this,
+      btnType: btnType,
+      configData: configData
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,

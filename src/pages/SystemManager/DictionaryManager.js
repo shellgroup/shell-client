@@ -25,6 +25,10 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './DictionaryManager.less';
+import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
+
+const showDeleteTipsParames = showDeleteConfirmParames();
+const confirm = Modal.confirm;
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -50,30 +54,40 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="新增管理员"
+      title="新增字典"
       width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="名称">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少2个字符的用户名！', min: 2 }],
+        {form.getFieldDecorator('name', {
+          rules: [{ required: false, message: '请输入名称！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="类型">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
+        {form.getFieldDecorator('type', {
+          rules: [{ required: false, message: '请输入类型！'}],
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="字典码">
+        {form.getFieldDecorator('code', {
+          rules: [{ required: false, message: '请输入字典码！'}],
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="字典值">
+        {form.getFieldDecorator('value', {
+          rules: [{ required: false, message: '请输入字典值！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排序">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少两个字符的邮箱！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
+        {form.getFieldDecorator('orderNum', {
+          rules: [{ required: false, message: '请输入排序！'}],
+        })(<InputNumber min={0} placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备注">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少两个字符的手机！', min: 2 }],
+        {form.getFieldDecorator('remark', {
+          rules: [{ required: false, message: '请输入备注！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
     </Modal>
@@ -90,61 +104,101 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-
+    console.log(props,666);
     this.state = {
       formVals: {
+        code: props.values.code,
+        delFlag: props.values.delFlag,
+        id: props.values.id,
         name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
+        orderNum: props.values.orderNum,
+        remark: props.values.remark,
+        type: props.values.type,
+        value: props.values.value,
       },
       currentStep: 0,
+      confirmDirty: false,
     };
-
     this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 15 },
     };
   }
 
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
-  };
+  render() {
+    const {
+      updateModalVisible,
+      handleUpdateModalVisible,
+      deptData,
+      menuList,
+      handleUpdate,
+      that,
+    } = this.props;
 
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
+    const { formVals } = this.state;
+    const { form } = this.props;
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleUpdate(fieldsValue);
+      });
+    };
 
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="更新字典"
+        width={940}
+        visible={updateModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleUpdateModalVisible(false)}
+      >
+        {form.getFieldDecorator('id', {
+          rules: [{ required: false }],
+          initialValue: formVals.id,
+        })(<Input type={'hidden'} />)}
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="名称">
+          {form.getFieldDecorator('name', {
+            rules: [{ required: false, message: '请输入名称！'}],
+            initialValue: formVals.name,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="类型">
+          {form.getFieldDecorator('type', {
+            rules: [{ required: false, message: '请输入类型！'}],
+            initialValue: formVals.type,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="字典码">
+          {form.getFieldDecorator('code', {
+            rules: [{ required: false, message: '请输入字典码！'}],
+            initialValue: formVals.code,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="字典值">
+          {form.getFieldDecorator('value', {
+            rules: [{ required: false, message: '请输入字典值！'}],
+            initialValue: formVals.value,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排序">
+          {form.getFieldDecorator('orderNum', {
+            rules: [{ required: false, message: '请输入排序！'}],
+            initialValue: formVals.orderNum,
+          })(<InputNumber min={0} placeholder="请输入" />)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备注">
+          {form.getFieldDecorator('remark', {
+            rules: [{ required: false, message: '请输入备注！'}],
+            initialValue: formVals.remark,
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+
+      </Modal>
+    );
+  }
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -176,8 +230,6 @@ class DictionaryManager extends PureComponent {
     {
       title: '排序',
       dataIndex: 'orderNum',
-      sorter: true,
-      render: val => <span>{0}</span>,
     },
     {
       title: '字典值',
@@ -191,9 +243,9 @@ class DictionaryManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>修改</a>
+          <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>修改</Button>
           <Divider type="vertical" />
-          <a href="">删除</a>
+          <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>删除</Button>
         </Fragment>
       ),
     },
@@ -251,28 +303,62 @@ class DictionaryManager extends PureComponent {
     });
   };
 
-  handleMenuClick = e => {
+  //删除参数信息
+  showDeleteConfirm = record => {
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.deleted(record);
+      },
+      onCancel() {
+        console.log('取消删除');
+      },
+    });
+  };
+  deleted = record => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dictionary/remove',
+      payload: [record.id],
+      callback: res => {
+        tips(res, this, 'dictionary/fetch');
+      },
+    });
+  };
+  //批量删除
+  showDeletesConfirm = () => {
+    console.log(showDeleteConfirmParames);
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.handleMenuClick();
+      },
+      onCancel() {
+        console.log('取消删除');
+        that.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  };
+  handleMenuClick = () => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
 
     if (selectedRows.length === 0) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'dictionary/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
+    console.log(selectedRows.map(row => row.key));
+    dispatch({
+      type: 'dictionary/remove',
+      payload: selectedRows.map(row => row.id),
+      callback: res => {
+        tips(res, this, 'dictionary/fetch');
+        this.setState({
+          selectedRows: [],
         });
-        break;
-      default:
-        break;
-    }
+      },
+    });
   };
 
   handleSelectRows = rows => {
@@ -322,27 +408,27 @@ class DictionaryManager extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'dictionary/add',
-      payload: {
-        desc: fields.desc,
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'dictionary/fetch');
       },
     });
-
-    message.success('添加成功');
+    //message.success('添加成功');
     this.handleModalVisible();
   };
+
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
       type: 'dictionary/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'dictionary/fetch');
       },
     });
 
-    message.success('配置成功');
+    //message.success('配置成功');
     this.handleUpdateModalVisible();
   };
 
@@ -436,7 +522,7 @@ class DictionaryManager extends PureComponent {
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>批量删除</Button>
+                  <Button onClick={this.showDeletesConfirm}>批量删除</Button>
                 </span>
               )}
             </div>

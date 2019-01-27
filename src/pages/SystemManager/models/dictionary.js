@@ -1,4 +1,4 @@
-import { queryDictionary } from '@/services/api'; //, removeRule, addRule, updateRule
+import { queryDictionary, updateDictionary, removeDictionary, addDictionary } from '@/services/api'; //, removeRule, addRule, updateRule
 //DictionaryManager
 export default {
   namespace: 'dictionary',
@@ -20,28 +20,28 @@ export default {
       });
     },
     *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
+      const response = yield call(addDictionary, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
+      const response = yield call(removeDictionary, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
     *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
+      const response = yield call(updateDictionary, payload);
       yield put({
         type: 'save',
         payload: response,
       });
-      if (callback) callback();
+      if (callback) callback(response);
     },
   },
 

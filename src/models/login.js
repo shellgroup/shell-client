@@ -61,7 +61,7 @@ export default {
         routerRedux.push({
           pathname: '/user/login',
           search: stringify({
-            redirect: window.location.href,
+            redirect: window.location.reload(), //window.location.href 动态弹窗和多地址拼接
           }),
         })
       );

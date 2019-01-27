@@ -194,16 +194,26 @@ export async function updateTiming(params) {
   });
 }
 
-
-
-
-//查询系统日志列表
-export async function querySystemlog(params) {
-  return request(`${baseURL}/sys/log/list?${stringify(params)}`);
+//添加参数
+export async function addParame(params) {
+  return request(`${baseURL}/sys/config/save`, {
+    method: 'POST',
+    body: params,
+  });
 }
-//查询字典列表
-export async function queryDictionary(params) {
-  return request(`${baseURL}/sys/dict/list?${stringify(params)}`);
+//删除参数
+export async function removeParame(params) {
+  return request(`${baseURL}/sys/config/delete`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//修改参数
+export async function updateParame(params) {
+  return request(`${baseURL}/sys/config/update`, {
+    method: 'POST',
+    body: params,
+  });
 }
 //查询参数列表
 export async function queryParame(params) {
@@ -211,10 +221,54 @@ export async function queryParame(params) {
 }
 
 
+//添加字典
+export async function addDictionary(params) {
+  return request(`${baseURL}/sys/dict/save`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//删除字典
+export async function removeDictionary(params) {
+  return request(`${baseURL}/sys/dict/delete`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//修改字典
+export async function updateDictionary(params) {
+  return request(`${baseURL}/sys/dict/update`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//查询字典列表
+export async function queryDictionary(params) {
+  return request(`${baseURL}/sys/dict/list?${stringify(params)}`);
+}
+
+//查询系统日志列表
+export async function querySystemlog(params) {
+  return request(`${baseURL}/sys/log/list?${stringify(params)}`);
+}
+
+
+
+//云存储配置
+export async function addSaveConfig(params) {
+  return request(`${baseURL}/sys/oss/saveConfig`, {
+    method: 'POST',
+    body: params,
+  });
+}
 
 //查询文件上传列表
 export async function fileUploadList(params) {
   return request(`${baseURL}/sys/oss/list?${stringify(params)}`);
+}
+//查询文件上配置
+export async function configList(params) {
+  return request(`${baseURL}/sys/oss/config?${stringify(params)}`);
 }
 
 export async function queryProjectNotice() {

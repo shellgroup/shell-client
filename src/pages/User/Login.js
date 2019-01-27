@@ -104,6 +104,7 @@ class LoginPage extends Component {
                   message: formatMessage({ id: 'validation.verification-code.required' }),
                 },
               ]}
+              onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
             />
           </Tab>
 
