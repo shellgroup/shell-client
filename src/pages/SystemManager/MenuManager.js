@@ -616,7 +616,7 @@ class MenuManager extends PureComponent {
       menulist: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, statusMenuText, menuType, iconData, menuData, key, disables, menuNameText} = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, statusMenuText, menuType, iconData, menuData, key, disables, menuNameText, ShowList} = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -657,7 +657,7 @@ class MenuManager extends PureComponent {
             <TreeTableNoCheckBox
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
+              data={ShowList?data:{}}
               rowKey={key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

@@ -454,7 +454,7 @@ class DepartmentManager extends PureComponent {
       dept: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues,deptData, key } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues,deptData, key, ShowList } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -480,7 +480,7 @@ class DepartmentManager extends PureComponent {
             <TreeTableNoCheckBox
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
+              data={ShowList?data:{}}
               rowKey={key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

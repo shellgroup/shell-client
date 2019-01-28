@@ -3,6 +3,7 @@ import { Tabs, Skeleton } from 'antd';
 import classNames from 'classnames';
 import styles from './index.less';
 import BreadcrumbView from './breadcrumb';
+import logo from '../../assets/logo.png';
 
 const { TabPane } = Tabs;
 export default class PageHeader extends PureComponent {
@@ -16,7 +17,6 @@ export default class PageHeader extends PureComponent {
   render() {
     const {
       title,
-      logo,
       action,
       content,
       extraContent,
@@ -29,7 +29,6 @@ export default class PageHeader extends PureComponent {
       wide = false,
       hiddenBreadcrumb = false,
     } = this.props;
-
     const clsString = classNames(styles.pageHeader, className);
     const activeKeyProps = {};
     if (tabDefaultActiveKey !== undefined) {
@@ -50,7 +49,7 @@ export default class PageHeader extends PureComponent {
           >
             {hiddenBreadcrumb ? null : <BreadcrumbView {...this.props} />}
             <div className={styles.detail}>
-              {logo && <div className={styles.logo}>{logo}</div>}
+              {/*{logo && <div className={styles.logo}>{logo}</div>}*/}
               <div className={styles.main}>
                 <div className={styles.row}>
                   {title && <h1 className={styles.title}>{title}</h1>}

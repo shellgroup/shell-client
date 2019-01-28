@@ -101,7 +101,7 @@ class BaseView extends Component {
               })(<Input />)}
             </FormItem>
             <FormItem label={formatMessage({ id: 'app.settings.basic.nickname' })}>
-              {getFieldDecorator('name', {
+              {getFieldDecorator('username', {
                 rules: [
                   {
                     required: true,
@@ -125,45 +125,45 @@ class BaseView extends Component {
                 />
               )}
             </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.country' })}>
-              {getFieldDecorator('country', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.country-message' }, {}),
-                  },
-                ],
-              })(
-                <Select style={{ maxWidth: 220 }}>
-                  <Option value="China">中国</Option>
-                </Select>
-              )}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.geographic' })}>
-              {getFieldDecorator('geographic', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.geographic-message' }, {}),
-                  },
-                  {
-                    validator: validatorGeographic,
-                  },
-                ],
-              })(<GeographicView />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.address' })}>
-              {getFieldDecorator('address', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'app.settings.basic.address-message' }, {}),
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
+            {/*<FormItem label={formatMessage({ id: 'app.settings.basic.country' })}>*/}
+              {/*{getFieldDecorator('country', {*/}
+                {/*rules: [*/}
+                  {/*{*/}
+                    {/*required: true,*/}
+                    {/*message: formatMessage({ id: 'app.settings.basic.country-message' }, {}),*/}
+                  {/*},*/}
+                {/*],*/}
+              {/*})(*/}
+                {/*<Select style={{ maxWidth: 220 }}>*/}
+                  {/*<Option value="China">中国</Option>*/}
+                {/*</Select>*/}
+              {/*)}*/}
+            {/*</FormItem>*/}
+            {/*<FormItem label={formatMessage({ id: 'app.settings.basic.geographic' })}>*/}
+              {/*{getFieldDecorator('geographic', {*/}
+                {/*rules: [*/}
+                  {/*{*/}
+                    {/*required: true,*/}
+                    {/*message: formatMessage({ id: 'app.settings.basic.geographic-message' }, {}),*/}
+                  {/*},*/}
+                  {/*{*/}
+                    {/*validator: validatorGeographic,*/}
+                  {/*},*/}
+                {/*],*/}
+              {/*})(<GeographicView />)}*/}
+            {/*</FormItem>*/}
+            {/*<FormItem label={formatMessage({ id: 'app.settings.basic.address' })}>*/}
+              {/*{getFieldDecorator('address', {*/}
+                {/*rules: [*/}
+                  {/*{*/}
+                    {/*required: true,*/}
+                    {/*message: formatMessage({ id: 'app.settings.basic.address-message' }, {}),*/}
+                  {/*},*/}
+                {/*],*/}
+              {/*})(<Input />)}*/}
+            {/*</FormItem>*/}
             <FormItem label={formatMessage({ id: 'app.settings.basic.phone' })}>
-              {getFieldDecorator('phone', {
+              {getFieldDecorator('mobile', {
                 rules: [
                   {
                     required: true,

@@ -40,6 +40,7 @@ const getValue = obj =>
     .join(',');
 const statusMap = ['processing', 'default'];
 const status = ['正常', '停用'];
+const statusLog = ['成功', '失败'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible } = props;
@@ -245,16 +246,16 @@ class LogListForm extends PureComponent {
       dataIndex: 'status',
       filters: [
         {
-          text: status[0],
+          text: statusLog[0],
           value: 0,
         },
         {
-          text: status[1],
+          text: statusLog[1],
           value: 1,
         },
       ],
       render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
+        return <Badge status={statusMap[val]} text={statusLog[val]} />;
       },
     },
     {
@@ -314,7 +315,7 @@ console.log(this.props,77889900);
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
         title="日志列表"
-        width={1280}
+        width={1400}
         visible={logListModalVisible}
         onCancel={() => handleLogListModalVisible(false)}
         footer={null}

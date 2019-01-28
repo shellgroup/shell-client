@@ -413,6 +413,9 @@ class RoleManager extends PureComponent {
     dispatch({
       type: 'role/fetch',
       payload: {},
+      callback: res => {
+        tips(res);
+      },
     });
   };
 
@@ -627,6 +630,9 @@ class RoleManager extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                重置
+              </Button>
             </span>
           </Col>
         </Row>
@@ -669,6 +675,9 @@ class RoleManager extends PureComponent {
           <div style={{ float: 'right', marginBottom: 24 }}>
             <Button type="primary" htmlType="submit">
               查询
+            </Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              重置
             </Button>
           </div>
         </div>
@@ -728,7 +737,7 @@ class RoleManager extends PureComponent {
       role: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, deptData, key, menuList } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, deptData, key, menuList, ShowList } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -763,7 +772,7 @@ class RoleManager extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
+              data={ShowList?data:{}}
               rowKey={key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

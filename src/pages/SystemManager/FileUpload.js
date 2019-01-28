@@ -366,7 +366,8 @@ class FileUpload extends PureComponent {
       type: 'fileupload/config',
       callback:(res)=>{
         this.setState({
-          configData:res.config
+          configData:res.config,
+          btnType:res.config.type
         })
       }
     });
@@ -496,7 +497,7 @@ class FileUpload extends PureComponent {
       type: 'fileupload/add',
       payload: fields,
       callback:(res)=>{
-        tips(res, this, 'fileupload/fetch');
+        tips(res, this, 'fileupload/config');
       }
     });
 

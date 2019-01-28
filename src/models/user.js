@@ -45,8 +45,8 @@ export default {
         ...state,
         currentUser: {
           ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
+          // notifyCount: action.payload.totalCount,
+          // unreadCount: action.payload.unreadCount,
         },
       };
     },

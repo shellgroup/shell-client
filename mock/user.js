@@ -51,6 +51,22 @@ export default {
     address: '西湖区工专路 77 号',
     phone: '0752-268888888',
   },
+
+  // avatar: "https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png"
+  // createTime: "2016-11-11 11:11:11"
+  // deptId: 1
+  // deptName: "人人开源集团"
+  // email: "root@renren.io"
+  // mobile: "13612345678"
+  // nickName: "master"
+  // roleIdList: null
+  // salt: "YzcmCZNvbXocrsz9dm8e"
+  // signature: "今天也是充满希望的一天"
+  // status: 1
+  // userId: "1"
+  // username: "admin"
+
+
   // GET POST 可省略
   'GET /api/users': [
     {

@@ -91,7 +91,7 @@ class Workplace extends PureComponent {
             avatar={<Avatar src={item.user.avatar} />}
             title={
               <span>
-                <a className={styles.username}>{item.user.name}</a>
+                <a className={styles.username}>{item.user.username}</a>
                 &nbsp;
                 <span className={styles.event}>{events}</span>
               </span>
@@ -126,11 +126,12 @@ class Workplace extends PureComponent {
           <div className={styles.content}>
             <div className={styles.contentTitle}>
               早安，
-              {currentUser.name}
+              {currentUser.username}
               ，祝你开心每一天！
             </div>
             <div>
-              {currentUser.title} |{currentUser.group}
+              {/*{currentUser.title} |*/}
+              {currentUser.deptName}
             </div>
           </div>
         </div>

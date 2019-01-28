@@ -35,7 +35,7 @@ class Center extends PureComponent {
                       <AvatarList.Item
                         key={`${item.id}-avatar-${member.id}`}
                         src={member.avatar}
-                        tips={member.name}
+                        tips={member.nickName?member.nickName:member.username}
                       />
                     ))}
                   </AvatarList>
