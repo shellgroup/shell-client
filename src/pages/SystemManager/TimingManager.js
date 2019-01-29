@@ -27,7 +27,9 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './TimingManager.less';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
+const { MonthPicker, RangePicker } = DatePicker;
 
+const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -322,20 +324,45 @@ console.log(this.props,77889900);
       >
         <Form onSubmit={this.handleSearch} layout="inline" className={styles.submitselect}>
           <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-            <Col md={8} sm={24}>
+            <Col md={7} sm={12}>
               <FormItem label="BEAN名称">
                 {getFieldDecorator('name')(<Input placeholder="请输入" />)}
               </FormItem>
             </Col>
-
-            <Col md={8} sm={24}>
+            <Col md={7} sm={12}>
+              <FormItem label="方法名称">
+                {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              </FormItem>
+            </Col>
+            <Col md={9} sm={12}>
+              <FormItem label="执行时间">
+                {getFieldDecorator('name')(
+                  <RangePicker
+                    format={dateFormat}
+                    showTime={{
+                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                    }}
+                  />
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <div className={styles.selectBox}>
+            <Col md={2} sm={12}>
             <span >
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
             </span>
             </Col>
-          </Row>
+            <Col md={2} sm={12}>
+            <span >
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                重置
+              </Button>
+            </span>
+            </Col>
+          </div>
         </Form>
         <StandardTableNoCheckBox
           //selectedRows={selectedRows}
@@ -660,7 +687,11 @@ class TimingManager extends PureComponent {
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-
+          <Col md={8} sm={24}>
+            <FormItem label="方法名称">
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
@@ -669,6 +700,12 @@ class TimingManager extends PureComponent {
               <Button style={{ marginLeft: 8 }} type="primary" onClick={() => this.handleLogListModalVisible(true)}>
                 日志列表
               </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                重置
+              </Button>
+              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                展开 <Icon type="down" />
+              </a>
             </span>
           </Col>
         </Row>
@@ -688,6 +725,23 @@ class TimingManager extends PureComponent {
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="方法名称">
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="创建时间">
+              {getFieldDecorator('name')(
+                <RangePicker
+                  format={dateFormat}
+                  showTime={{
+                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                  }}
+                />
+              )}
+            </FormItem>
+          </Col>
         </Row>
 
         <div style={{ overflow: 'hidden' }}>
@@ -698,6 +752,12 @@ class TimingManager extends PureComponent {
             <Button style={{ marginLeft: 8 }} type="primary" onClick={() => this.handleLogListModalVisible(true)}>
               日志列表
             </Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              重置
+            </Button>
+            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+              收起 <Icon type="up" />
+            </a>
           </div>
         </div>
       </Form>

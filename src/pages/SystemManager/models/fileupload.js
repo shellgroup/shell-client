@@ -1,4 +1,4 @@
-import { fileUploadList, configList, addSaveConfig } from '@/services/api'; //, removeRule, addRule, updateRule
+import { fileUploadList, configList, addSaveConfig, fileUpload } from '@/services/api'; //, removeRule, addRule, updateRule
 //RoleManager
 export default {
   namespace: 'fileupload',
@@ -21,6 +21,14 @@ export default {
     },
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addSaveConfig, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+    *upload({ payload, callback }, { call, put }) {
+      const response = yield call(fileUpload, payload);
       yield put({
         type: 'save',
         payload: response,

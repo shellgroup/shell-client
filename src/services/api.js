@@ -270,6 +270,14 @@ export async function fileUploadList(params) {
 export async function configList(params) {
   return request(`${baseURL}/sys/oss/config?${stringify(params)}`);
 }
+//文件上传
+export async function fileUpload(params) {
+  return request(`${baseURL}/sys/oss/upload`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');

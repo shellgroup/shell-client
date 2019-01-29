@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+
 import {
   Row,
   Col,
@@ -16,6 +17,7 @@ import {
   DatePicker,
   Modal,
   message,
+  Upload,
   Badge,
   Divider,
   Steps,
@@ -26,7 +28,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './FileUpload.less';
 import {tips} from "../../utils/utils";
-
+const Dragger = Upload.Dragger;
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -260,61 +262,82 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-
+    console.log(props,666);
     this.state = {
       formVals: {
+        code: props.values.code,
+        delFlag: props.values.delFlag,
+        id: props.values.id,
         name: props.values.name,
-        desc: props.values.desc,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
+        orderNum: props.values.orderNum,
+        remark: props.values.remark,
+        type: props.values.type,
+        value: props.values.value,
       },
       currentStep: 0,
+      confirmDirty: false,
     };
-
     this.formLayout = {
-      labelCol: { span: 7 },
-      wrapperCol: { span: 13 },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 15 },
     };
   }
 
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
-  };
+  render() {
+    const {
+      updateModalVisible,
+      handleUpdateModalVisible,
+      deptData,
+      menuList,
+      handleUpdate,
+      that,
+    } = this.props;
 
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
+    const { formVals } = this.state;
+    const { form } = this.props;
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleUpdate(fieldsValue);
+      });
+    };
+    const props = {
+      name: 'file',
+      multiple: true,
+      listType: 'picture',
+      openFileDialogOnClick: true,
+      withCredentials:true,
+      accept:"image/*",
+      //action: '//jsonplaceholder.typicode.com/posts/',
 
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
+    };
+
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="文件上传"
+        width={750}
+        visible={updateModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleUpdateModalVisible(false)}
+      >
+        <FormItem labelCol={{ span: 20 }} wrapperCol={{ span: 40 }} >
+          {form.getFieldDecorator('fileForm')(
+            <Dragger {...props}>
+              <p className="ant-upload-drag-icon">
+                <Icon type="inbox" />
+              </p>
+              <p className="ant-upload-text">Click or drag file to this area to upload</p>
+              <p className="ant-upload-hint">Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files</p>
+            </Dragger>
+          )}
+        </FormItem>
+
+      </Modal>
+    );
+  }
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -351,7 +374,7 @@ class FileUpload extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>删除</a>
+          <a >删除</a>
         </Fragment>
       ),
     },
@@ -484,10 +507,9 @@ class FileUpload extends PureComponent {
     });
   };
 
-  handleUpdateModalVisible = (flag, record) => {
+  handleUpdateModalVisible = (flag) => {
     this.setState({
       updateModalVisible: !!flag,
-      stepFormValues: record || {},
     });
   };
 
@@ -508,12 +530,8 @@ class FileUpload extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'fileupload/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
-      },
+      type: 'fileupload/upload',
+      payload: fields,
     });
 
     message.success('配置成功');
@@ -546,7 +564,7 @@ class FileUpload extends PureComponent {
               <Button type="primary" onClick={() => this.handleModalVisible(true)}>
                 云存储配置
               </Button>
-              <Button type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button type="primary" onClick={() => this.handleUpdateModalVisible(true)}>
                 文件上传
               </Button>
               {selectedRows.length > 0 && (
@@ -567,7 +585,7 @@ class FileUpload extends PureComponent {
           </div>
         </Card>
         <CreateForm {...parentMethods} modalVisible={modalVisible} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
+        {stepFormValues?(
           <UpdateForm
             {...updateMethods}
             updateModalVisible={updateModalVisible}

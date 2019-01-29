@@ -25,7 +25,9 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './SystemLog.less';
+const { MonthPicker, RangePicker } = DatePicker;
 
+const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 const FormItem = Form.Item;
 const { Step } = Steps;
 const { TextArea } = Input;
@@ -345,16 +347,26 @@ class SystemLog extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名、用户操作">
+            <FormItem label="用户名">
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-
+          <Col md={8} sm={24}>
+            <FormItem label="用户操作">
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                重置
+              </Button>
+              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                展开 <Icon type="down" />
+              </a>
             </span>
           </Col>
         </Row>
@@ -370,8 +382,30 @@ class SystemLog extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名、用户操作">
+            <FormItem label="用户名">
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="用户操作">
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="方法名">
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="创建时间">
+              {getFieldDecorator('name')(
+                <RangePicker
+                  format={dateFormat}
+                  showTime={{
+                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                  }}
+                />
+              )}
             </FormItem>
           </Col>
         </Row>
@@ -381,6 +415,12 @@ class SystemLog extends PureComponent {
             <Button type="primary" htmlType="submit">
               查询
             </Button>
+            <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+              重置
+            </Button>
+            <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+              收起 <Icon type="up" />
+            </a>
           </div>
         </div>
       </Form>

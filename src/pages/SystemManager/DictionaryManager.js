@@ -455,6 +455,9 @@ class DictionaryManager extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                重置
+              </Button>
             </span>
           </Col>
         </Row>
