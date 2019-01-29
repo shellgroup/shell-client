@@ -167,6 +167,7 @@ class SystemLog extends PureComponent {
     {
       title: '请求参数',
       dataIndex: 'params',
+      width:200
     },
     {
       title: '执行时长（毫秒）',

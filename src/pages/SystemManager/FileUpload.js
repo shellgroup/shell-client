@@ -235,7 +235,7 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="型&emsp;&emsp;类">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="类&emsp;&emsp;型">
         {form.getFieldDecorator('type', {
           rules: [{ required: false }],
           initialValue: btnType,
@@ -308,7 +308,7 @@ class UpdateForm extends PureComponent {
       listType: 'picture',
       openFileDialogOnClick: true,
       withCredentials:true,
-      accept:"image/*",
+      accept:"image/*,.jpg,.png",
       //action: '//jsonplaceholder.typicode.com/posts/',
 
     };
@@ -329,8 +329,8 @@ class UpdateForm extends PureComponent {
               <p className="ant-upload-drag-icon">
                 <Icon type="inbox" />
               </p>
-              <p className="ant-upload-text">Click or drag file to this area to upload</p>
-              <p className="ant-upload-hint">Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files</p>
+              <p className="ant-upload-text">点击或拖动图片到此区域进行上传</p>
+              <p className="ant-upload-hint">支持单个或批量上传。</p>
             </Dragger>
           )}
         </FormItem>
@@ -362,11 +362,19 @@ class FileUpload extends PureComponent {
   columns = [
     {
       title: 'URL地址',
-      dataIndex: 'name',
+      dataIndex: 'url',
+      render: val => (
+        <div className={styles.imgBx}>
+          <div className={styles.imgTs}>
+            <img className={styles.imgBg} src={val}/>
+          </div>
+          <span>{val}</span>
+        </div>
+      ),
     },
     {
       title: '创建时间',
-      dataIndex: 'createtime',
+      dataIndex: 'createDate',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },

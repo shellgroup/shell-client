@@ -78,7 +78,7 @@ export default [
             path: '/system-manager/sql-manager',
             name: 'SQL监控',
             //authority: ['admin'],
-            component: './Druid/SQL',
+            component: './SystemManager/DruidSql',
           },
           {
             path: '/system-manager/timing-manager',
