@@ -27,7 +27,10 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './FileUpload.less';
-import {tips} from "../../utils/utils";
+import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
+
+const showDeleteTipsParames = showDeleteConfirmParames();
+const confirm = Modal.confirm;
 const Dragger = Upload.Dragger;
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -317,7 +320,7 @@ class UpdateForm extends PureComponent {
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="文件上传"
+        title="图片上传"
         width={750}
         visible={updateModalVisible}
         onOk={okHandle}
@@ -382,7 +385,7 @@ class FileUpload extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a >删除</a>
+          <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>删除</Button>
         </Fragment>
       ),
     },
@@ -454,30 +457,86 @@ class FileUpload extends PureComponent {
       expandForm: !expandForm,
     });
   };
-
-  handleMenuClick = e => {
+//删除图片信息
+  showDeleteConfirm = record => {
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.deleted(record);
+      },
+      onCancel() {
+        console.log('取消删除');
+      },
+    });
+  };
+  deleted = record => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'fileupload/remove',
+      payload: [record.id],
+      callback: res => {
+        tips(res, this, 'fileupload/fetch');
+      },
+    });
+  };
+  //批量删除
+  showDeletesConfirm = () => {
+    console.log(showDeleteConfirmParames);
+    let that = this;
+    confirm({
+      ...showDeleteTipsParames,
+      onOk() {
+        that.handleMenuClick();
+      },
+      onCancel() {
+        console.log('取消删除');
+        that.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  };
+  handleMenuClick = () => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
 
     if (selectedRows.length === 0) return;
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'fileupload/remove',
-          payload: {
-            key: selectedRows.map(row => row.key),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
+    console.log(selectedRows.map(row => row.key));
+    dispatch({
+      type: 'fileupload/remove',
+      payload: selectedRows.map(row => row.id),
+      callback: res => {
+        tips(res, this, 'fileupload/fetch');
+        this.setState({
+          selectedRows: [],
         });
-        break;
-      default:
-        break;
-    }
+      },
+    });
   };
+  // handleMenuClick = e => {
+  //   const { dispatch } = this.props;
+  //   const { selectedRows } = this.state;
+  //
+  //   if (selectedRows.length === 0) return;
+  //   switch (e.key) {
+  //     case 'remove':
+  //       dispatch({
+  //         type: 'fileupload/remove',
+  //         payload: {
+  //           key: selectedRows.map(row => row.key),
+  //         },
+  //         callback: () => {
+  //           this.setState({
+  //             selectedRows: [],
+  //           });
+  //         },
+  //       });
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   handleSelectRows = rows => {
     this.setState({
@@ -540,9 +599,12 @@ class FileUpload extends PureComponent {
     dispatch({
       type: 'fileupload/upload',
       payload: fields,
+      callback:(res)=>{
+        tips(res, this, 'fileupload/fetch');
+      }
     });
 
-    message.success('配置成功');
+    //message.success('配置成功');
     this.handleUpdateModalVisible();
   };
 
@@ -573,11 +635,11 @@ class FileUpload extends PureComponent {
                 云存储配置
               </Button>
               <Button type="primary" onClick={() => this.handleUpdateModalVisible(true)}>
-                文件上传
+                图片上传
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>批量删除</Button>
+                  <Button onClick={this.showDeletesConfirm}>批量删除</Button>
                 </span>
               )}
             </div>

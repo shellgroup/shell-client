@@ -277,6 +277,14 @@ export async function fileUpload(params) {
     body: params,
   });
 }
+//文件删除
+export async function removeUpload(params) {
+  return request(`${baseURL}/sys/oss/delete`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
 
 
 export async function queryProjectNotice() {
