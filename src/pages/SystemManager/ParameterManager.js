@@ -38,8 +38,8 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['normal', 'disabled'];
-const status = ['正常', '停用'];
+const statusMap = ['disabled', 'normal'];
+const status = ['隐藏', '显示'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible } = props;
@@ -189,6 +189,23 @@ class ParameterManager extends PureComponent {
       dataIndex: 'paramValue',
     },
     {
+      title: '状态',
+      dataIndex: 'status',
+      filters: [
+        {
+          text: status[0],
+          value: 0,
+        },
+        {
+          text: status[1],
+          value: 1,
+        },
+      ],
+      render(val) {
+        return <Badge status={statusMap[val]} text={status[val]} />;
+      },
+    },
+    {
       title: '备注',
       dataIndex: 'remark',
     },
@@ -196,9 +213,13 @@ class ParameterManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>修改</Button>
-          <Divider type="vertical" />
-          <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>删除</Button>
+          {this.state.UpdateBtn && (
+            <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>修改</Button>
+          )}
+          {this.state.UpdateBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+          {this.state.DeleteBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>删除</Button>
+          )}
         </Fragment>
       ),
     },
@@ -209,6 +230,7 @@ class ParameterManager extends PureComponent {
     dispatch({
       type: 'parame/fetch',
     });
+    disablesBtns(this);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -446,7 +468,7 @@ class ParameterManager extends PureComponent {
       parame: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, ShowList } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -461,10 +483,12 @@ class ParameterManager extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {selectedRows.length > 0 && (
+              {this.state.SaveBtn && (
+                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                  新建
+                </Button>
+              )}
+              {selectedRows.length > 0 && this.state.DeleteBtn && (
                 <span>
                   <Button onClick={this.showDeletesConfirm}>批量删除</Button>
                 </span>
@@ -473,7 +497,7 @@ class ParameterManager extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
+              data={ShowList ? data : {}}
               rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

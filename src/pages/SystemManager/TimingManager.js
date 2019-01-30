@@ -400,6 +400,7 @@ class TimingManager extends PureComponent {
     PauseBtn: false,
     ResumeBtn: false,
     RunBtn: false,
+    LogBtn:false,
   };
 
   columns = [
@@ -450,15 +451,31 @@ class TimingManager extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>修改</Button>
-          <Divider type="vertical" />
-          <Button type={'primary'} onClick={() => this.showDeleteConfirm(1,record)}>暂停</Button>
-          <Divider type="vertical" />
-          <Button type={'primary'} onClick={() => this.showDeleteConfirm(2,record)}>恢复</Button>
-          <Divider type="vertical" />
-          <Button type={'primary'} onClick={() => this.showDeleteConfirm(3,record)}>执行</Button>
-          <Divider type="vertical" />
-          <Button type={'primary'} onClick={() => this.showDeleteConfirm(4,record)}>删除</Button>
+
+          {this.state.UpdateBtn && (
+            <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>修改</Button>
+          )}
+          {this.state.UpdateBtn && this.state.PauseBtn && <Divider type="vertical" />}
+
+          {this.state.PauseBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(1,record)}>暂停</Button>
+          )}
+          {this.state.PauseBtn && this.state.ResumeBtn && <Divider type="vertical" />}
+
+          {this.state.ResumeBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(2,record)}>恢复</Button>
+          )}
+          {this.state.ResumeBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+
+          {this.state.RunBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(3,record)}>执行</Button>
+          )}
+          {this.state.RunBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+
+          {this.state.DeleteBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(4,record)}>删除</Button>
+          )}
+
         </Fragment>
       ),
     },
@@ -697,9 +714,11 @@ class TimingManager extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              <Button style={{ marginLeft: 8 }} type="primary" onClick={() => this.handleLogListModalVisible(true)}>
-                日志列表
-              </Button>
+              {this.state.LogBtn && (
+                <Button style={{ marginLeft: 8 }} type="primary" onClick={() => this.handleLogListModalVisible(true)}>
+                  日志列表
+                </Button>
+              )}
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
@@ -774,12 +793,21 @@ class TimingManager extends PureComponent {
       timing: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, logListModalVisible } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, logListModalVisible, ShowList } = this.state;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="suspend">暂停</Menu.Item>
-        <Menu.Item key="recovery">恢复</Menu.Item>
-        <Menu.Item key="implement">执行</Menu.Item>
+        {this.state.PauseBtn && (
+          <Menu.Item key="suspend">暂停</Menu.Item>
+        )}
+        {this.state.ResumeBtn && (
+          <Menu.Item key="recovery">恢复</Menu.Item>
+        )}
+        {this.state.RunBtn && (
+          <Menu.Item key="implement">执行</Menu.Item>
+        )}
+
+
+
       </Menu>
     );
     const parentMethods = {
@@ -800,10 +828,13 @@ class TimingManager extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {selectedRows.length > 0 && !this.state.DeleteBtn && (
+
+              {this.state.SaveBtn && (
+                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                  新建
+                </Button>
+              )}
+              {selectedRows.length > 0 && this.state.DeleteBtn && (
                 <span>
                   <Button onClick={this.handleMenuClick}>批量删除</Button>
                 </span>
@@ -821,7 +852,7 @@ class TimingManager extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
+              data={ShowList ? data : {}}
               rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

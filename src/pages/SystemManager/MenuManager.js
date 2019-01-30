@@ -41,7 +41,7 @@ const statusMap = ['normal', 'disabled'];
 const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, statusMenuText, menuType, menuNameText, iconData, disables, menuData, onChangeMenuType } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, statusMenuText, statusRouterText, menuType, menuNameText, iconData, disables, menuData, onChangeMenuType } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -70,7 +70,6 @@ const CreateForm = Form.create()(props => {
     return arr;
 
   }
-
   return (
     <Modal
       destroyOnClose
@@ -99,8 +98,8 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="父级菜单">
         {form.getFieldDecorator('parentId', {
-          rules: [{ required: true, message: '请选择父级菜单！' }],
-          initialValue: statusMenuText,
+          rules: [{ required: statusMenuText, message: '请选择父级菜单！' }],
+          initialValue:!statusMenuText?0:null,
         })(
           <TreeSelect
             className={styles.width}
@@ -114,11 +113,13 @@ const CreateForm = Form.create()(props => {
           />
         )}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="路&emsp;&emsp;由">
-        {form.getFieldDecorator('path', {
-          rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
+      {statusRouterText?(
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="路&emsp;&emsp;由">
+          {form.getFieldDecorator('path', {
+            rules: [{ required: true, message: '请输入路由！'}],
+          })(<Input placeholder={statusMenuText?'如： /system-manager/admin-manager':'如： /system-manager'} />)}
+        </FormItem>
+      ):null}
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排&emsp;&emsp;序">
         {form.getFieldDecorator('orderNum', {
           rules: [{ required: false }],
@@ -126,7 +127,7 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="授权标识">
         {form.getFieldDecorator('perms', {
-          rules: [{ required: false, message: '请输入授权标识！', min: 8 }],
+          rules: [{ required: false, message: '请输入授权标识！'}],
         })(<Input placeholder="多个用逗号分隔，如：sys:menu:save,sys:menu:update" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图&emsp;&emsp;标">
@@ -156,7 +157,31 @@ class UpdateForm extends PureComponent {
       menuCheckedKeys: props.values.menuIdList,
       deptCheckedKeys: props.values.deptIdList,
     });
-    console.log(props,9999999990000);
+    let value = props.values.type;
+    if(value == 0){
+      this.props.that.setState({
+        menuNameText:"目录名称",
+        statusMenuText: false,
+        statusRouterText:true,
+        disables:true,
+      })
+    }else if(value == 1){
+      this.props.that.setState({
+        menuNameText:"菜单名称",
+        statusMenuText: true,
+        statusRouterText:true,
+        disables:false,
+      })
+    }else if(value == 2){
+      this.props.that.setState({
+        menuNameText:"按钮名称",
+        statusMenuText: true,
+        statusRouterText:false,
+        disables:false,
+      })
+    }
+    console.log(props.values,909090);
+
     this.state = {
       formVals: {
         children: props.values.children,
@@ -184,6 +209,8 @@ class UpdateForm extends PureComponent {
   }
 
   render() {
+    const { that } = this.props;
+    const {statusMenuText, statusRouterText, menuNameText, disables} = that.state;
     const {
       updateModalVisible,
       handleUpdateModalVisible,
@@ -191,9 +218,6 @@ class UpdateForm extends PureComponent {
       onChangeMenuType,
       iconData,
       menuData,
-      disables,
-      menuNameText,
-      that,
     } = this.props;
 
     const { formVals } = this.state;
@@ -270,8 +294,8 @@ class UpdateForm extends PureComponent {
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="父级菜单">
           {form.getFieldDecorator('parentId', {
-            rules: [{ required: true, message: '请选择父级菜单！' }],
-            initialValue: formVals.parentId,
+            rules: [{ required: statusMenuText, message: '请选择父级菜单！' }],
+            initialValue:statusMenuText?formVals.parentId:0,
           })(
             <TreeSelect
               className={styles.width}
@@ -285,12 +309,14 @@ class UpdateForm extends PureComponent {
             />
           )}
         </FormItem>
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="路&emsp;&emsp;由">
-          {form.getFieldDecorator('path', {
-            rules: [{ required: true, message: '请输入至少8个字符的用户名！', min: 8 }],
-            initialValue: formVals.path,
-          })(<Input placeholder="请输入" />)}
-        </FormItem>
+        {statusRouterText?(
+          <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="路&emsp;&emsp;由">
+            {form.getFieldDecorator('path', {
+              rules: [{ required: true, message: '请输入路由！'}],
+              initialValue: formVals.path,
+            })(<Input placeholder={statusMenuText?'如： /system-manager/admin-manager':'如： /system-manager'} />)}
+          </FormItem>
+        ):null}
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排&emsp;&emsp;序">
           {form.getFieldDecorator('orderNum', {
             rules: [{ required: false }],
@@ -299,7 +325,7 @@ class UpdateForm extends PureComponent {
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="授权标识">
           {form.getFieldDecorator('perms', {
-            rules: [{ required: false, message: '请输入授权标识！', min: 8 }],
+            rules: [{ required: false, message: '请输入授权标识！'}],
             initialValue: formVals.perms,
           })(<Input placeholder="多个用逗号分隔，如：sys:menu:save,sys:menu:update" />)}
         </FormItem>
@@ -339,7 +365,8 @@ class MenuManager extends PureComponent {
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
-    statusMenuText:"父级菜单",
+    statusMenuText:true,
+    statusRouterText:true,
     menuNameText:"菜单名称",
     disables:false,
     menuType:1,
@@ -470,17 +497,22 @@ class MenuManager extends PureComponent {
     if(value == 0){
       this.setState({
         menuNameText:"目录名称",
-        statusMenuText: "父级菜单",
+        statusMenuText: false,
+        statusRouterText:true,
         disables:true,
       })
     }else if(value == 1){
       this.setState({
         menuNameText:"菜单名称",
+        statusMenuText: true,
+        statusRouterText:true,
         disables:false,
       })
     }else if(value == 2){
       this.setState({
         menuNameText:"按钮名称",
+        statusMenuText: true,
+        statusRouterText:false,
         disables:false,
       })
     }
@@ -546,6 +578,7 @@ class MenuManager extends PureComponent {
   handleModalVisible = flag => {
     this.setState({
       modalVisible: !!flag,
+      statusRouterText:true,
     });
   };
 
@@ -559,9 +592,7 @@ class MenuManager extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     console.log(fields,8888888);
-    if(this.state.menuType==1){
-      fields.parentId = 0;
-    }
+
     console.log(this.state.menuType,fields,9999);
     dispatch({
       type: 'menulist/add',
@@ -616,11 +647,12 @@ class MenuManager extends PureComponent {
       menulist: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, statusMenuText, menuType, iconData, menuData, key, disables, menuNameText, ShowList} = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, statusMenuText, statusRouterText, menuType, iconData, menuData, key, disables, menuNameText, ShowList} = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
       statusMenuText: statusMenuText,
+      statusRouterText:statusRouterText,
       menuType: menuType,
       menuData: menuData,
       iconData: iconData,
@@ -634,6 +666,7 @@ class MenuManager extends PureComponent {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
       statusMenuText: statusMenuText,
+      statusRouterText:statusRouterText,
       menuType: menuType,
       menuData: menuData,
       iconData: iconData,

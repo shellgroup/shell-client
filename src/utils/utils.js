@@ -228,6 +228,11 @@ export function disablesBtns(that) {
         RunBtn: true,
       });
     }
+    if (data[i].indexOf('log') != -1) {
+      that.setState({
+        LogBtn: true,
+      });
+    }
   }
 }
 //统一删除模板
