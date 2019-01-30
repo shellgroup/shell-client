@@ -1,4 +1,4 @@
-let flag = 'dev'; // dev开发版  pro生产版 local本地
+let flag = 'local'; // dev开发版  pro生产版 local本地
 module.exports = {
   baseURL:
     flag === 'test'

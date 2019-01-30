@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import Link from 'umi/link';
-import { Checkbox, Alert, Icon } from 'antd';
+import {Checkbox, Alert, Icon, Col, Row} from 'antd';
 import Login from '@/components/Login';
 import styles from './Login.less';
-import { getFakeCaptcha } from '../../services/api';
-import { baseURL } from '../../services/baseurl';
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
 
@@ -18,24 +16,32 @@ class LoginPage extends Component {
   state = {
     type: 'account',
     autoLogin: true,
+    captchaSrc: ''
   };
+  componentDidMount() {
+    //初始化验证码
+    this.onGetCaptcha()
+  }
 
   onTabChange = type => {
     this.setState({ type });
   };
   //获取验证码
-  onGetCaptcha = () =>
-    new Promise((resolve, reject) => {
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'login/getCaptcha',
-      })
-        .then(resolve)
-        .catch(reject);
-    });
-
+  onGetCaptcha = () =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'login/getCaptcha',
+      payload: new Date().getTime(),
+      callback:(res)=>{
+        this.setState({
+          captchaSrc:res
+        });
+      }
+    })
+  };
   handleSubmit = (err, values) => {
     const { type } = this.state;
+    console.log(err,values,7777);
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
@@ -44,6 +50,11 @@ class LoginPage extends Component {
           ...values,
           type,
         },
+        callback:(res)=>{
+          if(res.code==500){
+            this.onGetCaptcha();
+          }
+        }
       });
     }
   };
@@ -60,7 +71,7 @@ class LoginPage extends Component {
 
   render() {
     const { login, submitting } = this.props;
-    const { type, autoLogin } = this.state;
+    const { type, autoLogin, captchaSrc } = this.state;
     return (
       <div className={styles.main}>
         <Login
@@ -92,20 +103,25 @@ class LoginPage extends Component {
                   message: formatMessage({ id: 'validation.password.required' }),
                 },
               ]}
-              onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
             />
-            <Captcha
-              name="captcha"
-              placeholder={formatMessage({ id: 'form.verification-code.placeholder' })}
-              onGetCaptcha={this.onGetCaptcha}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'validation.verification-code.required' }),
-                },
-              ]}
-              onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
-            />
+              <Row gutter={8}>
+                <Col span={16}>
+                  <Captcha
+                    name="captcha"
+                    placeholder={formatMessage({ id: 'form.verification-code.placeholder' })}
+                    rules={[
+                      {
+                        required: true,
+                        message: formatMessage({ id: 'validation.verification-code.required' }),
+                      },
+                    ]}
+                    onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
+                  />
+                </Col>
+                <Col span={8}>
+                  <img src={captchaSrc} className={styles.getCaptcha} onClick={() => this.onGetCaptcha()}/>
+                </Col>
+              </Row>
           </Tab>
 
           <Submit loading={submitting}>

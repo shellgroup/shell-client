@@ -13,7 +13,7 @@ export default {
   },
 
   effects: {
-    *login({ payload }, { call, put }) {
+    *login({ payload,callback }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
       console.log(response, '登录返回的参数和传的参数', payload);
       yield put({
@@ -39,13 +39,21 @@ export default {
           }
         }
         yield put(routerRedux.replace(redirect || '/'));
+      }else{
+        if (callback) callback(response);
       }
     },
 
-    *getCaptcha({ payload }, { call }) {
+    *getCaptcha({ payload,callback }, { call, put }) {
       //请求验证码
-      const response = yield call(getFakeCaptcha);
-      return response;
+      // const response = yield call(getFakeCaptcha);
+      // return response;
+      const response = yield call(getFakeCaptcha, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
     },
 
     *logout(_, { put }) {

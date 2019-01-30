@@ -27,8 +27,8 @@ export async function queryMenus() {
 }
 
 //获取图形验证码
-export async function getFakeCaptcha() {
-  return `${baseURL}/captcha.jpg?t=${new Date().getTime()}`;
+export async function getFakeCaptcha(params) {
+  return `${baseURL}/captcha.jpg?t=${params}`;
 }
 
 //新建管理员

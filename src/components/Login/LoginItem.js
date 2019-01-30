@@ -14,12 +14,11 @@ class WrapFormItem extends Component {
 
     this.state = {
       count: 0,
-      src: this.onGetCaptcha(),
     };
   }
 
   componentDidMount() {
-    const { updateActive, name } = this.props;
+    const { updateActive, name} = this.props;
     if (updateActive) {
       updateActive(name);
     }
@@ -28,21 +27,6 @@ class WrapFormItem extends Component {
   componentWillUnmount() {
     clearInterval(this.interval);
   }
-
-  onGetCaptcha = () => {
-    const { onGetCaptcha } = this.props;
-    const result = onGetCaptcha ? onGetCaptcha() : null;
-    if (result === false) {
-      return;
-    }
-    if (result instanceof Promise) {
-      result.then(res => {
-        this.setState({
-          src: res,
-        });
-      });
-    }
-  };
 
   getFormItemOptions = ({ onChange, defaultValue, customprops, rules }) => {
     const options = {
@@ -80,17 +64,10 @@ class WrapFormItem extends Component {
 
     const otherProps = restProps || {};
     if (type === 'Captcha') {
-      const inputProps = omit(otherProps, ['onGetCaptcha', 'countDown']);
+      const inputProps = omit(otherProps, ['countDown']);
       return (
         <FormItem>
-          <Row gutter={8}>
-            <Col span={16}>
-              {getFieldDecorator(name, options)(<Input {...customprops} {...inputProps} />)}
-            </Col>
-            <Col span={8}>
-              <img src={this.state.src} className={styles.getCaptcha} onClick={this.onGetCaptcha} />
-            </Col>
-          </Row>
+            {getFieldDecorator(name, options)(<Input {...customprops} {...inputProps} />)}
         </FormItem>
       );
     }
