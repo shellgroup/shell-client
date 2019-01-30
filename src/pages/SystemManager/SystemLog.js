@@ -25,6 +25,7 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './SystemLog.less';
+import {disablesBtns} from "../../utils/utils";
 const { MonthPicker, RangePicker } = DatePicker;
 
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
@@ -149,6 +150,8 @@ class SystemLog extends PureComponent {
     formValues: {},
     stepFormValues: {},
     key: 'id',
+    ShowList:false,
+    createTime:{}
   };
 
   columns = [
@@ -198,6 +201,8 @@ class SystemLog extends PureComponent {
     dispatch({
       type: 'systemlog/fetch',
     });
+    disablesBtns(this);
+    this.createTimes = this.createTimes.bind(this);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -225,12 +230,23 @@ class SystemLog extends PureComponent {
       payload: params,
     });
   };
-
+  createTimes(dates, dateStrings) {
+    console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
+    let createTime = {
+      beginDate:dateStrings[0],
+      endDate:dateStrings[1]
+    }
+    this.setState({
+      createTime:createTime
+    });
+    console.log(this.state.createTime,77788)
+  };
   handleFormReset = () => {
     const { form, dispatch } = this.props;
     form.resetFields();
     this.setState({
       formValues: {},
+      createTime:{}
     });
     dispatch({
       type: 'systemlog/fetch',
@@ -284,8 +300,11 @@ class SystemLog extends PureComponent {
       if (err) return;
 
       const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        username: fieldsValue.username,
+        operation: fieldsValue.userwork,
+        method: fieldsValue.methodname,
+        beginDate: this.state.createTime.beginDate,
+        endDate: this.state.createTime.endDate,
       };
 
       this.setState({
@@ -349,12 +368,12 @@ class SystemLog extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="用户名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('username')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="用户操作">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('userwork')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -384,29 +403,28 @@ class SystemLog extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="用户名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('username')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="用户操作">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('userwork')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="方法名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('methodname')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="创建时间">
-              {getFieldDecorator('name')(
-                <RangePicker
-                  format={dateFormat}
-                  showTime={{
-                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                  }}
-                />
-              )}
+              <RangePicker
+                format={dateFormat}
+                showTime={{
+                  defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                }}
+                onChange={this.createTimes}
+              />
             </FormItem>
           </Col>
         </Row>
@@ -438,7 +456,7 @@ class SystemLog extends PureComponent {
       systemlog: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, ShowList } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -462,7 +480,7 @@ class SystemLog extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
+              data={ShowList?data:{}}
               rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

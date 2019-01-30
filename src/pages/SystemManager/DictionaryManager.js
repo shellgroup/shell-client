@@ -216,6 +216,10 @@ class DictionaryManager extends PureComponent {
     formValues: {},
     stepFormValues: {},
     key: 'id',
+    DeleteBtn: false,
+    SaveBtn: false,
+    UpdateBtn: false,
+    ShowList: false,
   };
 
   columns = [
@@ -256,6 +260,7 @@ class DictionaryManager extends PureComponent {
     dispatch({
       type: 'dictionary/fetch',
     });
+    disablesBtns(this);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -376,10 +381,9 @@ class DictionaryManager extends PureComponent {
       if (err) return;
 
       const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        name: fieldsValue.name,
+        type: fieldsValue.type,
       };
-
       this.setState({
         formValues: values,
       });
@@ -446,7 +450,7 @@ class DictionaryManager extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="类型">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('type')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
 
@@ -479,7 +483,7 @@ class DictionaryManager extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="类型">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('type')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
         </Row>
@@ -520,10 +524,12 @@ class DictionaryManager extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button>
-              {selectedRows.length > 0 && (
+              {this.state.SaveBtn && (
+                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+                  新建
+                </Button>
+              )}
+              {selectedRows.length > 0 && this.state.DeleteBtn && (
                 <span>
                   <Button onClick={this.showDeletesConfirm}>批量删除</Button>
                 </span>

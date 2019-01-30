@@ -214,13 +214,16 @@ class LogListForm extends PureComponent {
       currentStep: 0,
       confirmDirty: false,
       formValues: {},
-      key:"logId"
+      createTime:{},
+      key:"logId",
+      visible: false
     };
 
     let { dispatch } = this.props;
     dispatch({
       type: 'timingLog/fetch',
     });
+    this.createTimes = this.createTimes.bind(this);
   }
   columns = [
     {
@@ -272,10 +275,75 @@ class LogListForm extends PureComponent {
     },
     {
       title: '异常日志',
-      render: record => ((<Button type={'primary'} onClick={() => this.showConfirm(record)}>查看</Button>)),
+      render: record => (<Button type={'primary'} onClick={()=>this.infoBox(record)} key={record.logId}>查看</Button>),
     }
 
   ];
+  handleSearch = e => {
+    e.preventDefault();
+
+    const { dispatch, form } = this.props;
+
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+
+      const values = {
+        beanName: fieldsValue.logbname,
+        methodName: fieldsValue.logfname,
+        beginDate: this.state.createTime.beginDate,
+        endDate: this.state.createTime.endDate,
+      };
+      console.log(values,9999999888);
+      this.setState({
+        formValues: values,
+      });
+
+      dispatch({
+        type: 'timingLog/fetch',
+        payload: values,
+      });
+    });
+  };
+
+
+  infoBox =(data)=>{
+    console.log(data,677777);
+    Modal.info({
+      title: '错误日志',
+      content: (
+        <div>
+          <p>
+            {data.error?data.error:'无错误日志！！！'}
+          </p>
+        </div>
+      ),
+      onOk() {},
+    });
+  }
+
+  createTimes(dates, dateStrings) {
+    console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
+    let createTime = {
+      beginDate:dateStrings[0],
+      endDate:dateStrings[1]
+    }
+    this.setState({
+      createTime:createTime
+    });
+    console.log(this.state.createTime,77788)
+  }
+  handleFormReset = () => {
+    const { form, dispatch } = this.props;
+    form.resetFields();
+    this.setState({
+      createTime:{},
+      formValues: {},
+    });
+    dispatch({
+      type: 'timingLog/fetch',
+      payload: {},
+    });
+  };
   handleTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
     const { formValues } = this.state;
@@ -326,24 +394,23 @@ console.log(this.props,77889900);
           <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
             <Col md={7} sm={12}>
               <FormItem label="BEAN名称">
-                {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('logbname')(<Input placeholder="请输入" />)}
               </FormItem>
             </Col>
             <Col md={7} sm={12}>
               <FormItem label="方法名称">
-                {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('logfname')(<Input placeholder="请输入" />)}
               </FormItem>
             </Col>
             <Col md={9} sm={12}>
               <FormItem label="执行时间">
-                {getFieldDecorator('name')(
-                  <RangePicker
-                    format={dateFormat}
-                    showTime={{
-                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                    }}
-                  />
-                )}
+                <RangePicker
+                  format={dateFormat}
+                  showTime={{
+                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                  }}
+                  onChange={this.createTimes}
+                />
               </FormItem>
             </Col>
           </Row>
@@ -401,8 +468,8 @@ class TimingManager extends PureComponent {
     ResumeBtn: false,
     RunBtn: false,
     LogBtn:false,
+    createTime:{},
   };
-
   columns = [
     {
       title: 'BEAN名称',
@@ -488,6 +555,7 @@ class TimingManager extends PureComponent {
     });
 
     disablesBtns(this);
+    this.createTimes = this.createTimes.bind(this);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -520,6 +588,7 @@ class TimingManager extends PureComponent {
     const { form, dispatch } = this.props;
     form.resetFields();
     this.setState({
+      createTime:{},
       formValues: {},
     });
     dispatch({
@@ -594,10 +663,11 @@ class TimingManager extends PureComponent {
       if (err) return;
 
       const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        beanName: fieldsValue.bname,
+        methodName: fieldsValue.fname,
+        beginDate: this.state.createTime.beginDate,
+        endDate: this.state.createTime.endDate,
       };
-
       this.setState({
         formValues: values,
       });
@@ -675,6 +745,17 @@ class TimingManager extends PureComponent {
     });
   };
 
+  createTimes(dates, dateStrings) {
+    console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
+    let createTime = {
+      beginDate:dateStrings[0],
+      endDate:dateStrings[1]
+    }
+    this.setState({
+      createTime:createTime
+    });
+    console.log(this.state.createTime,77788)
+  }
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
@@ -701,12 +782,12 @@ class TimingManager extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="BEAN名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('bname')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="方法名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('fname')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -741,24 +822,23 @@ class TimingManager extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="BEAN名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('bname')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="方法名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('fname')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="创建时间">
-              {getFieldDecorator('name')(
-                <RangePicker
-                  format={dateFormat}
-                  showTime={{
-                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                  }}
-                />
-              )}
+              <RangePicker
+                format={dateFormat}
+                showTime={{
+                  defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                }}
+                onChange={this.createTimes}
+              />
             </FormItem>
           </Col>
         </Row>

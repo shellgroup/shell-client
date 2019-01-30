@@ -359,7 +359,11 @@ class FileUpload extends PureComponent {
     stepFormValues: {},
     key: 'id',
     btnType: 0,
-    configData:{}
+    configData:{},
+    uploadBtn:false,
+    DeleteBtn: false,
+    SaveBtn: false,
+    ShowList: false,
   };
 
   columns = [
@@ -385,7 +389,9 @@ class FileUpload extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>删除</Button>
+          {this.state.DeleteBtn && (
+            <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>删除</Button>
+          )}
         </Fragment>
       ),
     },
@@ -405,6 +411,7 @@ class FileUpload extends PureComponent {
         })
       }
     });
+    disablesBtns(this);
   }
   onChangebtnType = (e) => {
     let value = e.target.value;
@@ -613,7 +620,7 @@ class FileUpload extends PureComponent {
       fileupload: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, btnType, configData } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, btnType, configData, ShowList } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -631,13 +638,18 @@ class FileUpload extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm} />
             <div className={styles.tableListOperator}>
-              <Button type="primary" onClick={() => this.handleModalVisible(true)}>
-                云存储配置
-              </Button>
-              <Button type="primary" onClick={() => this.handleUpdateModalVisible(true)}>
-                图片上传
-              </Button>
-              {selectedRows.length > 0 && (
+              {this.state.SaveBtn && (
+                <Button type="primary" onClick={() => this.handleModalVisible(true)}>
+                  云存储配置
+                </Button>
+              )}
+              {this.state.uploadBtn && (
+                <Button type="primary" onClick={() => this.handleUpdateModalVisible(true)}>
+                  图片上传
+                </Button>
+              )}
+
+              {selectedRows.length > 0 && this.state.DeleteBtn && (
                 <span>
                   <Button onClick={this.showDeletesConfirm}>批量删除</Button>
                 </span>
@@ -646,7 +658,7 @@ class FileUpload extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
+              data={ShowList ? data : {}}
               rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

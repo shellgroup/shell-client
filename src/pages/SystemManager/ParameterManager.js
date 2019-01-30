@@ -350,8 +350,7 @@ class ParameterManager extends PureComponent {
       if (err) return;
 
       const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        paramKey: fieldsValue.name,
       };
 
       this.setState({

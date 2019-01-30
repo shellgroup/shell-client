@@ -233,6 +233,11 @@ export function disablesBtns(that) {
         LogBtn: true,
       });
     }
+    if (data[i].indexOf('upload') != -1) {
+      that.setState({
+        uploadBtn: true,
+      });
+    }
   }
 }
 //统一删除模板
