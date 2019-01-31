@@ -21,7 +21,7 @@ import {
   Steps,
   Radio, TreeSelect, Tree,
 } from 'antd';
-import TreeTableNoCheckBox from '@/components/TreeTableNoCheckBox';
+import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, menuChild } from '../../utils/utils';
 import styles from './MenuManager.less';
@@ -381,26 +381,34 @@ class MenuManager extends PureComponent {
     },
     {
       title: '图标',
+      align:'center',
       render: record => (record.icon !=null && (<Icon type={record.icon} />)),
     },
     {
       title: '类型',
       dataIndex: 'type',
+      align:'center',
     },
     {
       title: '排序',
       dataIndex: 'orderNum',
+      align:'center',
     },
     {
       title: '路由',
       dataIndex: 'path',
+      align:'center',
     },
     {
       title: '授权标识',
       dataIndex: 'perms',
+      align:'center',
     },
     {
       title: '操作',
+      align:'center',
+      fixed: 'right',
+      width: 200,
       render: (text, record) => (
         <Fragment>
           {this.state.UpdateBtn && (
@@ -598,7 +606,7 @@ class MenuManager extends PureComponent {
       type: 'menulist/add',
       payload: fields,
       callback:(res)=>{
-        tips(res, this, 'menulist/fetch',"menu");
+        tips(res, this, 'menulist/fetch',"menu/getMenuData");
       }
     });
 
@@ -624,7 +632,7 @@ class MenuManager extends PureComponent {
       type: 'menulist/remove',
       payload: record.menuId,
       callback: res => {
-        tips(res, this, 'menulist/fetch',"menu");
+        tips(res, this, 'menulist/fetch',"menu/getMenuData");
       },
     });
   };
@@ -634,7 +642,7 @@ class MenuManager extends PureComponent {
       type: 'menulist/update',
       payload: fields,
       callback: res => {
-        tips(res, this, 'menulist/fetch',"menu");
+        tips(res, this, 'menulist/fetch',"menu/getMenuData");
       },
     });
 
@@ -687,9 +695,13 @@ class MenuManager extends PureComponent {
                 </Button>
               )}
             </div>
-            <TreeTableNoCheckBox
+            <StandardTable
               selectedRows={selectedRows}
               loading={loading}
+              bordered={true}
+              scroll={{x:'140%'}}
+              rowSelection={null}
+              tableAlert={false}
               data={ShowList?data:{}}
               rowKey={key}
               columns={this.columns}

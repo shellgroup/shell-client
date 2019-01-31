@@ -98,7 +98,7 @@ export default {
 
   effects: {
     *getMenuData({ payload }, { call, put }) {
-      const { routes, authority } = payload;
+      //const { routes, authority } = payload;
       //const menuData = filterMenuData(memoizeOneFormatter(routes, authority));
       //请求菜单数据
       const response = yield call(queryMenus);

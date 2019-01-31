@@ -226,25 +226,32 @@ class DictionaryManager extends PureComponent {
     {
       title: '名称',
       dataIndex: 'name',
+      align: 'center',
     },
     {
       title: '类型',
       dataIndex: 'type',
+      align: 'center',
     },
     {
       title: '排序',
       dataIndex: 'orderNum',
+      align: 'center',
     },
     {
       title: '字典值',
       dataIndex: 'value',
+      align: 'center',
     },
     {
       title: '备注',
       dataIndex: 'remark',
+      align: 'center',
     },
     {
       title: '操作',
+      align: 'center',
+      width: 200,
       render: (text, record) => (
         <Fragment>
           <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>修改</Button>
@@ -509,7 +516,7 @@ class DictionaryManager extends PureComponent {
       dictionary: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, ShowList } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -538,7 +545,10 @@ class DictionaryManager extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
+              bordered={true}
               data={data}
+              tableAlert={true}
+              data={ShowList ? data : {}}
               rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

@@ -439,22 +439,27 @@ class AdminManager extends PureComponent {
     {
       title: '用户名',
       dataIndex: 'username',
+      align:'center',
     },
     {
       title: '所属部门',
       dataIndex: 'deptName',
+      align:'center',
     },
     {
       title: '邮箱',
       dataIndex: 'email',
+      align:'center',
     },
     {
       title: '手机号',
       dataIndex: 'mobile',
+      align:'center',
     },
     {
       title: '状态',
       dataIndex: 'status',
+      align:'center',
       filters: [
         {
           text: status[0],
@@ -472,11 +477,14 @@ class AdminManager extends PureComponent {
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      align:'center',
       // sorter: true,
       // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '操作',
+      align:'center',
+      width: 200,
       render: (text, record) => (
         <Fragment>
           {this.state.UpdateBtn && (
@@ -824,6 +832,8 @@ class AdminManager extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
+              bordered={true}
+              tableAlert={true}
               data={ShowList ? data : {}}
               rowKey={key}
               columns={this.columns}

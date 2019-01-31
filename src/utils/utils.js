@@ -158,20 +158,21 @@ export function tips(res, that, path, menu) {
       content: res.msg,
     });
   } else {
-    console.log(res,99999000000);
     Modal.error({
       title: '错误提示！',
       content: res.msg,
     });
-  }
-  if (menu == "menu") {
-    window.location.reload();
   }
   if (path && that) {
     const { dispatch } = that.props;
     dispatch({
       type: path,
     });
+    if(menu){
+      dispatch({
+        type: menu,
+      });
+    }
   }
 
 }

@@ -314,23 +314,29 @@ class RoleManager extends PureComponent {
     {
       title: '角色名称',
       dataIndex: 'roleName',
+      align:'center',
     },
     {
       title: '所属部门',
       dataIndex: 'deptName',
+      align:'center',
     },
     {
       title: '备注',
       dataIndex: 'remark',
+      align:'center',
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      align:'center',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '操作',
+      align:'center',
+      width:200,
       render: (text, record) => (
         <Fragment>
           {this.state.UpdateBtn && (
@@ -772,7 +778,9 @@ class RoleManager extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
+              bordered={true}
               data={ShowList?data:{}}
+              tableAlert={true}
               rowKey={key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

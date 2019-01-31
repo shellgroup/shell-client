@@ -18,6 +18,10 @@ export async function fakeAccountLogin(params) {
     body: params,
   });
 }
+//退出登录
+export async function logOut() {
+  return request(`${baseURL}/logout`);
+}
 
 //动态读取菜单
 export async function queryMenus() {

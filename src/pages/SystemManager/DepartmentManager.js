@@ -22,7 +22,7 @@ import {
   Radio,
   TreeSelect,
 } from 'antd';
-import TreeTableNoCheckBox from '@/components/TreeTableNoCheckBox';
+import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
 const showDeleteTipsParames = showDeleteConfirmParames();
@@ -222,13 +222,17 @@ class DepartmentManager extends PureComponent {
     {
       title: '上级部门',
       dataIndex: 'parentName',
+      align:'center',
     },
     {
       title: '排序',
       dataIndex: 'orderNum',
+      align:'center',
     },
     {
       title: '操作',
+      align:'center',
+      width: 200,
       render: (text, record) => (
         <Fragment>
           {this.state.UpdateBtn && (
@@ -477,9 +481,12 @@ class DepartmentManager extends PureComponent {
                 </Button>
               )}
             </div>
-            <TreeTableNoCheckBox
+            <StandardTable
               selectedRows={selectedRows}
               loading={loading}
+              rowSelection={null}
+              bordered={true}
+              tableAlert={false}
               data={ShowList?data:{}}
               rowKey={key}
               columns={this.columns}

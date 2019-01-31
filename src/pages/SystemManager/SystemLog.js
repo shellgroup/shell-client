@@ -158,42 +158,57 @@ class SystemLog extends PureComponent {
     {
       title: '用户名',
       dataIndex: 'username',
+      align:'center',
+      width: 140,
+      fixed: 'left',
     },
     {
       title: '用户操作',
       dataIndex: 'operation',
+      align:'center',
+      width: 140,
+      fixed: 'left',
     },
     {
       title: '请求方法',
       dataIndex: 'method',
+      align:'center',
     },
     {
       title: '请求参数',
       dataIndex: 'params',
-      width:200
+      align:'center',
     },
     {
       title: '执行时长（毫秒）',
       dataIndex: 'time',
+      align:'center',
     },
     {
       title: 'IP地址',
       dataIndex: 'ip',
+      align:'center',
     },
     {
       title: '创建时间',
       dataIndex: 'createDate',
+      align:'center',
+      width: 200,
+      fixed: 'right',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
-    {
-      title: '操作',
-      render: (text, record) => (
-        <Fragment>
-          <a onClick={() => this.handleModalVisible(true)}>异常信息</a>
-        </Fragment>
-      ),
-    },
+    // {
+    //   title: '操作',
+    //   fixed: 'right',
+    //   align:'center',
+    //   width: 100,
+    //   render: (text, record) => (
+    //     <Fragment>
+    //       <Button type={"primary"} onClick={() => this.handleModalVisible(true)}>异常信息</Button>
+    //     </Fragment>
+    //   ),
+    // },
   ];
 
   componentDidMount() {
@@ -480,6 +495,10 @@ class SystemLog extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
+              scroll={{ x: '200%' }}
+              bordered={true}
+              tableAlert={false}
+              rowSelection={null}
               data={ShowList?data:{}}
               rowKey={this.state.key}
               columns={this.columns}

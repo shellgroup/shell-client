@@ -365,28 +365,31 @@ class FileUpload extends PureComponent {
     SaveBtn: false,
     ShowList: false,
   };
-
   columns = [
     {
       title: 'URL地址',
-      dataIndex: 'url',
-      render: val => (
+      align: 'center',
+      render: (text, record) => (
         <div className={styles.imgBx}>
           <div className={styles.imgTs}>
-            <img className={styles.imgBg} src={val}/>
+            <img className={styles.imgBg} src={record.url}/>
           </div>
-          <span>{val}</span>
+          <span>{record.url}</span>
         </div>
       ),
     },
     {
       title: '创建时间',
       dataIndex: 'createDate',
+      align: 'center',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '操作',
+      align: 'center',
+      fixed:'right',
+      width:100,
       render: (text, record) => (
         <Fragment>
           {this.state.DeleteBtn && (
@@ -396,14 +399,13 @@ class FileUpload extends PureComponent {
       ),
     },
   ];
-
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'fileupload/fetch',
     });
     dispatch({
-      type: 'fileupload/config',
+      type: 'fileuploadConfig/config',
       callback:(res)=>{
         this.setState({
           configData:res.config,
@@ -413,6 +415,7 @@ class FileUpload extends PureComponent {
     });
     disablesBtns(this);
   }
+
   onChangebtnType = (e) => {
     let value = e.target.value;
     this.setState({
@@ -593,7 +596,7 @@ class FileUpload extends PureComponent {
       type: 'fileupload/add',
       payload: fields,
       callback:(res)=>{
-        tips(res, this, 'fileupload/config');
+        tips(res, this, 'fileuploadConfig/config');
       }
     });
 
@@ -659,6 +662,9 @@ class FileUpload extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={ShowList ? data : {}}
+              bordered={true}
+              tableAlert={true}
+              scroll={{ x: '110%' }}
               rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

@@ -183,14 +183,17 @@ class ParameterManager extends PureComponent {
     {
       title: '参数名',
       dataIndex: 'paramKey',
+      align: 'center',
     },
     {
       title: '参数值',
       dataIndex: 'paramValue',
+      align: 'center',
     },
     {
       title: '状态',
       dataIndex: 'status',
+      align: 'center',
       filters: [
         {
           text: status[0],
@@ -208,9 +211,13 @@ class ParameterManager extends PureComponent {
     {
       title: '备注',
       dataIndex: 'remark',
+      align: 'center',
     },
     {
       title: '操作',
+      fixed: 'right',
+      align: 'center',
+      width: 200,
       render: (text, record) => (
         <Fragment>
           {this.state.UpdateBtn && (
@@ -497,6 +504,9 @@ class ParameterManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={ShowList ? data : {}}
+              scroll={{ x: '180%' }}
+              bordered={true}
+              tableAlert={true}
               rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

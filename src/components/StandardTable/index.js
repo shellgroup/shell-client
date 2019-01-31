@@ -63,7 +63,7 @@ class StandardTable extends PureComponent {
 
   render() {
     const { selectedRowKeys, needTotalList } = this.state;
-    const { data = {}, rowKey, ...rest } = this.props;
+    const { data = {}, tableAlert, rowKey, ...rest } = this.props;
     const { list = [], pagination } = data;
     console.log(`dataSource值的主键为: ${rowKey}`);
     const paginationProps = {
@@ -82,31 +82,32 @@ class StandardTable extends PureComponent {
 
     return (
       <div className={styles.standardTable}>
-        <div className={styles.tableAlert}>
+        {tableAlert && (
+          <div className={styles.tableAlert}>
           <Alert
-            message={
-              <Fragment>
-                已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
-                {needTotalList.map(item => (
-                  <span style={{ marginLeft: 8 }} key={item.dataIndex}>
-                    {item.title}
-                    总计&nbsp;
-                    <span style={{ fontWeight: 600 }}>
-                      {item.render ? item.render(item.total) : item.total}
-                    </span>
-                  </span>
-                ))}
-                <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
-                  清空
-                </a>
-              </Fragment>
-            }
-            type="info"
-            showIcon
+              message={
+                <Fragment>
+                  已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
+                  {needTotalList.map(item => (
+                    <span style={{ marginLeft: 8 }} key={item.dataIndex}>
+                          {item.title}
+                      总计&nbsp;
+                      <span style={{ fontWeight: 600 }}>
+                            {item.render ? item.render(item.total) : item.total}
+                          </span>
+                        </span>
+                  ))}
+                  <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
+                    清空
+                  </a>
+                </Fragment>
+              }
+              type="info"
+              showIcon
           />
-        </div>
+          </div>
+          )}
         <Table
-          className={styles.table}
           rowKey={rowKey || 'key'}
           rowSelection={rowSelection}
           dataSource={list}

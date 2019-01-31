@@ -22,7 +22,6 @@ import {
   Radio, TreeSelect,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
-import StandardTableNoCheckBox from '@/components/StandardTableNoCheckBox';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './TimingManager.less';
@@ -215,6 +214,7 @@ class LogListForm extends PureComponent {
       confirmDirty: false,
       formValues: {},
       createTime:{},
+      selectedRows: [],
       key:"logId",
       visible: false
     };
@@ -229,26 +229,33 @@ class LogListForm extends PureComponent {
     {
       title: '日志ID',
       dataIndex: 'logId',
+      align:'center',
     },
     {
       title: '任务ID',
       dataIndex: 'jobId',
+      align:'center',
     },
     {
       title: 'BEAN名称',
       dataIndex: 'beanName',
+      align:'center',
     },
     {
       title: '方法名称',
       dataIndex: 'methodName',
+      align:'center',
     },
     {
       title: '参数',
       dataIndex: 'params',
+      align:'center',
     },
     {
       title: '状态',
       dataIndex: 'status',
+      align:'center',
+      width: 120,
       filters: [
         {
           text: statusLog[0],
@@ -266,15 +273,20 @@ class LogListForm extends PureComponent {
     {
       title: '耗时(单位：毫秒)',
       dataIndex: 'times',
+      align:'center',
     },
     {
       title: '执行时间',
       dataIndex: 'createTime',
+      align:'center',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '异常日志',
+      fixed: 'right',
+      align:'center',
+      width: 100,
       render: record => (<Button type={'primary'} onClick={()=>this.infoBox(record)} key={record.logId}>查看</Button>),
     }
 
@@ -293,7 +305,6 @@ class LogListForm extends PureComponent {
         beginDate: this.state.createTime.beginDate,
         endDate: this.state.createTime.endDate,
       };
-      console.log(values,9999999888);
       this.setState({
         formValues: values,
       });
@@ -307,7 +318,6 @@ class LogListForm extends PureComponent {
 
 
   infoBox =(data)=>{
-    console.log(data,677777);
     Modal.info({
       title: '错误日志',
       content: (
@@ -379,30 +389,32 @@ class LogListForm extends PureComponent {
     const {
       form: { getFieldDecorator },
     } = this.props;
-console.log(this.props,77889900);
+    const { selectedRows } = this.state;
     return (
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
         title="日志列表"
-        width={1400}
+        width={1300}
         visible={logListModalVisible}
         onCancel={() => handleLogListModalVisible(false)}
         footer={null}
       >
         <Form onSubmit={this.handleSearch} layout="inline" className={styles.submitselect}>
           <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-            <Col md={7} sm={12}>
+            <Col md={10} sm={12}>
+              <FormItem label="方法名称">
+                {getFieldDecorator('logfname')(<Input placeholder="请输入"/>)}
+              </FormItem>
+            </Col>
+            <Col md={10} sm={12}>
               <FormItem label="BEAN名称">
                 {getFieldDecorator('logbname')(<Input placeholder="请输入" />)}
               </FormItem>
             </Col>
-            <Col md={7} sm={12}>
-              <FormItem label="方法名称">
-                {getFieldDecorator('logfname')(<Input placeholder="请输入" />)}
-              </FormItem>
-            </Col>
-            <Col md={9} sm={12}>
+          </Row>
+          <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+            <Col md={10} sm={12}>
               <FormItem label="执行时间">
                 <RangePicker
                   format={dateFormat}
@@ -413,28 +425,22 @@ console.log(this.props,77889900);
                 />
               </FormItem>
             </Col>
+            <Col md={10} sm={12}  style={{marginTop:4}}>
+              <span>
+                <Button type="primary" htmlType="submit">查询</Button>
+                <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
+              </span>
+            </Col>
           </Row>
-          <div className={styles.selectBox}>
-            <Col md={2} sm={12}>
-            <span >
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-            </span>
-            </Col>
-            <Col md={2} sm={12}>
-            <span >
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
-              </Button>
-            </span>
-            </Col>
-          </div>
         </Form>
-        <StandardTableNoCheckBox
-          //selectedRows={selectedRows}
+        <StandardTable
+          selectedRows={selectedRows}
           loading={loading}
           data={data}
+          bordered={true}
+          scroll={{ x: '140%' }}
+          tableAlert={false}
+          rowSelection={null}
           rowKey={this.state.key}
           columns={this.columns}
           //onSelectRow={this.handleSelectRows}
@@ -474,32 +480,39 @@ class TimingManager extends PureComponent {
     {
       title: 'BEAN名称',
       dataIndex: 'beanName',
+      align: 'center',
     },
     {
       title: '参数',
       dataIndex: 'params',
+      align: 'center',
     },
     {
       title: 'CRON表达式',
       dataIndex: 'cronExpression',
+      align: 'center',
     },
     {
       title: '方法',
       dataIndex: 'methodName',
+      align: 'center',
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      align: 'center',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '备注',
       dataIndex: 'remark',
+      align: 'center',
     },
     {
       title: '状态',
       dataIndex: 'status',
+      align: 'center',
       filters: [
         {
           text: status[0],
@@ -516,6 +529,9 @@ class TimingManager extends PureComponent {
     },
     {
       title: '操作',
+      align: 'center',
+      fixed:'right',
+      width: 480,
       render: (text, record) => (
         <Fragment>
 
@@ -932,7 +948,10 @@ class TimingManager extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
+              bordered={true}
+              scroll={{x:'140%'}}
               data={ShowList ? data : {}}
+              tableAlert={true}
               rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
