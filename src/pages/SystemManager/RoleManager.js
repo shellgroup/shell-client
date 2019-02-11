@@ -8,16 +8,9 @@ import {
   Form,
   Input,
   Select,
-  Icon,
   Button,
-  Dropdown,
-  Menu,
   Tree,
-  InputNumber,
-  DatePicker,
   Modal,
-  message,
-  Badge,
   Divider,
   Steps,
   Radio, TreeSelect,
@@ -26,20 +19,17 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
 import styles from './RoleManager.less';
+/**
+ * 角色管理
+ * */
 const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
 const { TreeNode } = Tree;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['normal', 'disabled'];
-const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible, deptData, menuList, that } = props;
@@ -425,12 +415,7 @@ class RoleManager extends PureComponent {
     });
   };
 
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
-    });
-  };
+
 
   handleMenuClick = e => {
     const { dispatch } = this.props;
@@ -519,7 +504,7 @@ class RoleManager extends PureComponent {
       },
     });
 
-    //message.success('添加成功');
+
     this.handleModalVisible();
   };
 
@@ -540,7 +525,7 @@ class RoleManager extends PureComponent {
       },
     });
 
-    //message.success('配置成功');
+
     this.handleUpdateModalVisible();
   };
   //删除角色信息

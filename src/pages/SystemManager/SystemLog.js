@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import {
@@ -10,14 +10,9 @@ import {
   Select,
   Icon,
   Button,
-  Dropdown,
-  Menu,
-  InputNumber,
   DatePicker,
   Modal,
   message,
-  Badge,
-  Divider,
   Steps,
   Radio,
 } from 'antd';
@@ -26,20 +21,17 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './SystemLog.less';
 import {disablesBtns} from "../../utils/utils";
-const { MonthPicker, RangePicker } = DatePicker;
+/**
+ * 系统日志管理
+ * */
+const { RangePicker } = DatePicker;
 
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['normal', 'disabled'];
-const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible } = props;
@@ -98,41 +90,6 @@ class UpdateForm extends PureComponent {
       wrapperCol: { span: 13 },
     };
   }
-
-  handleNext = currentStep => {
-    const { form, handleUpdate } = this.props;
-    const { formVals: oldValue } = this.state;
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      const formVals = { ...oldValue, ...fieldsValue };
-      this.setState(
-        {
-          formVals,
-        },
-        () => {
-          if (currentStep < 2) {
-            this.forward();
-          } else {
-            handleUpdate(formVals);
-          }
-        }
-      );
-    });
-  };
-
-  backward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep - 1,
-    });
-  };
-
-  forward = () => {
-    const { currentStep } = this.state;
-    this.setState({
-      currentStep: currentStep + 1,
-    });
-  };
 }
 
 /* eslint react/no-multi-comp:0 */
@@ -197,18 +154,7 @@ class SystemLog extends PureComponent {
       fixed: 'right',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-    },
-    // {
-    //   title: '操作',
-    //   fixed: 'right',
-    //   align:'center',
-    //   width: 100,
-    //   render: (text, record) => (
-    //     <Fragment>
-    //       <Button type={"primary"} onClick={() => this.handleModalVisible(true)}>异常信息</Button>
-    //     </Fragment>
-    //   ),
-    // },
+    }
   ];
 
   componentDidMount() {

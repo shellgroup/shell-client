@@ -3,6 +3,9 @@ import { baseURL } from '../../services/baseurl';
 import { Card } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './DruidSql.less';
+/**
+ * SQL监控
+ * */
 class DruidSql extends PureComponent {
   render() {
     return (

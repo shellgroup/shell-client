@@ -1,5 +1,8 @@
-import { configList } from '@/services/api'; //, removeRule, addRule, updateRule
-//RoleManager
+import { configList } from '@/services/api';
+
+/**
+ * 文件上传配置
+ * */
 export default {
   namespace: 'fileuploadConfig',
 

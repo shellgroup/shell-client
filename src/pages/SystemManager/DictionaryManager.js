@@ -1,6 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import {
   Row,
   Col,
@@ -8,15 +7,9 @@ import {
   Form,
   Input,
   Select,
-  Icon,
   Button,
-  Dropdown,
-  Menu,
   InputNumber,
-  DatePicker,
   Modal,
-  message,
-  Badge,
   Divider,
   Steps,
   Radio,
@@ -25,22 +18,18 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './DictionaryManager.less';
-import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
-
+import { tips, disablesBtns, showDeleteConfirmParames } from '../../utils/utils';
+/**
+ * 字典管理
+ * */
 const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
 
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['normal', 'disabled'];
-const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible } = props;
@@ -129,10 +118,7 @@ class UpdateForm extends PureComponent {
     const {
       updateModalVisible,
       handleUpdateModalVisible,
-      deptData,
-      menuList,
       handleUpdate,
-      that,
     } = this.props;
 
     const { formVals } = this.state;
@@ -424,7 +410,7 @@ class DictionaryManager extends PureComponent {
         tips(res, this, 'dictionary/fetch');
       },
     });
-    //message.success('添加成功');
+
     this.handleModalVisible();
   };
 
@@ -439,7 +425,7 @@ class DictionaryManager extends PureComponent {
       },
     });
 
-    //message.success('配置成功');
+
     this.handleUpdateModalVisible();
   };
 

@@ -12,29 +12,26 @@ import {
   Button,
   Dropdown,
   Menu,
-  InputNumber,
   DatePicker,
   Modal,
-  message,
   Badge,
   Divider,
   Steps,
-  Radio, TreeSelect,
+  Radio,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './TimingManager.less';
-import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
-const { MonthPicker, RangePicker } = DatePicker;
+import { tips, disablesBtns, showDeleteConfirmParames } from '../../utils/utils';
+/**
+ * 定时任务管理
+ * */
+const { RangePicker } = DatePicker;
 
 const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
@@ -724,7 +721,7 @@ class TimingManager extends PureComponent {
       },
     });
 
-    //message.success('添加成功');
+
     this.handleModalVisible();
   };
 
@@ -785,7 +782,7 @@ class TimingManager extends PureComponent {
         });
       },
     });
-    //message.success('配置成功');
+
     this.handleUpdateModalVisible();
   };
 

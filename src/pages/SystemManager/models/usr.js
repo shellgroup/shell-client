@@ -1,5 +1,8 @@
 import { queryUser, removeUser, addUser, updateUser } from '@/services/api';
-//AdminManager
+
+/**
+ * 管理员管理
+ * */
 export default {
   namespace: 'usr',
 

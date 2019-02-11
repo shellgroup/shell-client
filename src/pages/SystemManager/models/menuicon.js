@@ -1,5 +1,8 @@
-import { queryIcon } from '@/services/api'; //, removeRule, addRule, updateRule
-//DictionaryManager
+import { queryIcon } from '@/services/api';
+
+/**
+ * 菜单ICON
+ * */
 export default {
   namespace: 'menuicon',
 

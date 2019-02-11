@@ -1,5 +1,8 @@
-import { queryDictionary, updateDictionary, removeDictionary, addDictionary } from '@/services/api'; //, removeRule, addRule, updateRule
-//DictionaryManager
+import { queryDictionary, updateDictionary, removeDictionary, addDictionary } from '@/services/api';
+
+/**
+ * 字典管理
+ * */
 export default {
   namespace: 'dictionary',
 

@@ -1,5 +1,8 @@
-import { queryDept, addDept, updateDept, removeDept } from '@/services/api'; //, removeRule, addRule, updateRule
-//RoleManager
+import { queryDept, addDept, updateDept, removeDept } from '@/services/api';
+
+/**
+ * 部门管理
+ * */
 export default {
   namespace: 'dept',
 
@@ -29,7 +32,6 @@ export default {
       if (callback) callback(response);
     },
     *remove({ payload, callback }, { call, put }) {
-      console.log(7777777777, payload);
       const response = yield call(removeDept, payload);
       yield put({
         type: 'save',

@@ -19,6 +19,10 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
 import styles from './AdminManager.less';
+
+/**
+ * 管理员管理
+ * */
 const showDeleteTipsParames = showDeleteConfirmParames();
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -606,7 +610,7 @@ class AdminManager extends PureComponent {
       },
     });
 
-    //message.success('添加成功');
+
     this.handleModalVisible();
   };
   //修改用户信息
@@ -690,7 +694,7 @@ class AdminManager extends PureComponent {
         });
       },
     });
-    //message.success('配置成功');
+
     this.handleUpdateModalVisible();
   };
 

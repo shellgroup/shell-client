@@ -1,5 +1,8 @@
-import { queryRole, addRole, updateRole, removeRole } from '@/services/api'; //, removeRule, addRule, updateRule
-//RoleManager
+import { queryRole, addRole, updateRole, removeRole } from '@/services/api';
+
+/**
+ * 角色管理
+ * */
 export default {
   namespace: 'role',
 

@@ -1,5 +1,8 @@
-import { queryParame, addParame, removeParame, updateParame } from '@/services/api'; //, removeRule, addRule, updateRule
-//ParameterManager
+import { queryParame, addParame, removeParame, updateParame } from '@/services/api';
+
+/**
+ * 参数管理
+ * */
 export default {
   namespace: 'parame',
 

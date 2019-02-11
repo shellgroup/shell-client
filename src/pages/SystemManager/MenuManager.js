@@ -1,44 +1,36 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import {
-  Row,
-  Col,
   Card,
   Form,
   Input,
   Select,
   Icon,
   Button,
-  Dropdown,
-  Menu,
   InputNumber,
-  DatePicker,
   Modal,
-  message,
-  Badge,
   Divider,
   Steps,
-  Radio, TreeSelect, Tree,
+  Radio, TreeSelect,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, menuChild } from '../../utils/utils';
 import styles from './MenuManager.less';
+/**
+ * 菜单管理
+ * */
+
 const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
 
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
 const { Option, OptGroup } = Select;
 const RadioGroup = Radio.Group;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['normal', 'disabled'];
-const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible, statusMenuText, statusRouterText, menuType, menuNameText, iconData, disables, menuData, onChangeMenuType } = props;
@@ -482,24 +474,7 @@ class MenuManager extends PureComponent {
     });
   };
 
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'menulist/fetch',
-      payload: {},
-    });
-  };
 
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
-    });
-  };
   onChangeMenuType = (e) => {
     let value = e.target.value;
     if(value == 0){
@@ -525,9 +500,7 @@ class MenuManager extends PureComponent {
       })
     }
     console.log('MenuType', e.target.value);
-    // this.setState({
-    //   value3: e.target.value,
-    // });
+
   }
   handleMenuClick = e => {
     const { dispatch } = this.props;
@@ -559,29 +532,6 @@ class MenuManager extends PureComponent {
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'menulist/fetch',
-        payload: values,
-      });
-    });
-  };
 
   handleModalVisible = flag => {
     this.setState({
@@ -610,10 +560,10 @@ class MenuManager extends PureComponent {
       }
     });
 
-    //message.success('添加成功');
+
     this.handleModalVisible();
   };
-//删除角色信息
+//删除菜单信息
   showDeleteConfirm = record => {
     let that = this;
     confirm({
@@ -646,7 +596,7 @@ class MenuManager extends PureComponent {
       },
     });
 
-    //message.success('配置成功');
+
     this.handleUpdateModalVisible();
   };
 

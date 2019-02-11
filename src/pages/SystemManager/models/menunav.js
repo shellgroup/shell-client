@@ -1,5 +1,8 @@
-import { queryMenus } from '@/services/api'; //, removeRule, addRule, updateRule
-//DictionaryManager
+import { queryMenus } from '@/services/api';
+
+/**
+ * 导航菜单
+ * */
 export default {
   namespace: 'menunav',
 

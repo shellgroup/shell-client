@@ -45,9 +45,6 @@ export default {
     },
 
     *getCaptcha({ payload,callback }, { call, put }) {
-      //请求验证码
-      // const response = yield call(getFakeCaptcha);
-      // return response;
       const response = yield call(getFakeCaptcha, payload);
       yield put({
         type: 'save',

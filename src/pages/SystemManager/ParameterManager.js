@@ -1,6 +1,5 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import {
   Row,
   Col,
@@ -8,32 +7,24 @@ import {
   Form,
   Input,
   Select,
-  Icon,
   Button,
-  Dropdown,
-  Menu,
-  InputNumber,
-  DatePicker,
   Modal,
-  message,
   Badge,
   Divider,
   Steps,
-  Radio, TreeSelect, Tree,
+  Radio,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './ParameterManager.less';
-import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
-
+import { tips, disablesBtns, showDeleteConfirmParames } from '../../utils/utils';
+/**
+ * 参数管理
+ * */
 const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
@@ -109,10 +100,7 @@ class UpdateForm extends PureComponent {
     const {
       updateModalVisible,
       handleUpdateModalVisible,
-      deptData,
-      menuList,
       handleUpdate,
-      that,
     } = this.props;
 
     const { formVals } = this.state;
@@ -278,12 +266,7 @@ class ParameterManager extends PureComponent {
     });
   };
 
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
-    });
-  };
+
 //删除参数信息
   showDeleteConfirm = record => {
     let that = this;
@@ -393,7 +376,7 @@ class ParameterManager extends PureComponent {
         tips(res, this, 'parame/fetch');
       },
     });
-    //message.success('添加成功');
+
     this.handleModalVisible();
   };
 
@@ -407,7 +390,7 @@ class ParameterManager extends PureComponent {
       },
     });
 
-    //message.success('配置成功');
+
     this.handleUpdateModalVisible();
   };
 

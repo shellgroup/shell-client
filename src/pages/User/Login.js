@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import Link from 'umi/link';
-import {Checkbox, Alert, Icon, Col, Row} from 'antd';
+
+import { Alert, Col, Row} from 'antd';
 import Login from '@/components/Login';
 import styles from './Login.less';
 
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
+const { Tab, UserName, Password, Captcha, Submit } = Login;
 
 @connect(({ login, loading }) => ({
   login,
@@ -59,11 +59,6 @@ class LoginPage extends Component {
     }
   };
 
-  changeAutoLogin = e => {
-    this.setState({
-      autoLogin: e.target.checked,
-    });
-  };
 
   renderMessage = content => (
     <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
@@ -71,7 +66,7 @@ class LoginPage extends Component {
 
   render() {
     const { login, submitting } = this.props;
-    const { type, autoLogin, captchaSrc } = this.state;
+    const { type, captchaSrc } = this.state;
     return (
       <div className={styles.main}>
         <Login

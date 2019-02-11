@@ -1,5 +1,8 @@
-import { queryTiming, addTiming, updateTiming, implementTiming, removeTiming, suspendTiming, recoveryTiming } from '@/services/api'; //, removeRule, addRule, updateRule
-//TimingManager
+import { queryTiming, addTiming, updateTiming, implementTiming, removeTiming, suspendTiming, recoveryTiming } from '@/services/api';
+
+/**
+ * 定时任务
+ * */
 export default {
   namespace: 'timing',
 

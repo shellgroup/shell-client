@@ -3,23 +3,14 @@ import { connect } from 'dva';
 import moment from 'moment';
 
 import {
-  Row,
-  Col,
   Card,
   Form,
   Input,
   Select,
   Icon,
   Button,
-  Dropdown,
-  Menu,
-  InputNumber,
-  DatePicker,
   Modal,
-  message,
   Upload,
-  Badge,
-  Divider,
   Steps,
   Radio,
 } from 'antd';
@@ -27,22 +18,20 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './FileUpload.less';
-import { tips, disablesBtns, showDeleteConfirmParames, child, menuChild } from '../../utils/utils';
+import { tips, disablesBtns, showDeleteConfirmParames } from '../../utils/utils';
 
+/**
+ * 文件上传
+ * */
 const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
 const Dragger = Upload.Dragger;
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
 const RadioGroup = Radio.Group;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['normal', 'disabled'];
-const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible, that, btnType, configData } = props;
@@ -290,13 +279,10 @@ class UpdateForm extends PureComponent {
     const {
       updateModalVisible,
       handleUpdateModalVisible,
-      deptData,
-      menuList,
       handleUpdate,
-      that,
     } = this.props;
 
-    const { formVals } = this.state;
+
     const { form } = this.props;
     const okHandle = () => {
       form.validateFields((err, fieldsValue) => {
@@ -449,24 +435,8 @@ class FileUpload extends PureComponent {
     });
   };
 
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'fileupload/fetch',
-      payload: {},
-    });
-  };
 
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
-    });
-  };
+
 //删除图片信息
   showDeleteConfirm = record => {
     let that = this;
@@ -524,29 +494,7 @@ class FileUpload extends PureComponent {
       },
     });
   };
-  // handleMenuClick = e => {
-  //   const { dispatch } = this.props;
-  //   const { selectedRows } = this.state;
-  //
-  //   if (selectedRows.length === 0) return;
-  //   switch (e.key) {
-  //     case 'remove':
-  //       dispatch({
-  //         type: 'fileupload/remove',
-  //         payload: {
-  //           key: selectedRows.map(row => row.key),
-  //         },
-  //         callback: () => {
-  //           this.setState({
-  //             selectedRows: [],
-  //           });
-  //         },
-  //       });
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
+
 
   handleSelectRows = rows => {
     this.setState({
@@ -554,29 +502,7 @@ class FileUpload extends PureComponent {
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
 
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'fileupload/fetch',
-        payload: values,
-      });
-    });
-  };
 
   handleModalVisible = flag => {
     this.setState({
@@ -600,7 +526,7 @@ class FileUpload extends PureComponent {
       }
     });
 
-    //message.success('添加成功');
+
     this.handleModalVisible();
   };
 
@@ -614,7 +540,7 @@ class FileUpload extends PureComponent {
       }
     });
 
-    //message.success('配置成功');
+
     this.handleUpdateModalVisible();
   };
 

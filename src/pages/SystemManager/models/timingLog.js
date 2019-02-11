@@ -1,5 +1,8 @@
-import { queryTimingLog } from '@/services/api'; //, removeRule, addRule, updateRule
-//TimingManager
+import { queryTimingLog } from '@/services/api';
+
+/**
+ * 定时任务日志列表
+ * */
 export default {
   namespace: 'timingLog',
 

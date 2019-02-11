@@ -1,5 +1,8 @@
-import { fileUploadList, configList, addSaveConfig, fileUpload, removeUpload } from '@/services/api'; //, removeRule, addRule, updateRule
-//RoleManager
+import { fileUploadList, configList, addSaveConfig, fileUpload, removeUpload } from '@/services/api';
+
+/**
+ * 文件上传
+ * */
 export default {
   namespace: 'fileupload',
 
@@ -50,15 +53,7 @@ export default {
         payload: response,
       });
       if (callback) callback(response);
-    },
-    *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
+    }
   },
 
   reducers: {

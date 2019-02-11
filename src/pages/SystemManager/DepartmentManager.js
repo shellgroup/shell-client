@@ -1,25 +1,13 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import {
-  Row,
-  Col,
   Card,
   Form,
   Input,
-  Select,
-  Icon,
   Button,
-  Dropdown,
-  Menu,
   InputNumber,
-  DatePicker,
   Modal,
-  message,
-  Badge,
   Divider,
-  Steps,
-  Radio,
   TreeSelect,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
@@ -29,17 +17,15 @@ const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
 import styles from './DepartmentManager.less';
 
+/**
+ * 部门管理
+ * */
+
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['normal', 'disabled'];
-const status = ['正常', '停用'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible, deptData } = props;
@@ -293,24 +279,8 @@ class DepartmentManager extends PureComponent {
     });
   };
 
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'dept/fetch',
-      payload: {},
-    });
-  };
 
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
-    });
-  };
+
 
   handleMenuClick = e => {
     const { dispatch } = this.props;
@@ -342,29 +312,6 @@ class DepartmentManager extends PureComponent {
     });
   };
 
-  handleSearch = e => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'dept/fetch',
-        payload: values,
-      });
-    });
-  };
 
   handleModalVisible = flag => {
     this.setState({
@@ -392,7 +339,7 @@ class DepartmentManager extends PureComponent {
       },
     });
 
-    //message.success('添加成功');
+
     this.handleModalVisible();
   };
 
@@ -408,11 +355,11 @@ class DepartmentManager extends PureComponent {
         });
       },
     });
-    //message.success('配置成功');
+
     this.handleUpdateModalVisible();
   };
 
-  //删除用户信息
+  //删除部门信息
   showDeleteConfirm = record => {
     let that = this;
     confirm({
@@ -436,22 +383,7 @@ class DepartmentManager extends PureComponent {
       },
     });
   };
-  //批量删除
-  showDeletesConfirm = () => {
-    let that = this;
-    confirm({
-      ...showDeleteTipsParames,
-      onOk() {
-        that.handleMenuClick();
-      },
-      onCancel() {
-        console.log('取消删除');
-        that.setState({
-          selectedRows: [],
-        });
-      },
-    });
-  };
+
 
   render() {
     const {

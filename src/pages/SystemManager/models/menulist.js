@@ -1,5 +1,8 @@
-import { queryMenulist, queryMenus, queryIcon, addMenu, removeMenu, updateMenu } from '@/services/api'; //, removeRule, addRule, updateRule
-//DictionaryManager
+import { queryMenulist, addMenu, removeMenu, updateMenu } from '@/services/api';
+
+/**
+ * 菜单列表
+ * */
 export default {
   namespace: 'menulist',
 

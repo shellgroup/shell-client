@@ -18,7 +18,7 @@ export default {
     },
     *fetchCurrent(_, { call, put }) {
       const user = yield call(queryCurrent);
-      console.log(user.user,777777777777777777);
+      console.log(user.user,"当前用户信息");
       const  response = user.user;
       yield put({
         type: 'saveCurrentUser',
