@@ -8,6 +8,7 @@ import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
+import {avatarUrl} from "../../services/baseurl";
 
 export default class GlobalHeaderRight extends PureComponent {
   getNoticeData() {
@@ -173,7 +174,7 @@ export default class GlobalHeaderRight extends PureComponent {
               <Avatar
                 size="small"
                 className={styles.avatar}
-                src={currentUser.avatar}
+                // src={currentUser.avatar.indexOf() == -1?`${avatarUrl}/images/${this.getAvatarURL()}`:currentUser.avatar}
                 alt="avatar"
               />
               <span className={styles.name}>{currentUser.username}</span>

@@ -56,6 +56,13 @@ export async function updateUser(params) {
     body: params,
   });
 }
+//修改用户信息
+export async function avatarFileUpload(params) {
+  return request(`${baseURL}/sys/user/upload`, {
+    method: 'POST',
+    body: params,
+  });
+}
 //查询管理员管理列表
 export async function queryUser(params) {
   return request(`${baseURL}/sys/user/list?${stringify(params)}`);

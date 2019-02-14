@@ -1,17 +1,39 @@
 import React, { Component, Fragment } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { Form, Input, Upload, Select, Button } from 'antd';
+import { Form, Input, Upload, Select, Button, message } from 'antd';
 import { connect } from 'dva';
 import styles from './BaseView.less';
 import GeographicView from './GeographicView';
 import PhoneView from './PhoneView';
+import {tips} from "../../../utils/utils";
+import { avatarUrl } from '../../../services/baseurl';
+
 // import { getTimeDistance } from '@/utils/utils';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-
+function beforeUpload(file) {
+  const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+  if (!isJPG) {
+    message.error('仅支持jpg和png格式的图片!');
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    message.error('图片大小不能超过2MB!');
+  }
+  return isJPG && isLt2M;
+}
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.onload = (function () {
+    return function () {
+      callback(this.result);
+    };
+  })(img);
+  reader.readAsDataURL(img);
+}
 // 头像组件 方便以后独立，增加裁剪之类的功能
-const AvatarView = ({ avatar }) => (
+const AvatarView = ({ avatar, that }) => (
   <Fragment>
     <div className={styles.avatar_title}>
       <FormattedMessage id="app.settings.basic.avatar" defaultMessage="Avatar" />
@@ -19,7 +41,15 @@ const AvatarView = ({ avatar }) => (
     <div className={styles.avatar}>
       <img src={avatar} alt="avatar" />
     </div>
-    <Upload fileList={[]}>
+    <Upload
+      fileList={[]}
+      name="avatar"
+      className="avatar-uploader"
+      showUploadList={false}
+      action="//jsonplaceholder.typicode.com/posts/"
+      beforeUpload={beforeUpload}
+      onChange={that.handleChange}
+    >
       <div className={styles.button_view}>
         <Button icon="upload">
           <FormattedMessage id="app.settings.basic.change-avatar" defaultMessage="Change avatar" />
@@ -56,8 +86,13 @@ const validatorPhone = (rule, value, callback) => {
 }))
 @Form.create()
 class BaseView extends Component {
+  state = {
+    loading: false,
+    imageUrl:''
+  };
   componentDidMount() {
     this.setBaseInfo();
+    this.handleChange = this.handleChange.bind(this);
   }
 
   setBaseInfo = () => {
@@ -82,6 +117,30 @@ class BaseView extends Component {
     this.view = ref;
   };
 
+
+  handleChange = (info) => {
+    if (!info.fileList.length) {
+      this.setState({ loading: true });
+      return;
+    }
+    getBase64(info.file.originFileObj,(res)=>{
+      if (info.fileList.length) {
+        const { dispatch, currentUser } = this.props;
+        dispatch({
+          type: 'geographic/avatarUpload',
+          payload: {
+            originalAvatar:currentUser.avatar,
+            userId:currentUser.userId,
+            newAvatar:res
+          },
+          callback: res => {
+            console.log(res,88888888888888);
+            tips(res,this,'user/fetchCurrent');
+          },
+        });
+      }
+    })
+  }
   render() {
     const {
       form: { getFieldDecorator },
@@ -182,7 +241,10 @@ class BaseView extends Component {
           </Form>
         </div>
         <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
+          <AvatarView
+            avatar={this.getAvatarURL().indexOf() == -1?`${avatarUrl}/images/${this.getAvatarURL()}`:this.getAvatarURL()}
+            that={this}
+          />
         </div>
       </div>
     );

@@ -1,4 +1,5 @@
 import { queryProvince, queryCity } from '@/services/geographic';
+import { avatarFileUpload } from '@/services/api';
 
 export default {
   namespace: 'geographic',
@@ -40,6 +41,10 @@ export default {
         payload: false,
       });
     },
+    *avatarUpload({ payload, callback }, { call }) {
+      const response = yield call(avatarFileUpload, payload);
+      if (callback) callback(response);
+    }
   },
 
   reducers: {

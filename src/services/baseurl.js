@@ -1,4 +1,4 @@
-let flag = 'local'; // dev开发版  pro生产版 local本地
+let flag = 'dev'; // dev开发版  pro生产版 local本地 test测试
 module.exports = {
   baseURL:
     flag === 'test'
@@ -10,4 +10,11 @@ module.exports = {
       : flag === 'pro'
       ? '/api'
       : null,
+  avatarUrl:
+    flag === 'dev'
+    ? 'http://192.168.199.109:9001/master-admin'
+    : flag === 'test' || flag === 'pro' || flag === 'local'
+      ?'http://localhost:9001/master-admin'
+    : null,
+
 };

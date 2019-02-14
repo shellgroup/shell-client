@@ -31,7 +31,7 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-
+const status = ['目录', '菜单', '按钮'];
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible, statusMenuText, statusRouterText, menuType, menuNameText, iconData, disables, menuData, onChangeMenuType } = props;
   const okHandle = () => {
@@ -71,7 +71,7 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="型&emsp;&emsp;类">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="类&emsp;&emsp;型">
         {form.getFieldDecorator('type', {
           rules: [{ required: false }],
           initialValue: menuType,
@@ -378,8 +378,14 @@ class MenuManager extends PureComponent {
     },
     {
       title: '类型',
-      dataIndex: 'type',
       align:'center',
+      render: (record) => (
+        <Fragment>
+            <span>
+              {status[record.type]}
+            </span>
+        </Fragment>
+      ),
     },
     {
       title: '排序',
@@ -399,7 +405,7 @@ class MenuManager extends PureComponent {
     {
       title: '操作',
       align:'center',
-      fixed: 'right',
+      //fixed: 'right',
       width: 200,
       render: (text, record) => (
         <Fragment>
@@ -649,7 +655,7 @@ class MenuManager extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               bordered={true}
-              scroll={{x:'140%'}}
+              //scroll={{x:'140%'}}
               rowSelection={null}
               tableAlert={false}
               data={ShowList?data:{}}
