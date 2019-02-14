@@ -8,7 +8,7 @@ import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
-import {avatarUrl} from "../../services/baseurl";
+import {baseURL} from "../../services/baseurl";
 
 export default class GlobalHeaderRight extends PureComponent {
   getNoticeData() {
@@ -76,7 +76,7 @@ export default class GlobalHeaderRight extends PureComponent {
     let avatar = currentUser.avatar;
     var reg = RegExp(/(http)/);
     if(!reg.test(avatar)){
-      currentUser.avatar = `${avatarUrl}/images/${currentUser.avatar}`
+      currentUser.avatar = `${baseURL}/images/${currentUser.avatar}`;
     }
     {console.log(currentUser.avatar, typeof currentUser.avatar,9999999999990)}
     const menu = (

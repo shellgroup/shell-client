@@ -6,7 +6,7 @@ import styles from './BaseView.less';
 import GeographicView from './GeographicView';
 import PhoneView from './PhoneView';
 import {tips} from "../../../utils/utils";
-import { avatarUrl } from '../../../services/baseurl';
+import { baseURL } from '../../../services/baseurl';
 
 // import { getTimeDistance } from '@/utils/utils';
 
@@ -109,7 +109,7 @@ class BaseView extends Component {
     if (currentUser.avatar) {
       return currentUser.avatar;
     }
-    const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
+    const url = `${baseURL}/images/defaultAvatar.png`;
     return url;
   }
 
@@ -141,10 +141,14 @@ class BaseView extends Component {
       }
     })
   }
+
   render() {
     const {
       form: { getFieldDecorator },
     } = this.props;
+    let avatarUrl = `${baseURL}/images/${this.getAvatarURL()}`;
+    avatarUrl.replace("/api/images//api/images//api/images","/api/images");
+    console.log("******************************",avatarUrl)
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
@@ -242,7 +246,7 @@ class BaseView extends Component {
         </div>
         <div className={styles.right}>
           <AvatarView
-            avatar={this.getAvatarURL().indexOf("http") == -1?`${avatarUrl}/images/${this.getAvatarURL()}`:this.getAvatarURL()}
+            avatar={this.getAvatarURL().indexOf("http") == -1?avatarUrl:this.getAvatarURL()}
             that={this}
           />
         </div>

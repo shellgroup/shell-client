@@ -10,13 +10,4 @@ module.exports = {
       : flag === 'pro'
       ? '/api'
       : null,
-  avatarUrl:
-    flag === 'dev'
-    ? 'http://192.168.199.109:9001/master-admin'
-    : flag === 'test' || flag === 'pro'
-    ?'/api'
-    :flag === 'local'
-    ? 'http://localhost:9001/master-admin'
-    :null,
-
 };
