@@ -119,7 +119,7 @@ class BaseView extends Component {
 
 
   handleChange = (info) => {
-    if (!info.fileList.length) {
+    if (!info.fileList.length ||info.file.type == "image/gif") {
       this.setState({ loading: true });
       return;
     }
@@ -242,7 +242,7 @@ class BaseView extends Component {
         </div>
         <div className={styles.right}>
           <AvatarView
-            avatar={this.getAvatarURL().indexOf() == -1?`${avatarUrl}/images/${this.getAvatarURL()}`:this.getAvatarURL()}
+            avatar={this.getAvatarURL().indexOf("http") == -1?`${avatarUrl}/images/${this.getAvatarURL()}`:this.getAvatarURL()}
             that={this}
           />
         </div>

@@ -32,10 +32,10 @@ const getValue = obj =>
     .join(',');
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, deptData, menuList, that } = props;
+  const { modalVisible, form, handleAdd, handleModalVisible, deptData, menuList, that, roleName, isExistByRoleName } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
-      if (err) return;
+      if (err || roleName) return;
       form.resetFields();
       handleAdd(fieldsValue);
     });
@@ -51,6 +51,13 @@ const CreateForm = Form.create()(props => {
     }
     return <TreeNode {...item} />;
   })
+  let formRoleName = {};
+  if(roleName){
+    formRoleName = {
+      validateStatus:"error",
+      help:"角色名称已存在"
+    }
+  }
   return (
     <Modal
       destroyOnClose
@@ -60,10 +67,10 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角色名称">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} {...formRoleName} label="角色名称">
         {form.getFieldDecorator('roleName', {
           rules: [{ required: true, message: '请输入角色名称！'}],
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入" onBlur={isExistByRoleName}/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备&emsp;&emsp;注">
         {form.getFieldDecorator('remark', {
@@ -295,6 +302,7 @@ class RoleManager extends PureComponent {
     deptSelectedKeys: [],
     deptExpandedKeys: [],
     DeleteBtn: false,
+    roleName:false,
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
@@ -483,7 +491,24 @@ class RoleManager extends PureComponent {
       stepFormValues: record || {},
     });
   };
-
+  isExistByRoleName = e =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'role/isExistByRoleName',
+      payload: {
+        roleName: e.target.value
+      },
+      callback: res => {
+        let rn = false;
+        if(res == "exist"){
+          rn = true;
+        }
+        this.setState({
+          roleName: rn,
+        })
+      },
+    });
+  };
   handleAdd = fields => {
     const { dispatch } = this.props;
     if (!fields.deptId) {
@@ -500,6 +525,7 @@ class RoleManager extends PureComponent {
         this.setState({
           deptCheckedKeys: [],
           menuCheckedKeys: [],
+          roleName:false
         });
       },
     });
@@ -728,12 +754,14 @@ class RoleManager extends PureComponent {
       role: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, deptData, key, menuList, ShowList } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, deptData, key, menuList, ShowList, roleName } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
+      isExistByRoleName: this.isExistByRoleName,
       deptData: deptData,
       menuList: menuList,
+      roleName: roleName,
       that:this
     };
     const updateMethods = {

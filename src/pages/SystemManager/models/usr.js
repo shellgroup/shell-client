@@ -1,4 +1,4 @@
-import { queryUser, removeUser, addUser, updateUser } from '@/services/api';
+import { queryUser, removeUser, addUser, updateUser, isExistByUserName } from '@/services/api';
 
 /**
  * 管理员管理
@@ -24,6 +24,14 @@ export default {
     },
     *add({ payload, callback }, { call, put }) {
       const response = yield call(addUser, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+    *isExistByUserName({ payload, callback }, { call, put }) {
+      const response = yield call(isExistByUserName, payload);
       yield put({
         type: 'save',
         payload: response,

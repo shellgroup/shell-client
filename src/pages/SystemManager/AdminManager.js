@@ -42,8 +42,11 @@ const CreateForm = Form.create()(props => {
     handleAdd,
     handleModalVisible,
     onChangeTreeSelect,
+    isExistByUserName,
+    UserNameOnChange,
     handleChange,
     deptData,
+    userName,
     roleData,
     statusValue,
     that,
@@ -51,7 +54,7 @@ const CreateForm = Form.create()(props => {
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
-      if (err) return;
+      if (err || userName) return;
       form.resetFields();
       handleAdd(fieldsValue);
     });
@@ -90,6 +93,13 @@ const CreateForm = Form.create()(props => {
     callback();
   }
 
+  let formUserName = {};
+  if(userName){
+    formUserName = {
+      validateStatus:"error",
+      help:"用户名已存在"
+    }
+  }
   return (
     <Modal
       destroyOnClose
@@ -99,10 +109,17 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="用户名">
+      <FormItem
+        labelCol={{ span: 5 }}
+        wrapperCol={{ span: 15 }}
+        label="用户名"
+        {...formUserName}
+      >
         {form.getFieldDecorator('username', {
-          rules: [{ required: true, message: '请输入至少2个字符的用户名！', min: 2 }],
-        })(<Input placeholder="请输入" />)}
+          rules: [
+            { required: true, message: '请在输入至少2个字符的用户名!', min:2}
+          ],
+        })(<Input placeholder="请输入" onBlur={isExistByUserName}/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密&emsp;码">
         {form.getFieldDecorator('password', {
@@ -404,6 +421,7 @@ class AdminManager extends PureComponent {
     confirmDirty: false, //确认密码
     confirmDirtyUp: false, //确认密码
     DeleteBtn: false,
+    userName: false,
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
@@ -560,6 +578,25 @@ class AdminManager extends PureComponent {
   handleChange = value => {
     console.log(value);
   };
+  isExistByUserName = e =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usr/isExistByUserName',
+      payload: {
+        userName: e.target.value
+      },
+      callback: res => {
+        let us = false;
+        if(res == "exist"){
+          us = true;
+        }
+        this.setState({
+            userName: us,
+        })
+      },
+    });
+  };
+
   handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
@@ -601,12 +638,16 @@ class AdminManager extends PureComponent {
   };
   handleAdd = fields => {
     console.log(fields, '__________添加用户的参数');
+
     const { dispatch, usr } = this.props;
     dispatch({
       type: 'usr/add',
       payload: fields,
       callback: res => {
         tips(res, this, 'usr/fetch');
+        this.setState({
+          userName: false
+        })
       },
     });
 
@@ -796,13 +837,16 @@ class AdminManager extends PureComponent {
       usr: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
       onChangeTreeSelect: this.onChangeTreeSelect,
       handleChange: this.handleChange,
+      isExistByUserName: this.isExistByUserName,
+      UserNameOnChange: this.UserNameOnChange,
       roleData: roleData,
+      userName: userName,
       deptData: deptData,
       statusValue: statusValue,
       that: this,

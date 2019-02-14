@@ -34,7 +34,13 @@ export async function queryMenus() {
 export async function getFakeCaptcha(params) {
   return `${baseURL}/captcha.jpg?t=${params}`;
 }
-
+//检测用户名是否存在
+export async function isExistByUserName(params) {
+  return request(`${baseURL}/sys/user/isExistByUserName`, {
+    method: 'POST',
+    body: params,
+  });
+}
 //新建管理员
 export async function addUser(params) {
   return request(`${baseURL}/sys/user/save`, {
@@ -93,8 +99,13 @@ export async function updateDept(params) {
 export async function queryDept(params) {
   return request(`${baseURL}/sys/dept/list?${stringify(params)}`);
 }
-
-
+//检测角色是否存在
+export async function isExistByRoleName(params) {
+  return request(`${baseURL}/sys/role/isExistByRoleName`, {
+    method: 'POST',
+    body: params,
+  });
+}
 //新增角色
 export async function addRole(params) {
   return request(`${baseURL}/sys/role/save`, {
