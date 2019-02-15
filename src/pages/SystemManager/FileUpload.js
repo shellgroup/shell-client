@@ -373,8 +373,8 @@ class FileUpload extends PureComponent {
     {
       title: '操作',
       align: 'center',
-      fixed:'right',
-      width:100,
+      // fixed:'right',
+      width:120,
       render: (text, record) => (
         <Fragment>
           {this.state.DeleteBtn && (
@@ -585,7 +585,7 @@ class FileUpload extends PureComponent {
               data={ShowList ? data : {}}
               bordered={true}
               tableAlert={true}
-              scroll={{ x: '110%' }}
+              // scroll={{ x: '110%' }}
               rowKey={this.state.key}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

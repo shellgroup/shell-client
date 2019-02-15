@@ -314,8 +314,17 @@ class DepartmentManager extends PureComponent {
 
 
   handleModalVisible = flag => {
-    this.setState({
-      modalVisible: !!flag,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'dept/fetch',
+      callback: res => {
+        if (res.code == 0) {
+          this.setState({
+            deptData: res.list,
+            modalVisible: !!flag,
+          });
+        }
+      },
     });
   };
 

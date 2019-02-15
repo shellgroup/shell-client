@@ -145,7 +145,7 @@ class BaseView extends Component {
       type: 'geographic/update',
       payload: fields,
       callback: res => {
-        tips(res, this, 'user/fetchCurrent');
+        tips(res,this,'user/fetchCurrent');
       },
     });
   };
@@ -189,7 +189,7 @@ class BaseView extends Component {
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
-          <Form layout="vertical" >
+          <Form layout="vertical" onSubmit={okHandle}>
             {getFieldDecorator('userId', {
               rules: [{ required: false }],
             })(<Input type={'hidden'} />)}
@@ -201,7 +201,7 @@ class BaseView extends Component {
                     message: formatMessage({ id: 'app.settings.basic.email-message' }, {}),
                   },
                 ],
-              })(<Input />)}
+              })(<Input type={"text"}/>)}
             </FormItem>
             <FormItem label={formatMessage({ id: 'app.settings.basic.nickname' })}>
               {getFieldDecorator('nickName', {
@@ -211,7 +211,7 @@ class BaseView extends Component {
                     message: formatMessage({ id: 'app.settings.basic.nickname-message' }, {}),
                   },
                 ],
-              })(<Input />)}
+              })(<Input type={"text"}/>)}
             </FormItem>
             <FormItem label={formatMessage({ id: 'app.settings.basic.profile' })}>
               {getFieldDecorator('signature', {
@@ -228,19 +228,13 @@ class BaseView extends Component {
                 />
               )}
             </FormItem>
-            <FormItem label={formatMessage({ id: 'app.settings.basic.phone' })}>
+            <FormItem label="手&emsp;机">
               {getFieldDecorator('mobile', {
-                rules: [
-                  {
-                    required: false,
-                    message: formatMessage({ id: 'app.settings.basic.phone-message' }, {}),
-                  },
-                  // { validator: validatorPhone },
-                ],
-              })(<Input maxLength={11}/>)}
+                rules: [{ required: false, message: '请输入11位手机号码！', min: 11 }],
+              })(<Input placeholder="请输入" maxLength={11} />)}
             </FormItem>
             <FormItem
-              label="密码"
+              label="新密码"
             >
               {getFieldDecorator('password', {
                 rules: [{
@@ -253,7 +247,7 @@ class BaseView extends Component {
               )}
             </FormItem>
             <FormItem
-              label="确认密码"
+              label="确认新密码"
             >
               {getFieldDecorator('confirm', {
                 rules: [{
@@ -265,7 +259,7 @@ class BaseView extends Component {
                 <Input type="password" onBlur={this.handleConfirmBlur} />
               )}
             </FormItem>
-            <Button type="primary" onClick={okHandle}>
+            <Button type="primary" htmlType={"submit"}>
               更新基本信息
             </Button>
           </Form>

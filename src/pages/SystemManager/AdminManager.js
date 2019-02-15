@@ -64,7 +64,7 @@ const CreateForm = Form.create()(props => {
   const roleValues = [];
   if (roleData) {
     for (let i = 0; i < roleData.length; i++) {
-      roleValues.push(<Option key={roleData[i].roleId}>{roleData[i].roleName}</Option>);
+      roleValues.push(<Option key={ roleData[i].roleId } value={roleData[i].roleId} title={roleData[i].roleName} >{roleData[i].roleName}</Option>);
     }
   }
 
@@ -250,11 +250,7 @@ class UpdateForm extends PureComponent {
     //处理角色数据
     const roleValues = [];
     for (let i = 0; i < roleData.length; i++) {
-      roleValues.push(
-        <Option key={roleData[i].roleId} value={roleData[i].roleId}>
-          {roleData[i].roleName}
-        </Option>
-      );
+      roleValues.push(<Option key={roleData[i].roleId} value={roleData[i].roleId} title={roleData[i].roleName} >{roleData[i].roleName}</Option>);
     }
 
 
@@ -285,7 +281,6 @@ class UpdateForm extends PureComponent {
         handleUpdate(fieldsValue);
       });
     };
-
     return (
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
@@ -319,7 +314,7 @@ class UpdateForm extends PureComponent {
                 validator: validateToNextPassword,
               },
             ],
-          })(<Input type="password" placeholder="请输入" />)}
+          })(<Input type="password" placeholder="请输入" autoComplete={"new-password"}/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="确认密码">
           {form.getFieldDecorator('confirm', {
@@ -369,9 +364,9 @@ class UpdateForm extends PureComponent {
         <FormItem {...this.formLayout} label="角&emsp;色">
           {form.getFieldDecorator('roleIdList', {
             rules: [{ required: false }],
-            initialValue: formVals.roleIdList,
+            initialValue: formVals.roleIdList
           })(
-            <Select mode="multiple" style={{ width: '100%' }} placeholder="请选择角色">
+            <Select mode="multiple" style={{ width: '100%' }} placeholder="请选择角色" >
               {roleValues}
             </Select>
           )}
@@ -379,7 +374,7 @@ class UpdateForm extends PureComponent {
         <FormItem {...this.formLayout} label="状&emsp;态">
           {form.getFieldDecorator('status', {
             rules: [{ required: false }],
-            initialValue: formVals.status,
+            initialValue: formVals.status
           })(
             <RadioGroup>
               <Radio value={1}>正常</Radio>
