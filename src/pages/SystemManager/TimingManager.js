@@ -205,7 +205,6 @@ class LogListForm extends PureComponent {
 
   constructor(props) {
     super(props);
-    console.log(props,66666777888);
     this.state = {
       currentStep: 0,
       confirmDirty: false,
@@ -329,7 +328,6 @@ class LogListForm extends PureComponent {
   }
 
   createTimes(dates, dateStrings) {
-    console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
     let createTime = {
       beginDate:dateStrings[0],
       endDate:dateStrings[1]
@@ -337,7 +335,6 @@ class LogListForm extends PureComponent {
     this.setState({
       createTime:createTime
     });
-    console.log(this.state.createTime,77788)
   }
   handleFormReset = () => {
     const { form, dispatch } = this.props;
@@ -653,7 +650,6 @@ class TimingManager extends PureComponent {
         });
       },
       onCancel() {
-        console.log('取消操作');
         that.setState({
           selectedRows: [],
         });
@@ -711,7 +707,6 @@ class TimingManager extends PureComponent {
   };
 
   handleAdd = fields => {
-    console.log(fields, '__________添加用户的参数');
     const { dispatch, usr } = this.props;
     dispatch({
       type: 'timing/add',
@@ -735,7 +730,6 @@ class TimingManager extends PureComponent {
          that.deleted(index, record);
       },
       onCancel() {
-        console.log('取消操作');
       },
     });
   };
@@ -759,7 +753,6 @@ class TimingManager extends PureComponent {
   };
 
   createTimes(dates, dateStrings) {
-    console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
     let createTime = {
       beginDate:dateStrings[0],
       endDate:dateStrings[1]
@@ -767,7 +760,6 @@ class TimingManager extends PureComponent {
     this.setState({
       createTime:createTime
     });
-    console.log(this.state.createTime,77788)
   }
 
   handleUpdate = fields => {

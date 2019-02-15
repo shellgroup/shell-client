@@ -76,8 +76,6 @@ const CreateForm = Form.create()(props => {
   }
 
   function compareToFirstPassword(rule, value, callback) {
-    console.log(form);
-    console.log(value, form.getFieldValue('password'));
     if (value && value !== form.getFieldValue('password')) {
       callback('两次输入的密码不一致!');
     } else {
@@ -86,7 +84,6 @@ const CreateForm = Form.create()(props => {
   }
 
   function validateToNextPassword(rule, value, callback) {
-    console.log(value);
     if (value && that.state.confirmDirty) {
       form.validateFields(['confirm'], { force: true });
     }
@@ -119,7 +116,7 @@ const CreateForm = Form.create()(props => {
           rules: [
             { required: true, message: '请在输入至少2个字符的用户名!', min:2}
           ],
-        })(<Input placeholder="请输入" onBlur={isExistByUserName}/>)}
+        })(<Input placeholder="请输入" onBlur={isExistByUserName} autoComplete='off'/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密&emsp;码">
         {form.getFieldDecorator('password', {
@@ -133,14 +130,14 @@ const CreateForm = Form.create()(props => {
               validator: validateToNextPassword,
             },
           ],
-        })(<Input type="password" placeholder="请输入" />)}
+        })(<Input type="password" placeholder="请输入" autoComplete='new-password' />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认密码">
         {form.getFieldDecorator('confirm', {
           rules: [
             {
               required: true,
-              message: '请在次输入您的密码!',
+              message: '请重新输入您的密码!',
             },
             {
               validator: compareToFirstPassword,
@@ -267,8 +264,6 @@ class UpdateForm extends PureComponent {
     }
 
     function compareToFirstPassword(rule, value, callback) {
-      console.log(form);
-      console.log(value, form.getFieldValue('password'));
       if (value && value !== form.getFieldValue('password')) {
         callback('两次输入的密码不一致!');
       } else {
@@ -277,7 +272,6 @@ class UpdateForm extends PureComponent {
     }
 
     function validateToNextPassword(rule, value, callback) {
-      console.log(value);
       if (value && that.state.confirmDirtyUp) {
         form.validateFields(['confirm'], { force: true });
       }
@@ -338,7 +332,7 @@ class UpdateForm extends PureComponent {
                 validator: compareToFirstPassword,
               },
             ],
-          })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />)}
+          })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} autoComplete='new-password'/>)}
         </FormItem>
 
         <FormItem {...this.formLayout} label="邮&emsp;箱">
@@ -453,7 +447,6 @@ class AdminManager extends PureComponent {
       },
     });
     //调用utils里面的disablesBtns方法判断是否有权限
-    console.log(this,"quanxian__________________________");
     disablesBtns(this);
   }
 
@@ -573,10 +566,8 @@ class AdminManager extends PureComponent {
   };
 
   onChangeTreeSelect = value => {
-    console.log(value);
   };
   handleChange = value => {
-    console.log(value);
   };
   isExistByUserName = e =>{
     const { dispatch } = this.props;
@@ -586,13 +577,17 @@ class AdminManager extends PureComponent {
         userName: e.target.value
       },
       callback: res => {
+
         let us = false;
         if(res == "exist"){
           us = true;
         }
         this.setState({
             userName: us,
-        })
+        });
+        dispatch({
+          type: 'usr/fetch',
+        });
       },
     });
   };
@@ -634,11 +629,10 @@ class AdminManager extends PureComponent {
       modalVisible: !!flag,
       roleData: role.data.list,
       deptData: dept.data.list,
+      userName: false
     });
   };
   handleAdd = fields => {
-    console.log(fields, '__________添加用户的参数');
-
     const { dispatch, usr } = this.props;
     dispatch({
       type: 'usr/add',
@@ -657,7 +651,6 @@ class AdminManager extends PureComponent {
   //修改用户信息
   handleUpdateModalVisible = (flag, record) => {
     const { dept, role } = this.props;
-    console.log(record, flag, '修改用户信息——————————————————————');
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
@@ -674,7 +667,6 @@ class AdminManager extends PureComponent {
         that.deleted(record);
       },
       onCancel() {
-        console.log('取消删除');
       },
     });
   };
@@ -690,7 +682,6 @@ class AdminManager extends PureComponent {
   };
   //批量删除
   showDeletesConfirm = () => {
-    console.log(showDeleteConfirmParames);
     let that = this;
     confirm({
       ...showDeleteTipsParames,
@@ -698,7 +689,6 @@ class AdminManager extends PureComponent {
         that.handleMenuClick();
       },
       onCancel() {
-        console.log('取消删除');
         that.setState({
           selectedRows: [],
         });
@@ -710,7 +700,6 @@ class AdminManager extends PureComponent {
     const { selectedRows } = this.state;
 
     if (selectedRows.length === 0) return;
-    console.log(selectedRows.map(row => row.key));
     dispatch({
       type: 'usr/remove',
       payload: selectedRows.map(row => row.userId),
@@ -858,7 +847,6 @@ class AdminManager extends PureComponent {
       deptData: deptData,
       that: this,
     };
-    console.log(data, '表格数据');
 
     return (
       <PageHeaderWrapper>

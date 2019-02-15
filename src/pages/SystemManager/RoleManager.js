@@ -482,6 +482,7 @@ class RoleManager extends PureComponent {
   handleModalVisible = flag => {
     this.setState({
       modalVisible: !!flag,
+      roleName: false,
     });
   };
 
@@ -499,13 +500,17 @@ class RoleManager extends PureComponent {
         roleName: e.target.value
       },
       callback: res => {
+
         let rn = false;
         if(res == "exist"){
           rn = true;
         }
         this.setState({
           roleName: rn,
-        })
+        });
+        dispatch({
+          type: 'role/fetch',
+        });
       },
     });
   };
@@ -516,7 +521,6 @@ class RoleManager extends PureComponent {
     }
     fields.deptIdList = this.state.deptCheckedKeys;
     fields.menuIdList = this.state.menuCheckedKeys;
-    console.log(fields,66666);
     dispatch({
       type: 'role/add',
       payload: fields,
@@ -538,7 +542,6 @@ class RoleManager extends PureComponent {
     const { dispatch } = this.props;
     fields.deptIdList = this.state.deptCheckedKeys;
     fields.menuIdList = this.state.menuCheckedKeys;
-    console.log(fields,66666);
     dispatch({
       type: 'role/update',
       payload: fields,
@@ -563,7 +566,6 @@ class RoleManager extends PureComponent {
         that.deleted(record);
       },
       onCancel() {
-        console.log('取消删除');
       },
     });
   };
@@ -579,7 +581,6 @@ class RoleManager extends PureComponent {
   };
   //批量删除
   showDeletesConfirm = () => {
-    console.log(showDeleteConfirmParames);
     let that = this;
     confirm({
       ...showDeleteTipsParames,
@@ -587,7 +588,6 @@ class RoleManager extends PureComponent {
         that.handleMenuClick();
       },
       onCancel() {
-        console.log('取消删除');
         that.setState({
           selectedRows: [],
         });
@@ -599,7 +599,6 @@ class RoleManager extends PureComponent {
     const { selectedRows } = this.state;
 
     if (selectedRows.length === 0) return;
-    console.log(selectedRows.map(row => row.key));
     dispatch({
       type: 'role/remove',
       payload: selectedRows.map(row => row.roleId),
@@ -708,7 +707,6 @@ class RoleManager extends PureComponent {
   }
 
   onExpandMenu = (expandedKeys) => {
-    console.log('onExpand', expandedKeys);
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
     // or, you can remove all expanded children keys.
     this.setState({
@@ -718,18 +716,15 @@ class RoleManager extends PureComponent {
   }
 
   onCheckMenu = (checkedKeys) => {
-    console.log('onCheck', checkedKeys);
     this.setState({ menuCheckedKeys:checkedKeys });
   }
 
   onSelectMenu = (selectedKeys, info) => {
-    console.log('onSelect', info);
     this.setState({ menuSelectedKeys:selectedKeys });
   }
 
 
   onExpandDept = (expandedKeys) => {
-    console.log('onExpand', expandedKeys);
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
     // or, you can remove all expanded children keys.
     this.setState({
@@ -739,12 +734,10 @@ class RoleManager extends PureComponent {
   }
 
   onCheckDept = (checkedKeys) => {
-    console.log('onCheck', checkedKeys);
     this.setState({ deptCheckedKeys:checkedKeys });
   }
 
   onSelectDept = (selectedKeys, info) => {
-    console.log('onSelect', info);
     this.setState({ deptSelectedKeys:selectedKeys });
   }
 

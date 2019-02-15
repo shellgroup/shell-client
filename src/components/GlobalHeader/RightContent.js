@@ -73,12 +73,6 @@ export default class GlobalHeaderRight extends PureComponent {
       onNoticeClear,
       theme,
     } = this.props;
-    let avatar = currentUser.avatar;
-    var reg = RegExp(/(http)/);
-    if(!reg.test(avatar)){
-      currentUser.avatar = `${baseURL}/images/${currentUser.avatar}`;
-    }
-    {console.log(currentUser.avatar, typeof currentUser.avatar,9999999999990)}
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         {/*<Menu.Item key="userCenter">*/}

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import { Form, Input, Upload, Select, Button, message } from 'antd';
+import {Form, Input, Upload, Select, Button, message, Modal} from 'antd';
 import { connect } from 'dva';
 import styles from './BaseView.less';
 import GeographicView from './GeographicView';
@@ -12,6 +12,7 @@ import { baseURL } from '../../../services/baseurl';
 
 const FormItem = Form.Item;
 const { Option } = Select;
+const confirm = Modal.confirm;
 function beforeUpload(file) {
   const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJPG) {
@@ -88,7 +89,8 @@ const validatorPhone = (rule, value, callback) => {
 class BaseView extends Component {
   state = {
     loading: false,
-    imageUrl:''
+    imageUrl:'',
+    confirmDirty: false, //确认密码
   };
   componentDidMount() {
     this.setBaseInfo();
@@ -112,12 +114,43 @@ class BaseView extends Component {
     const url = `${baseURL}/images/defaultAvatar.png`;
     return url;
   }
+  handleConfirmBlur = (e) => {
+    const value = e.target.value;
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  }
 
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
+      callback('两次输入的密码不一致!');
+    } else {
+      callback();
+    }
+  }
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
+  }
   getViewDom = ref => {
     this.view = ref;
   };
-
-
+  //修改基本信息
+  handleUpdate = fields => {
+    const { dispatch } = this.props;
+    console.log(fields,77777);
+    dispatch({
+      type: 'geographic/update',
+      payload: fields,
+      callback: res => {
+        tips(res, this, 'user/fetchCurrent');
+      },
+    });
+  };
+  //修改头像
   handleChange = (info) => {
     if (!info.fileList.length ||info.file.type == "image/gif") {
       this.setState({ loading: true });
@@ -134,7 +167,6 @@ class BaseView extends Component {
             newAvatar:res
           },
           callback: res => {
-            console.log(res,88888888888888);
             tips(res,this,'user/fetchCurrent');
           },
         });
@@ -145,39 +177,48 @@ class BaseView extends Component {
   render() {
     const {
       form: { getFieldDecorator },
+      form
     } = this.props;
-    let avatarUrl = `${baseURL}/images/${this.getAvatarURL()}`;
-    avatarUrl.replace("/api/images//api/images//api/images","/api/images");
-    console.log("******************************",avatarUrl)
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        this.handleUpdate(fieldsValue);
+      });
+    };
+
     return (
       <div className={styles.baseView} ref={this.getViewDom}>
         <div className={styles.left}>
-          <Form layout="vertical" onSubmit={this.handleSubmit} hideRequiredMark>
+          <Form layout="vertical" >
+            {getFieldDecorator('userId', {
+              rules: [{ required: false }],
+            })(<Input type={'hidden'} />)}
             <FormItem label={formatMessage({ id: 'app.settings.basic.email' })}>
               {getFieldDecorator('email', {
                 rules: [
                   {
-                    required: true,
+                    required: false,
                     message: formatMessage({ id: 'app.settings.basic.email-message' }, {}),
                   },
                 ],
               })(<Input />)}
             </FormItem>
             <FormItem label={formatMessage({ id: 'app.settings.basic.nickname' })}>
-              {getFieldDecorator('username', {
+              {getFieldDecorator('nickName', {
                 rules: [
                   {
-                    required: true,
+                    required: false,
                     message: formatMessage({ id: 'app.settings.basic.nickname-message' }, {}),
                   },
                 ],
               })(<Input />)}
             </FormItem>
             <FormItem label={formatMessage({ id: 'app.settings.basic.profile' })}>
-              {getFieldDecorator('profile', {
+              {getFieldDecorator('signature', {
                 rules: [
                   {
-                    required: true,
+                    required: false,
                     message: formatMessage({ id: 'app.settings.basic.profile-message' }, {}),
                   },
                 ],
@@ -188,65 +229,51 @@ class BaseView extends Component {
                 />
               )}
             </FormItem>
-            {/*<FormItem label={formatMessage({ id: 'app.settings.basic.country' })}>*/}
-              {/*{getFieldDecorator('country', {*/}
-                {/*rules: [*/}
-                  {/*{*/}
-                    {/*required: true,*/}
-                    {/*message: formatMessage({ id: 'app.settings.basic.country-message' }, {}),*/}
-                  {/*},*/}
-                {/*],*/}
-              {/*})(*/}
-                {/*<Select style={{ maxWidth: 220 }}>*/}
-                  {/*<Option value="China">中国</Option>*/}
-                {/*</Select>*/}
-              {/*)}*/}
-            {/*</FormItem>*/}
-            {/*<FormItem label={formatMessage({ id: 'app.settings.basic.geographic' })}>*/}
-              {/*{getFieldDecorator('geographic', {*/}
-                {/*rules: [*/}
-                  {/*{*/}
-                    {/*required: true,*/}
-                    {/*message: formatMessage({ id: 'app.settings.basic.geographic-message' }, {}),*/}
-                  {/*},*/}
-                  {/*{*/}
-                    {/*validator: validatorGeographic,*/}
-                  {/*},*/}
-                {/*],*/}
-              {/*})(<GeographicView />)}*/}
-            {/*</FormItem>*/}
-            {/*<FormItem label={formatMessage({ id: 'app.settings.basic.address' })}>*/}
-              {/*{getFieldDecorator('address', {*/}
-                {/*rules: [*/}
-                  {/*{*/}
-                    {/*required: true,*/}
-                    {/*message: formatMessage({ id: 'app.settings.basic.address-message' }, {}),*/}
-                  {/*},*/}
-                {/*],*/}
-              {/*})(<Input />)}*/}
-            {/*</FormItem>*/}
             <FormItem label={formatMessage({ id: 'app.settings.basic.phone' })}>
               {getFieldDecorator('mobile', {
                 rules: [
                   {
-                    required: true,
+                    required: false,
                     message: formatMessage({ id: 'app.settings.basic.phone-message' }, {}),
                   },
-                  { validator: validatorPhone },
+                  // { validator: validatorPhone },
                 ],
-              })(<PhoneView />)}
+              })(<Input maxLength={11}/>)}
             </FormItem>
-            <Button type="primary">
-              <FormattedMessage
-                id="app.settings.basic.update"
-                defaultMessage="Update Information"
-              />
+            <FormItem
+              label="密码"
+            >
+              {getFieldDecorator('password', {
+                rules: [{
+                  required: false, message: '请输入至少6位数的密码!', min:6
+                }, {
+                  validator: this.validateToNextPassword,
+                }],
+              })(
+                <Input type="password" autoComplete='new-password' />
+              )}
+            </FormItem>
+            <FormItem
+              label="确认密码"
+            >
+              {getFieldDecorator('confirm', {
+                rules: [{
+                  required: false, message: '请重新输入您的密码!'
+                }, {
+                  validator: this.compareToFirstPassword,
+                }],
+              })(
+                <Input type="password" onBlur={this.handleConfirmBlur} />
+              )}
+            </FormItem>
+            <Button type="primary" onClick={okHandle}>
+              更新基本信息
             </Button>
           </Form>
         </div>
         <div className={styles.right}>
           <AvatarView
-            avatar={this.getAvatarURL().indexOf("http") == -1?avatarUrl:this.getAvatarURL()}
+            avatar={this.getAvatarURL()}
             that={this}
           />
         </div>

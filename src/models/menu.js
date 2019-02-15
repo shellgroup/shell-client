@@ -101,7 +101,6 @@ export default {
       //请求菜单数据
       const response = yield call(queryMenus);
       const menuData = response.menuList;
-      console.log('菜单列表', menuData);
       const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(menuData);
       yield put({
         type: 'save',

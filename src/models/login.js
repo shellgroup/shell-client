@@ -15,7 +15,6 @@ export default {
   effects: {
     *login({ payload,callback }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      console.log(response, '登录返回的参数和传的参数', payload);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -56,10 +55,12 @@ export default {
     *logout(_, { call, put }) {
       // const response = yield call(logOut);
       // console.log(response,999);
-      // if(response.code == 0){
-      //   console.log(response,888);
-      // }
-      // return false;
+      //
+      // // if(response.code == 0){
+      // //   console.log(response,888);
+      // // }
+      // return;
+
       yield put({
         type: 'changeLoginStatus',
         payload: {

@@ -16,7 +16,6 @@ export default {
   effects: {
     *fetch({ callback }, { call, put }) {
       const response = yield call(queryMenus);
-      console.log(response, '***************菜单数据');
       yield put({
         type: 'save',
         payload: response,

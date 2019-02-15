@@ -1,4 +1,5 @@
 import { query as queryUsers, queryCurrent } from '@/services/user';
+import {baseURL} from "../services/baseurl";
 
 export default {
   namespace: 'user',
@@ -18,8 +19,11 @@ export default {
     },
     *fetchCurrent(_, { call, put }) {
       const user = yield call(queryCurrent);
-      console.log(user.user,"当前用户信息");
       const  response = user.user;
+      var reg = RegExp(/(http)/);
+      if(!reg.test(response.avatar)){
+        response.avatar = `${baseURL}/images/${response.avatar}`;
+      }
       yield put({
         type: 'saveCurrentUser',
         payload: response,

@@ -65,7 +65,6 @@ class TreeTable extends PureComponent {
     const { selectedRowKeys, needTotalList } = this.state;
     const { data = {}, rowKey, ...rest } = this.props;
     const { list = [] } = data;
-    console.log(`dataSource值的主键为: ${rowKey}`);
 
     // const paginationProps = {
     //   showSizeChanger: true,

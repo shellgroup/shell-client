@@ -82,7 +82,6 @@ export default class BaseMenu extends PureComponent {
     const itemPath = this.conversionPath(item.path);
     //获取菜单数据中的权限数据 parmsList
     const { parmsList } = item;
-    console.log(parmsList,"菜单————————————————————————————————————————————");
     const icon = getIcon(item.icon);
     const { target } = item;
 

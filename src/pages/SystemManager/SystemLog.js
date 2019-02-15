@@ -192,7 +192,6 @@ class SystemLog extends PureComponent {
     });
   };
   createTimes(dates, dateStrings) {
-    console.log('From: ', dateStrings[0], ', to: ', dateStrings[1]);
     let createTime = {
       beginDate:dateStrings[0],
       endDate:dateStrings[1]
@@ -200,7 +199,6 @@ class SystemLog extends PureComponent {
     this.setState({
       createTime:createTime
     });
-    console.log(this.state.createTime,77788)
   };
   handleFormReset = () => {
     const { form, dispatch } = this.props;

@@ -368,13 +368,11 @@ class DepartmentManager extends PureComponent {
         that.deleted(record);
       },
       onCancel() {
-        console.log('取消删除');
       },
     });
   };
   deleted = record => {
     const { dispatch } = this.props;
-    console.log(3, record.deptId, this, 'dept/fetch');
     dispatch({
       type: 'dept/remove',
       payload: record.deptId,

@@ -172,7 +172,6 @@ class UpdateForm extends PureComponent {
         disables:false,
       })
     }
-    console.log(props.values,909090);
 
     this.state = {
       formVals: {
@@ -505,7 +504,6 @@ class MenuManager extends PureComponent {
         disables:false,
       })
     }
-    console.log('MenuType', e.target.value);
 
   }
   handleMenuClick = e => {
@@ -555,9 +553,7 @@ class MenuManager extends PureComponent {
 
   handleAdd = fields => {
     const { dispatch } = this.props;
-    console.log(fields,8888888);
 
-    console.log(this.state.menuType,fields,9999);
     dispatch({
       type: 'menulist/add',
       payload: fields,
@@ -578,7 +574,6 @@ class MenuManager extends PureComponent {
         that.deleted(record);
       },
       onCancel() {
-        console.log('取消删除');
       },
     });
   };

@@ -65,7 +65,6 @@ class StandardTable extends PureComponent {
     const { selectedRowKeys, needTotalList } = this.state;
     const { data = {}, tableAlert, rowKey, ...rest } = this.props;
     const { list = [], pagination } = data;
-    console.log(`dataSource值的主键为: ${rowKey}`);
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,

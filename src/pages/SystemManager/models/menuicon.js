@@ -16,7 +16,6 @@ export default {
   effects: {
     *fetch({ callback }, { call, put }) {
       const response = yield call(queryIcon);
-      console.log(response, '***************icon数据');
       yield put({
         type: 'save',
         payload: response,

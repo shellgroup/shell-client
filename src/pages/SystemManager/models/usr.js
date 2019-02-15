@@ -16,7 +16,6 @@ export default {
   effects: {
     *fetch({ payload }, { call, put }) {
       const response = yield call(queryUser, payload);
-      console.log(response, '***************用户列表数据');
       yield put({
         type: 'save',
         payload: response,

@@ -98,30 +98,30 @@ class GeographicView extends PureComponent {
   }
 
   render() {
-    const { province, city } = this.conversionObject();
-    const { isLoading } = this.props;
-    return (
-      <Spin spinning={isLoading} wrapperClassName={styles.row}>
-        <Select
-          className={styles.item}
-          value={province}
-          labelInValue
-          showSearch
-          onSelect={this.selectProvinceItem}
-        >
-          {this.getProvinceOption()}
-        </Select>
-        <Select
-          className={styles.item}
-          value={city}
-          labelInValue
-          showSearch
-          onSelect={this.selectCityItem}
-        >
-          {this.getCityOption()}
-        </Select>
-      </Spin>
-    );
+    // const { province, city } = this.conversionObject();
+    // const { isLoading } = this.props;
+    // return (
+    //   <Spin spinning={isLoading} wrapperClassName={styles.row}>
+    //     <Select
+    //       className={styles.item}
+    //       value={province}
+    //       labelInValue
+    //       showSearch
+    //       onSelect={this.selectProvinceItem}
+    //     >
+    //       {this.getProvinceOption()}
+    //     </Select>
+    //     <Select
+    //       className={styles.item}
+    //       value={city}
+    //       labelInValue
+    //       showSearch
+    //       onSelect={this.selectCityItem}
+    //     >
+    //       {this.getCityOption()}
+    //     </Select>
+    //   </Spin>
+    // );
   }
 }
 

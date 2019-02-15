@@ -37,23 +37,23 @@ class BindingView extends Component {
   ];
 
   render() {
-    return (
-      <Fragment>
-        <List
-          itemLayout="horizontal"
-          dataSource={this.getData()}
-          renderItem={item => (
-            <List.Item actions={item.actions}>
-              <List.Item.Meta
-                avatar={item.avatar}
-                title={item.title}
-                description={item.description}
-              />
-            </List.Item>
-          )}
-        />
-      </Fragment>
-    );
+    // return (
+    //   <Fragment>
+    //     <List
+    //       itemLayout="horizontal"
+    //       dataSource={this.getData()}
+    //       renderItem={item => (
+    //         <List.Item actions={item.actions}>
+    //           <List.Item.Meta
+    //             avatar={item.avatar}
+    //             title={item.title}
+    //             description={item.description}
+    //           />
+    //         </List.Item>
+    //       )}
+    //     />
+    //   </Fragment>
+    // );
   }
 }
 

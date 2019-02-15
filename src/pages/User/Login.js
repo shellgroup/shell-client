@@ -41,7 +41,6 @@ class LoginPage extends Component {
   };
   handleSubmit = (err, values) => {
     const { type } = this.state;
-    console.log(err,values,7777);
     if (!err) {
       const { dispatch } = this.props;
       dispatch({

@@ -62,7 +62,15 @@ export async function updateUser(params) {
     body: params,
   });
 }
-//修改用户信息
+//修改用户基本信息
+export async function updateBasic(params) {
+  return request(`${baseURL}/sys/user/updateBasic`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
+//修改头像
 export async function avatarFileUpload(params) {
   return request(`${baseURL}/sys/user/upload`, {
     method: 'POST',

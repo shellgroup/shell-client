@@ -93,7 +93,6 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-    console.log(props,666);
     this.state = {
       formVals: {
         code: props.values.code,
@@ -310,7 +309,6 @@ class DictionaryManager extends PureComponent {
         that.deleted(record);
       },
       onCancel() {
-        console.log('取消删除');
       },
     });
   };
@@ -326,7 +324,6 @@ class DictionaryManager extends PureComponent {
   };
   //批量删除
   showDeletesConfirm = () => {
-    console.log(showDeleteConfirmParames);
     let that = this;
     confirm({
       ...showDeleteTipsParames,
@@ -334,7 +331,6 @@ class DictionaryManager extends PureComponent {
         that.handleMenuClick();
       },
       onCancel() {
-        console.log('取消删除');
         that.setState({
           selectedRows: [],
         });
@@ -346,7 +342,6 @@ class DictionaryManager extends PureComponent {
     const { selectedRows } = this.state;
 
     if (selectedRows.length === 0) return;
-    console.log(selectedRows.map(row => row.key));
     dispatch({
       type: 'dictionary/remove',
       payload: selectedRows.map(row => row.id),
