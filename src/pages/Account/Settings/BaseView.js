@@ -141,7 +141,6 @@ class BaseView extends Component {
   //修改基本信息
   handleUpdate = fields => {
     const { dispatch } = this.props;
-    console.log(fields,77777);
     dispatch({
       type: 'geographic/update',
       payload: fields,
