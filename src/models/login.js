@@ -53,13 +53,8 @@ export default {
     },
 
     *logout(_, { call, put }) {
-      // const response = yield call(logOut);
-      // console.log(response,999);
-      //
-      // // if(response.code == 0){
-      // //   console.log(response,888);
-      // // }
-      // return;
+
+      yield call(logOut);
 
       yield put({
         type: 'changeLoginStatus',
@@ -69,6 +64,7 @@ export default {
         },
       });
       reloadAuthorized();
+
       yield put(
         routerRedux.push({
           pathname: '/user/login',
