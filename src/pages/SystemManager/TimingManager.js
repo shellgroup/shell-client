@@ -491,18 +491,7 @@ class TimingManager extends PureComponent {
       dataIndex: 'methodName',
       align: 'center',
     },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      align: 'center',
-      sorter: true,
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-      align: 'center',
-    },
+    ,
     {
       title: '状态',
       dataIndex: 'status',
@@ -520,6 +509,18 @@ class TimingManager extends PureComponent {
       render(val) {
         return <Badge status={statusMap[val]} text={status[val]} />;
       },
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      align: 'center',
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      align: 'center',
+      sorter: true,
+      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '操作',
@@ -901,7 +902,7 @@ class TimingManager extends PureComponent {
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
-      handleModalVisible: this.handleUpdate,
+      handleUpdate: this.handleUpdate,
     };
     const logListMethods = {
       handleModalVisible: this.handleLogListModalVisible,
