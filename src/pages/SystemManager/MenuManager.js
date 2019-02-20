@@ -255,7 +255,7 @@ class UpdateForm extends PureComponent {
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="更新角色"
+        title="更新菜单&按钮"
         width={940}
         visible={updateModalVisible}
         onOk={okHandle}
