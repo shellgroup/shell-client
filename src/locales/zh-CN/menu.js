@@ -47,5 +47,14 @@ export default {
   'menu.systemManager.fileUpload': '文件上传',
   'menu.systemManager.dictionaryManager': '字典管理',
   'menu.systemManager.systemLog': '系统日志',
-  'menu.systemManager.testPage': '测试页面'
-};
+  'menu.systemManager.testPage': '测试页面',
+
+
+  'menu.qrcodeManager': '二维码管理',
+  'menu.qrcodeManager.qrcodeList': '二维码列表',
+  'menu.qrcodeManager.qrcodeWxInfo': '微信基本信息',
+  'menu.qrcodeManager.qrcodeConfig': '二维码参数配置',
+  'menu.memberManager': '会员管理',
+  'menu.memberManager.memberList': '会员列表',
+
+}

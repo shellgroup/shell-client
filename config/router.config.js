@@ -118,6 +118,49 @@ export default [
           }
         ],
       },
+
+      //二维码管理
+      {
+        path: '/qrcode-manager',
+        icon: 'setting',
+        name: 'qrcodeMmanager',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '/qrcode-manager/qrcode-list',
+            name: 'qrcodeList',
+            //authority: ['admin'],
+            component: './Shell/QRcode/QRCodeList',
+          },
+          {
+            path: '/qrcode-manager/qrcode-wx-info',
+            name: 'qrcodeWxInfo',
+            //authority: ['admin'],
+            component: './Shell/QRcode/QRCodeWXInfo',
+          },
+          {
+            path: '/qrcode-manager/qrcode-config',
+            name: 'qrcodeConfig',
+            //authority: ['admin'],
+            component: './Shell/QRcode/QRCodeConfig',
+          },
+        ]
+      },
+      //会员管理
+      {
+        path: '/member-manager',
+        icon: 'setting',
+        name: 'memberManager',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '/member-manager/member-list',
+            name: 'memberLlist',
+            //authority: ['admin'],
+            component: './Shell/Member/MemberList',
+          },
+        ]
+      },
       /*E 页面路由开始*/
 
       //forms
