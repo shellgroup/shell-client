@@ -18,7 +18,7 @@ const confirm = Modal.confirm;
 import styles from './DepartmentManager.less';
 
 /**
- * 部门管理
+ * 服务商管理
  * */
 
 const FormItem = Form.Item;
@@ -40,20 +40,20 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="新增部门"
+      title="新增服务商"
       width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="部门名称">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="服务商名称">
         {form.getFieldDecorator('name', {
-          rules: [{ required: true, message: '请输入您的部门名称！' }],
+          rules: [{ required: true, message: '请输入您的服务商名称！' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上级服务商">
         {form.getFieldDecorator('parentId', {
-          rules: [{ required: false, message: '请选择所属部门！' }],
+          rules: [{ required: false, message: '请选择上级服务商！' }],
         })(
           <TreeSelect
             className={styles.width}
@@ -61,7 +61,7 @@ const CreateForm = Form.create()(props => {
             treeData={child(deptData)}
             dropdownMatchSelectWidth={false}
             treeDefaultExpandAll={false}
-            placeholder="请选择部门"
+            placeholder="请选择服务商"
             //onChange={onChangeTreeSelect}
           />
         )}
@@ -134,7 +134,7 @@ class UpdateForm extends PureComponent {
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="更新部门"
+        title="更新服务商"
         width={940}
         visible={updateModalVisible}
         onOk={okHandle}
@@ -145,15 +145,15 @@ class UpdateForm extends PureComponent {
           initialValue: formVals.deptId,
         })(<Input type={'hidden'} />)}
 
-        <FormItem {...this.formLayout} label="部门名称">
+        <FormItem {...this.formLayout} label="服务商名称">
           {form.getFieldDecorator('name', {
-            rules: [{ required: true, message: '请输入您的部门名称！' }],
+            rules: [{ required: true, message: '请输入您的服务商名称！' }],
             initialValue: formVals.name,
           })(<Input placeholder="请输入" />)}
         </FormItem>
-        <FormItem {...this.formLayout} label="所属部门">
+        <FormItem {...this.formLayout} label="上级服务商">
           {form.getFieldDecorator('parentId', {
-            rules: [{ required: false, message: '请选择所属部门！' }],
+            rules: [{ required: false, message: '请选择上级服务商！' }],
             initialValue: formVals.parentId,
           })(
             <TreeSelect
@@ -162,7 +162,7 @@ class UpdateForm extends PureComponent {
               treeData={deptData}
               dropdownMatchSelectWidth={false}
               treeDefaultExpandAll={false}
-              placeholder="请选择部门"
+              placeholder="请选择服务商"
               // onChange={onChangeTreeSelect}
             />
           )}
@@ -193,7 +193,7 @@ class DepartmentManager extends PureComponent {
     formValues: {},
     stepFormValues: {},
     key: 'deptId',
-    deptData: [], //部门树菜单数据
+    deptData: [], //服务商树菜单数据
     DeleteBtn: false,
     SaveBtn: false,
     UpdateBtn: false,
@@ -202,11 +202,11 @@ class DepartmentManager extends PureComponent {
 
   columns = [
     {
-      title: '部门名称',
+      title: '服务商名称',
       dataIndex: 'name',
     },
     {
-      title: '上级部门',
+      title: '上级服务商',
       dataIndex: 'parentName',
       align:'center',
     },
@@ -368,7 +368,7 @@ class DepartmentManager extends PureComponent {
     this.handleUpdateModalVisible();
   };
 
-  //删除部门信息
+  //删除服务商信息
   showDeleteConfirm = record => {
     let that = this;
     confirm({

@@ -70,81 +70,17 @@ const CreateForm = Form.create()(props => {
 
 
 
-  function handleConfirmBlur(e) {
-    const value = e.target.value;
-    that.setState({ confirmDirty: that.state.confirmDirty || !!value });
-  }
 
-  function compareToFirstPassword(rule, value, callback) {
-    if (value && value !== form.getFieldValue('password')) {
-      callback('两次输入的密码不一致!');
-    } else {
-      callback();
-    }
-  }
 
-  function validateToNextPassword(rule, value, callback) {
-    if (value && that.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
-  }
-
-  let formUserName = {};
-  if(userName){
-    formUserName = {
-      validateStatus:"error",
-      help:"用户名已存在"
-    }
-  }
   return (
     <Modal
       destroyOnClose
-      title="新增管理员"
+      title="新增二维码信息"
       width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 15 }}
-        label="用户名"
-        {...formUserName}
-      >
-        {form.getFieldDecorator('username', {
-          rules: [
-            { required: true, message: '请在输入至少2个字符的用户名!', min:2}
-          ],
-        })(<Input placeholder="请输入" onBlur={isExistByUserName} autoComplete='off'/>)}
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密&emsp;码">
-        {form.getFieldDecorator('password', {
-          rules: [
-            {
-              required: true,
-              message: '请输入至少6个字符的密码!',
-              min: 6,
-            },
-            {
-              validator: validateToNextPassword,
-            },
-          ],
-        })(<Input type="password" placeholder="请输入" autoComplete='new-password' />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认密码">
-        {form.getFieldDecorator('confirm', {
-          rules: [
-            {
-              required: true,
-              message: '请重新输入您的密码!',
-            },
-            {
-              validator: compareToFirstPassword,
-            },
-          ],
-        })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />)}
-      </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="邮&emsp;箱">
         {form.getFieldDecorator('email', {
           rules: [
@@ -285,7 +221,7 @@ class UpdateForm extends PureComponent {
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="更新管理员"
+        title="更新二维码信息"
         width={940}
         visible={updateModalVisible}
         onOk={okHandle}
@@ -616,15 +552,12 @@ class QRCodeList extends PureComponent {
       });
     });
   };
-  //新建用户
+  //新建二维码信息
   handleModalVisible = flag => {
     const { dept, role } = this.props;
 
     this.setState({
       modalVisible: !!flag,
-      roleData: role.data.list,
-      deptData: dept.data.list,
-      userName: false
     });
   };
   handleAdd = fields => {
@@ -643,14 +576,12 @@ class QRCodeList extends PureComponent {
 
     this.handleModalVisible();
   };
-  //修改用户信息
+  //修改二维码信息
   handleUpdateModalVisible = (flag, record) => {
     const { dept, role } = this.props;
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
-      roleData: role.data.list,
-      deptData: dept.data.list,
     });
   };
   //删除用户信息

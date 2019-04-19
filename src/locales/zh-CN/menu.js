@@ -38,7 +38,7 @@ export default {
 
   'menu.systemManager': '系统管理',
   'menu.systemManager.adminManager': '管理员管理',
-  'menu.systemManager.departmentManager': '部门管理',
+  'menu.systemManager.departmentManager': '服务商管理',
   'menu.systemManager.roleManager': '角色管理',
   'menu.systemManager.menuManager': '菜单管理',
   'menu.systemManager.sqlManager': 'SQL监控',

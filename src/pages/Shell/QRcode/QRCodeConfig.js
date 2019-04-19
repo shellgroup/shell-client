@@ -90,13 +90,7 @@ const CreateForm = Form.create()(props => {
     callback();
   }
 
-  let formUserName = {};
-  if(userName){
-    formUserName = {
-      validateStatus:"error",
-      help:"用户名已存在"
-    }
-  }
+
   return (
     <Modal
       destroyOnClose

@@ -69,34 +69,6 @@ const CreateForm = Form.create()(props => {
   }
 
 
-
-  function handleConfirmBlur(e) {
-    const value = e.target.value;
-    that.setState({ confirmDirty: that.state.confirmDirty || !!value });
-  }
-
-  function compareToFirstPassword(rule, value, callback) {
-    if (value && value !== form.getFieldValue('password')) {
-      callback('两次输入的密码不一致!');
-    } else {
-      callback();
-    }
-  }
-
-  function validateToNextPassword(rule, value, callback) {
-    if (value && that.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
-  }
-
-  let formUserName = {};
-  if(userName){
-    formUserName = {
-      validateStatus:"error",
-      help:"用户名已存在"
-    }
-  }
   return (
     <Modal
       destroyOnClose
@@ -106,45 +78,6 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 15 }}
-        label="用户名"
-        {...formUserName}
-      >
-        {form.getFieldDecorator('username', {
-          rules: [
-            { required: true, message: '请在输入至少2个字符的用户名!', min:2}
-          ],
-        })(<Input placeholder="请输入" onBlur={isExistByUserName} autoComplete='off'/>)}
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密&emsp;码">
-        {form.getFieldDecorator('password', {
-          rules: [
-            {
-              required: true,
-              message: '请输入至少6个字符的密码!',
-              min: 6,
-            },
-            {
-              validator: validateToNextPassword,
-            },
-          ],
-        })(<Input type="password" placeholder="请输入" autoComplete='new-password' />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认密码">
-        {form.getFieldDecorator('confirm', {
-          rules: [
-            {
-              required: true,
-              message: '请重新输入您的密码!',
-            },
-            {
-              validator: compareToFirstPassword,
-            },
-          ],
-        })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />)}
-      </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="邮&emsp;箱">
         {form.getFieldDecorator('email', {
           rules: [
@@ -302,33 +235,6 @@ class UpdateForm extends PureComponent {
           })(<Input placeholder="请输入" disabled={true} />)}
         </FormItem>
 
-        <FormItem {...this.formLayout} label="密&emsp;码">
-          {form.getFieldDecorator('password', {
-            rules: [
-              {
-                required: false,
-                message: '请输入至少6个字符的密码!',
-                min: 6,
-              },
-              {
-                validator: validateToNextPassword,
-              },
-            ],
-          })(<Input type="password" placeholder="请输入" autoComplete={"new-password"}/>)}
-        </FormItem>
-        <FormItem {...this.formLayout} label="确认密码">
-          {form.getFieldDecorator('confirm', {
-            rules: [
-              {
-                required: false,
-                message: '请在次输入您的密码!',
-              },
-              {
-                validator: compareToFirstPassword,
-              },
-            ],
-          })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} autoComplete='new-password'/>)}
-        </FormItem>
 
         <FormItem {...this.formLayout} label="邮&emsp;箱">
           {form.getFieldDecorator('email', {
@@ -447,18 +353,13 @@ class MemberList extends PureComponent {
 
   columns = [
     {
-      title: '用户名',
+      title: 'openID',
       dataIndex: 'username',
       align:'center',
     },
     {
-      title: '所属部门',
+      title: '微信昵称',
       dataIndex: 'deptName',
-      align:'center',
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'email',
       align:'center',
     },
     {
@@ -467,7 +368,48 @@ class MemberList extends PureComponent {
       align:'center',
     },
     {
-      title: '状态',
+      title: '会员ID',
+      dataIndex: 'email',
+      align:'center',
+    },
+    {
+      title: '会员身份识别码',
+      dataIndex: 'email',
+      align:'center',
+    },
+    ,
+    {
+      title: '线下会员号',
+      dataIndex: 'email',
+      align:'center',
+    },
+    ,
+    {
+      title: '门店号',
+      dataIndex: 'email',
+      align:'center',
+    },
+    {
+      title: '是否会员',
+      dataIndex: 'status',
+      align:'center',
+      filters: [
+        {
+          text: status[0],
+          value: 0,
+        },
+        {
+          text: status[1],
+          value: 1,
+        },
+      ],
+      render(val) {
+        return <Badge status={statusMap[val]} text={status[val]} />;
+      },
+    },
+    ,
+    {
+      title: '是否会员',
       dataIndex: 'status',
       align:'center',
       filters: [
@@ -491,26 +433,26 @@ class MemberList extends PureComponent {
       // sorter: true,
       // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
-    {
-      title: '操作',
-      align:'center',
-      width: 200,
-      render: (text, record) => (
-        <Fragment>
-          {this.state.UpdateBtn && (
-            <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>
-              修改
-            </Button>
-          )}
-          {this.state.UpdateBtn && this.state.DeleteBtn && <Divider type="vertical" />}
-          {this.state.DeleteBtn && (
-            <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>
-              删除
-            </Button>
-          )}
-        </Fragment>
-      ),
-    },
+    // {
+    //   title: '操作',
+    //   align:'center',
+    //   width: 200,
+    //   render: (text, record) => (
+    //     <Fragment>
+    //       {this.state.UpdateBtn && (
+    //         <Button type={'primary'} onClick={() => this.handleUpdateModalVisible(true, record)}>
+    //           修改
+    //         </Button>
+    //       )}
+    //       {this.state.UpdateBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+    //       {this.state.DeleteBtn && (
+    //         <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>
+    //           删除
+    //         </Button>
+    //       )}
+    //     </Fragment>
+    //   ),
+    // },
   ];
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -616,15 +558,12 @@ class MemberList extends PureComponent {
       });
     });
   };
-  //新建用户
+  //新建会员信息
   handleModalVisible = flag => {
     const { dept, role } = this.props;
 
     this.setState({
       modalVisible: !!flag,
-      roleData: role.data.list,
-      deptData: dept.data.list,
-      userName: false
     });
   };
   handleAdd = fields => {
@@ -643,14 +582,12 @@ class MemberList extends PureComponent {
 
     this.handleModalVisible();
   };
-  //修改用户信息
+  //修改会员信息
   handleUpdateModalVisible = (flag, record) => {
     const { dept, role } = this.props;
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
-      roleData: role.data.list,
-      deptData: dept.data.list,
     });
   };
   //删除用户信息
