@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
+import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../../utils/utils';
 const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
 import styles from './DepartmentManager.less';

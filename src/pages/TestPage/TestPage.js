@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import {Button, Input, Form, Row, Col} from "antd";
-import styles from "../SystemManager/AdminManager.less";
+import styles from "../SystemManager/DictionaryManager.less";
 import {connect} from "dva";
 
 @connect(({ testPage, loading}) => ({

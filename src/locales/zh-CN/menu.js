@@ -37,8 +37,8 @@ export default {
   'menu.account.logout': '退出登录',
 
   'menu.systemManager': '系统管理',
-  'menu.systemManager.adminManager': '管理员管理',
-  'menu.systemManager.departmentManager': '服务商管理',
+  // 'menu.systemManager.adminManager': '管理员管理',
+  // 'menu.systemManager.departmentManager': '服务商管理',
   'menu.systemManager.roleManager': '角色管理',
   'menu.systemManager.menuManager': '菜单管理',
   'menu.systemManager.sqlManager': 'SQL监控',
@@ -56,5 +56,12 @@ export default {
   'menu.qrcodeManager.qrcodeConfig': '二维码参数配置',
   'menu.memberManager': '会员管理',
   'menu.memberManager.memberList': '会员列表',
+
+
+
+  'menu.departmentManager':'渠道管理',
+  'menu.departmentManager.departmentManagerList':'渠道列表',
+  'menu.adminManager':'用户管理',
+  'menu.adminManager.adminManagerList':'用户列表',
 
 }

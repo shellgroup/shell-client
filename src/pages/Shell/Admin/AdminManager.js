@@ -17,7 +17,7 @@ import {
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../utils/utils';
+import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../../utils/utils';
 import styles from './AdminManager.less';
 
 /**

@@ -50,18 +50,18 @@ export default [
         name: 'systemManager',
         hideChildrenInMenu: true,
         routes: [
-          {
-            path: '/system-manager/admin-manager',
-            name: 'adminManager',
-            //authority: ['admin'],
-            component: './SystemManager/AdminManager',
-          } ,
-          {
-            path: '/system-manager/department-manager',
-            name: 'departmentManager',
-            //authority: ['admin'],
-            component: './SystemManager/DepartmentManager',
-          },
+          // {
+          //   path: '/system-manager/admin-manager',
+          //   name: 'adminManager',
+          //   //authority: ['admin'],
+          //   component: './SystemManager/AdminManager',
+          // } ,
+          // {
+          //   path: '/system-manager/department-manager',
+          //   name: 'departmentManager',
+          //   //authority: ['admin'],
+          //   component: './SystemManager/DepartmentManager',
+          // },
           {
             path: '/system-manager/role-manager',
             name: '角色管理',
@@ -115,6 +115,36 @@ export default [
             name: '测试页面',
             //authority: ['admin'],
             component: './TestPage/TestPage',
+          }
+        ],
+      },
+      //用户管理
+      {
+        path: '/admin-manager',
+        icon: 'setting',
+        name: 'adminManager',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '/admin-manager/admin-list',
+            name: 'adminManagerList',
+            //authority: ['admin'],
+            component: './Shell/Admin/AdminManager',
+          }
+        ],
+      },
+      //渠道管理
+      {
+        path: '/department-manager',
+        icon: 'setting',
+        name: 'departmentManager',
+        hideChildrenInMenu: true,
+        routes: [
+          {
+            path: '/department-manager/department-list',
+            name: 'departmentManagerList',
+            //authority: ['admin'],
+            component: './Shell/Channel/DepartmentManager',
           }
         ],
       },

@@ -358,80 +358,31 @@ class MemberList extends PureComponent {
       align:'center',
     },
     {
-      title: '微信昵称',
+      title: '姓名',
       dataIndex: 'deptName',
       align:'center',
     },
     {
-      title: '手机号',
+      title: '手机',
       dataIndex: 'mobile',
       align:'center',
     },
     {
-      title: '会员ID',
+      title: '身份证号',
       dataIndex: 'email',
       align:'center',
     },
     {
-      title: '会员身份识别码',
-      dataIndex: 'email',
-      align:'center',
-    },
-    ,
-    {
-      title: '线下会员号',
-      dataIndex: 'email',
-      align:'center',
-    },
-    ,
-    {
-      title: '门店号',
-      dataIndex: 'email',
-      align:'center',
-    },
-    {
-      title: '是否会员',
-      dataIndex: 'status',
-      align:'center',
-      filters: [
-        {
-          text: status[0],
-          value: 0,
-        },
-        {
-          text: status[1],
-          value: 1,
-        },
-      ],
-      render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
-      },
-    },
-    ,
-    {
-      title: '是否会员',
-      dataIndex: 'status',
-      align:'center',
-      filters: [
-        {
-          text: status[0],
-          value: 0,
-        },
-        {
-          text: status[1],
-          value: 1,
-        },
-      ],
-      render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
-      },
-    },
-    {
-      title: '创建时间',
+      title: '注册日期',
       dataIndex: 'createTime',
       align:'center',
       // sorter: true,
       // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    },
+    {
+      title: '渠道ID',
+      dataIndex: 'email',
+      align:'center',
     },
     // {
     //   title: '操作',
@@ -668,7 +619,7 @@ class MemberList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名">
+            <FormItem label="姓名">
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
@@ -703,7 +654,7 @@ class MemberList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名">
+            <FormItem label="姓名">
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
@@ -712,21 +663,31 @@ class MemberList extends PureComponent {
               {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
+          {/*<Col md={8} sm={24}>*/}
+          {/*  <FormItem label="所属部门">*/}
+          {/*    {getFieldDecorator('deptNo', {*/}
+          {/*      rules: [{ required: false, message: '请选择所属部门！' }],*/}
+          {/*    })(*/}
+          {/*      <TreeSelect*/}
+          {/*        className={styles.width}*/}
+          {/*        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}*/}
+          {/*        treeData={this.state.deptData}*/}
+          {/*        dropdownMatchSelectWidth={false}*/}
+          {/*        treeDefaultExpandAll={false}*/}
+          {/*        placeholder="请选择部门"*/}
+          {/*        // onChange={onChangeTreeSelect}*/}
+          {/*      />*/}
+          {/*    )}*/}
+          {/*  </FormItem>*/}
+          {/*</Col>*/}
           <Col md={8} sm={24}>
-            <FormItem label="所属部门">
-              {getFieldDecorator('deptNo', {
-                rules: [{ required: false, message: '请选择所属部门！' }],
-              })(
-                <TreeSelect
-                  className={styles.width}
-                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                  treeData={this.state.deptData}
-                  dropdownMatchSelectWidth={false}
-                  treeDefaultExpandAll={false}
-                  placeholder="请选择部门"
-                  // onChange={onChangeTreeSelect}
-                />
-              )}
+            <FormItem label="注册时间">
+              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="渠道ID">
+              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
         </Row>
