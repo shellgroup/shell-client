@@ -1,6 +1,6 @@
 {
-  "name": "Master Beta",
-  "short_name": "Master Beta",
+  "name": "壳牌后台管理系统",
+  "short_name": "壳牌后台管理系统",
   "display": "standalone",
   "start_url": "./?utm_source=homescreen",
   "theme_color": "#002140",

@@ -3,7 +3,7 @@ import { Tabs, Skeleton } from 'antd';
 import classNames from 'classnames';
 import styles from './index.less';
 import BreadcrumbView from './breadcrumb';
-import logo from '../../assets/logo.png';
+import logo from '../../../public/bg/logo_@2x.png';
 
 const { TabPane } = Tabs;
 export default class PageHeader extends PureComponent {

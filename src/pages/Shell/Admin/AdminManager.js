@@ -388,11 +388,11 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ usr, dept, role, loading }) => ({
+@connect(({ usr, channel, roleAdmin, loading }) => ({
   usr,
-  dept,
-  role,
-  loading: loading.effects[('usr/fetch', 'dept/fetch', 'role/fetch')],
+  channel,
+  roleAdmin,
+  loading: loading.effects[('usr/fetch', 'channel/fetch', 'roleAdmin/fetch')],
 }))
 @Form.create()
 class AdminManager extends PureComponent {
@@ -422,7 +422,7 @@ class AdminManager extends PureComponent {
       type: 'usr/fetch',
     });
     dispatch({
-      type: 'dept/fetch',
+      type: 'channel/fetch',
       callback: res => {
         if (res.code == 0) {
           this.setState({
@@ -432,7 +432,7 @@ class AdminManager extends PureComponent {
       },
     });
     dispatch({
-      type: 'role/fetch',
+      type: 'roleAdmin/fetch',
       callback: res => {
         if (res.code == 0) {
           this.setState({
@@ -618,12 +618,12 @@ class AdminManager extends PureComponent {
   };
   //新建用户
   handleModalVisible = flag => {
-    const { dept, role } = this.props;
+    const { channel, roleAdmin } = this.props;
 
     this.setState({
       modalVisible: !!flag,
-      roleData: role.data.list,
-      deptData: dept.data.list,
+      roleData: roleAdmin.data.list,
+      deptData: channel.data.list,
       userName: false
     });
   };
@@ -645,12 +645,12 @@ class AdminManager extends PureComponent {
   };
   //修改用户信息
   handleUpdateModalVisible = (flag, record) => {
-    const { dept, role } = this.props;
+    const { channel, roleAdmin } = this.props;
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
-      roleData: role.data.list,
-      deptData: dept.data.list,
+      roleData: roleAdmin.data.list,
+      deptData: channel.data.list,
     });
   };
   //删除用户信息

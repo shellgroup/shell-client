@@ -10,6 +10,6 @@ describe('Homepage', () => {
       timeout: 5000,
     });
     const text = await page.evaluate(() => document.getElementsByTagName('h1')[0].innerText);
-    expect(text).toContain('Master Beta');
+    expect(text).toContain('壳牌后台管理系统');
   });
 });

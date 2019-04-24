@@ -60,7 +60,7 @@ class LoginPage extends Component {
 
 
   renderMessage = content => (
-    <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
+    <Alert className={styles.mes} message={content} type="error" showIcon />
   );
 
   render() {
@@ -77,9 +77,10 @@ class LoginPage extends Component {
           }}
         >
           <div className={styles.formBox}>
-            <div className={styles.title}>账号密码登录</div>
-            {login.code == '500' && !submitting ? this.renderMessage(login.msg) : null}
-
+            <div className={styles.showerror}>
+              <div className={styles.title}>账号密码登录</div>
+              {login.code == '500' && !submitting ? this.renderMessage(login.msg) : null}
+            </div>
             <div className={styles.itemInput}>
               <div className={styles.tips}>用户名</div>
               <UserName

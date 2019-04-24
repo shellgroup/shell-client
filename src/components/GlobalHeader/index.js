@@ -4,7 +4,7 @@ import Link from 'umi/link';
 import Debounce from 'lodash-decorators/debounce';
 import styles from './index.less';
 import RightContent from './RightContent';
-import logo from '../../assets/logo.png';
+import logo from '../../../public/bg/logo_@2x.png';
 export default class GlobalHeader extends PureComponent {
   componentWillUnmount() {
     this.triggerResizeEvent.cancel();

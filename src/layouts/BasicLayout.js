@@ -10,7 +10,7 @@ import pathToRegexp from 'path-to-regexp';
 import Media from 'react-media';
 import { formatMessage } from 'umi/locale';
 import Authorized from '@/utils/Authorized';
-import logo from '../assets/logo.png';
+import logo from '../../public/bg/logo_@2x.png';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
@@ -116,13 +116,13 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname, breadcrumbNameMap);
 
     if (!currRouterData) {
-      return 'Master Beta';
+      return '壳牌后台管理系统';
     }
     const pageName = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
-    return `${pageName} - Master Beta`;
+    return `${pageName} - 壳牌后台管理系统`;
   };
 
   getLayoutStyle = () => {

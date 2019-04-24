@@ -29,6 +29,6 @@ describe('Login', () => {
     await page.click('button[type="submit"]');
     await page.waitForSelector('.ant-layout-sider h1'); // should display error
     const text = await page.evaluate(() => document.body.innerHTML);
-    expect(text).toContain('<h1>Master Beta</h1>');
+    expect(text).toContain('<h1>壳牌后台管理系统</h1>');
   });
 });
