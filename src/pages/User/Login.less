@@ -1,10 +1,10 @@
 @import '~antd/lib/style/themes/default.less';
 
 .main {
-  width: 368px;
+  width: 320px;
   margin: 0 auto;
   @media screen and (max-width: @screen-sm) {
-    width: 95%;
+    width: 85%;
   }
 
   .icon {
@@ -30,13 +30,43 @@
     }
   }
 }
+.title{
+  width:144px;
+  height:42px;
+  font-size:24px;
+  font-weight:bold;
+  color:rgba(251,205,21,1);
+  line-height:36px;
+  box-sizing: border-box;
+  border-bottom:2px solid rgba(251,205,21,1);
+  margin-bottom: 40px;
+}
+.submitText{
+  color:#000;
+}
+.tips{
+  font-size:14px;
+  font-weight:400;
+  color:rgba(153,153,153,1);
+}
 .getCaptcha {
   display: block;
-  width: calc(100% - 3px);
-  height: 40px;
-  border-radius: 4px;
+  width: 142px;
+  height: 54px;
   cursor: pointer;
-  border: 1px solid #d9d9d9;
   box-sizing: border-box;
+  margin-top: -20px;
 }
-
+.itemInput{
+  height:54px;
+  width: 320px;
+  margin-bottom: 30px;
+}
+.captchaBox{
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+}
+.formBox{
+  width: 320px;
+}

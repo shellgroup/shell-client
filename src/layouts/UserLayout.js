@@ -5,7 +5,7 @@ import { Icon } from 'antd';
 import GlobalFooter from '@/components/GlobalFooter';
 import SelectLang from '@/components/SelectLang';
 import styles from './UserLayout.less';
-import logo from '../assets/logo.png';
+import logo from '../../public/bg/logo_@2x.png';
 
 const links = [
   // {
@@ -48,20 +48,21 @@ class UserLayout extends React.PureComponent {
     return (
       // @TODO <DocumentTitle title={this.getPageTitle()}>
       <div className={styles.container}>
-        {/*<div className={styles.lang}>
-          <SelectLang />
-        </div>*/}
-        <div className={styles.content}>
-          <div className={styles.top}>
-            <div className={styles.header}>
-              <div to="/">
-                <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Master Beta</span>
+        <div className={styles.loginBox}>
+          <div className={styles.content}>
+            <div className={styles.bg}></div>
+            <div className={styles.input}>
+              <div className={styles.top}>
+                <div className={styles.header}>
+                  <div to="/">
+                    <img alt="logo" className={styles.logo} src={logo} />
+                    <span className={styles.title}>壳牌后台管理系统</span>
+                  </div>
+                </div>
               </div>
+              {children}
             </div>
-            <div className={styles.desc}>后台管理系统</div>
           </div>
-          {children}
         </div>
         <GlobalFooter links={links} copyright={copyright} />
       </div>

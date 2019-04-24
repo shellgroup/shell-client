@@ -9,7 +9,11 @@
     }
 
     .ant-form-item {
-      margin: 0 2px 24px;
+      margin: 0 !important;
+      .ant-form-item-control {
+        line-height: normal !important;
+        height: 30px;
+      }
     }
   }
 
@@ -51,8 +55,52 @@
     color: @disabled-color;
   }
 
-  .submit {
-    width: 100%;
-    margin-top: 24px;
+  .submit{
+    width:320px;
+    height:40px;
+    background:rgba(251,205,21,1);
+    border-radius:5px;
+    border:0;
+    outline: none;
   }
+  .submit:hover{
+    background:rgba(251,205,21,0.7);
+  }
+  .input{
+    width:320px;
+    height: 34px;
+    border: 0;
+    border-bottom: 1px solid #e3e3e3 !important;
+    outline: none !important;
+    font-size:20px;
+    font-weight:400;
+    color:rgba(51,51,51,1);
+    line-height:34px;
+    padding:0 !important;
+    border-radius: 0 !important;
+  }
+  .inputCaptcha{
+    width:160px;
+    height: 34px;
+    border: 0;
+    border-bottom: 1px solid #e3e3e3 !important;
+    outline: none !important;
+    font-size:20px;
+    font-weight:400;
+    color:rgba(51,51,51,1);
+    line-height:34px;
+    padding:0 !important;
+    border-radius: 0 !important;
+  }
+  .inputCaptcha:hover, .input:hover{
+    border-color: #e3e3e3 !important;
+    border-right-width: 0 !important;
+  }
+  .ant-input:focus, .inputCaptcha:focus, .input:focus {
+    border-color: #e3e3e3 !important;
+    border-right-width: 0 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 0 #fff !important;
+  }
+
 }

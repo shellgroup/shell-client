@@ -67,13 +67,13 @@ class WrapFormItem extends Component {
       const inputProps = omit(otherProps, ['countDown']);
       return (
         <FormItem>
-            {getFieldDecorator(name, options)(<Input {...customprops} {...inputProps} />)}
+            {getFieldDecorator(name, options)(<Input className={styles.inputCaptcha} {...customprops} {...inputProps} />)}
         </FormItem>
       );
     }
     return (
       <FormItem>
-        {getFieldDecorator(name, options)(<Input {...customprops} {...otherProps} />)}
+        {getFieldDecorator(name, options)(<Input className={styles.input} {...customprops} {...otherProps} />)}
       </FormItem>
     );
   }

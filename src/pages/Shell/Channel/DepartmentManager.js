@@ -179,9 +179,9 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ dept, loading }) => ({
-  dept,
-  loading: loading.models.dept,
+@connect(({ channel, loading }) => ({
+  channel,
+  loading: loading.models.channel,
 }))
 @Form.create()
 class DepartmentManager extends PureComponent {
@@ -240,7 +240,7 @@ class DepartmentManager extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'dept/fetch',
+      type: 'channel/fetch',
       callback: res => {
         if (res.code == 0) {
           this.setState({
@@ -274,7 +274,7 @@ class DepartmentManager extends PureComponent {
     }
 
     dispatch({
-      type: 'dept/fetch',
+      type: 'channel/fetch',
       payload: params,
     });
   };
@@ -290,7 +290,7 @@ class DepartmentManager extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'dept/remove',
+          type: 'channel/remove',
           payload: {
             key: selectedRows.map(row => row.key),
           },
@@ -316,7 +316,7 @@ class DepartmentManager extends PureComponent {
   handleModalVisible = flag => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'dept/fetch',
+      type: 'channel/fetch',
       callback: res => {
         if (res.code == 0) {
           this.setState({
@@ -341,10 +341,10 @@ class DepartmentManager extends PureComponent {
       fields.parentId = 0;
     }
     dispatch({
-      type: 'dept/add',
+      type: 'channel/add',
       payload: fields,
       callback: res => {
-        tips(res, this, 'dept/fetch');
+        tips(res, this, 'channel/fetch');
       },
     });
 
@@ -355,10 +355,10 @@ class DepartmentManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'dept/update',
+      type: 'channel/update',
       payload: fields,
       callback: res => {
-        tips(res, this, 'dept/fetch');
+        tips(res, this, 'channel/fetch');
         this.setState({
           selectedRows: [],
         });
@@ -383,10 +383,10 @@ class DepartmentManager extends PureComponent {
   deleted = record => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'dept/remove',
+      type: 'channel/remove',
       payload: record.deptId,
       callback: res => {
-        tips(res, this, 'dept/fetch');
+        tips(res, this, 'channel/fetch');
       },
     });
   };
@@ -394,7 +394,7 @@ class DepartmentManager extends PureComponent {
 
   render() {
     const {
-      dept: { data },
+      channel: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues,deptData, key, ShowList } = this.state;
