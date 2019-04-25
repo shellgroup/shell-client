@@ -10,9 +10,9 @@ import PageLoading from '@/components/PageLoading';
 
 const IntroduceRow = React.lazy(() => import('./IntroduceRow'));
 const SalesCard = React.lazy(() => import('./SalesCard'));
-const TopSearch = React.lazy(() => import('./TopSearch'));
-const ProportionSales = React.lazy(() => import('./ProportionSales'));
-const OfflineData = React.lazy(() => import('./OfflineData'));
+// const TopSearch = React.lazy(() => import('./TopSearch'));
+// const ProportionSales = React.lazy(() => import('./ProportionSales'));
+// const OfflineData = React.lazy(() => import('./OfflineData'));
 
 @connect(({ chart, loading }) => ({
   chart,
@@ -97,37 +97,37 @@ class Analysis extends Component {
     const { chart, loading } = this.props;
     const {
       visitData,
-      visitData2,
+      // visitData2,
       salesData,
-      searchData,
-      offlineData,
-      offlineChartData,
-      salesTypeData,
-      salesTypeDataOnline,
-      salesTypeDataOffline,
+      // searchData,
+      // offlineData,
+      // offlineChartData,
+      // salesTypeData,
+      // salesTypeDataOnline,
+      // salesTypeDataOffline,
     } = chart;
-    let salesPieData;
-    if (salesType === 'all') {
-      salesPieData = salesTypeData;
-    } else {
-      salesPieData = salesType === 'online' ? salesTypeDataOnline : salesTypeDataOffline;
-    }
-    const menu = (
-      <Menu>
-        <Menu.Item>操作一</Menu.Item>
-        <Menu.Item>操作二</Menu.Item>
-      </Menu>
-    );
-
-    const dropdownGroup = (
-      <span className={styles.iconGroup}>
-        <Dropdown overlay={menu} placement="bottomRight">
-          <Icon type="ellipsis" />
-        </Dropdown>
-      </span>
-    );
-
-    const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name);
+    // let salesPieData;
+    // if (salesType === 'all') {
+    //   salesPieData = salesTypeData;
+    // } else {
+    //   salesPieData = salesType === 'online' ? salesTypeDataOnline : salesTypeDataOffline;
+    // }
+    // const menu = (
+    //   <Menu>
+    //     <Menu.Item>操作一</Menu.Item>
+    //     <Menu.Item>操作二</Menu.Item>
+    //   </Menu>
+    // );
+    //
+    // const dropdownGroup = (
+    //   <span className={styles.iconGroup}>
+    //     <Dropdown overlay={menu} placement="bottomRight">
+    //       <Icon type="ellipsis" />
+    //     </Dropdown>
+    //   </span>
+    // );
+    //
+    // const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name);
 
     return (
       <GridContent>
@@ -144,42 +144,51 @@ class Analysis extends Component {
             selectDate={this.selectDate}
           />
         </Suspense>
-        <Row gutter={24}>
-          <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-            <Suspense fallback={null}>
-              <TopSearch
-                loading={loading}
-                visitData2={visitData2}
-                selectDate={this.selectDate}
-                searchData={searchData}
-                dropdownGroup={dropdownGroup}
-              />
-            </Suspense>
-          </Col>
-          <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-            <Suspense fallback={null}>
-              <ProportionSales
-                dropdownGroup={dropdownGroup}
-                salesType={salesType}
-                loading={loading}
-                salesPieData={salesPieData}
-                handleChangeSalesType={this.handleChangeSalesType}
-              />
-            </Suspense>
-          </Col>
-        </Row>
-        <Suspense fallback={null}>
-          <OfflineData
-            activeKey={activeKey}
-            loading={loading}
-            offlineData={offlineData}
-            offlineChartData={offlineChartData}
-            handleTabChange={this.handleTabChange}
-          />
-        </Suspense>
+        {/*<Row gutter={24}>*/}
+        {/*  <Col xl={12} lg={24} md={24} sm={24} xs={24}>*/}
+        {/*    <Suspense fallback={null}>*/}
+        {/*      <TopSearch*/}
+        {/*        loading={loading}*/}
+        {/*        visitData2={visitData2}*/}
+        {/*        selectDate={this.selectDate}*/}
+        {/*        searchData={searchData}*/}
+        {/*        dropdownGroup={dropdownGroup}*/}
+        {/*      />*/}
+        {/*    </Suspense>*/}
+        {/*  </Col>*/}
+        {/*  <Col xl={12} lg={24} md={24} sm={24} xs={24}>*/}
+        {/*    <Suspense fallback={null}>*/}
+        {/*      <ProportionSales*/}
+        {/*        dropdownGroup={dropdownGroup}*/}
+        {/*        salesType={salesType}*/}
+        {/*        loading={loading}*/}
+        {/*        salesPieData={salesPieData}*/}
+        {/*        handleChangeSalesType={this.handleChangeSalesType}*/}
+        {/*      />*/}
+        {/*    </Suspense>*/}
+        {/*  </Col>*/}
+        {/*</Row>*/}
+        {/*<Suspense fallback={null}>*/}
+        {/*  <OfflineData*/}
+        {/*    activeKey={activeKey}*/}
+        {/*    loading={loading}*/}
+        {/*    offlineData={offlineData}*/}
+        {/*    offlineChartData={offlineChartData}*/}
+        {/*    handleTabChange={this.handleTabChange}*/}
+        {/*  />*/}
+        {/*</Suspense>*/}
       </GridContent>
     );
   }
 }
 
 export default Analysis;
+
+
+
+
+
+
+
+
+

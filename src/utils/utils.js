@@ -239,6 +239,16 @@ export function disablesBtns(that) {
         uploadBtn: true,
       });
     }
+    if (data[i].indexOf('createqrCode') != -1) {
+      that.setState({
+        createqrCodeBtn: true,
+      });
+    }
+    if (data[i].indexOf('createqrCodes') != -1) {
+      that.setState({
+        createqrCodesBtn: true,
+      });
+    }
   }
 }
 //统一删除模板

@@ -22,7 +22,7 @@ for (let i = 0; i < fakeY2.length; i += 1) {
 }
 
 const salesData = [];
-for (let i = 0; i < 12; i += 1) {
+for (let i = 0; i < 7; i += 1) {
   salesData.push({
     x: `${i + 1}月`,
     y: Math.floor(Math.random() * 1000) + 200,

@@ -317,6 +317,93 @@ export async function removeUpload(params) {
 
 
 
+
+
+//查询二维码列表
+export async function queryQrcode(params) {
+  // return request(`${baseURL}/qrcode/info/list`, {
+  //   method: 'POST',
+  //   body: params,
+  // });
+  return request(`${baseURL}/qrcode/info/list?${stringify(params)}`);
+}
+
+//新建二维码
+export async function addQrcode(params) {
+  return request(`${baseURL}/qrcode/info/save`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//删除二维码信息
+export async function removeQrcode(params) {
+  return request(`${baseURL}/qrcode/info/delete`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//修改二维码信息
+export async function updateQrcode(params) {
+  return request(`${baseURL}/qrcode/info/update`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//生成二维码
+export async function createqrCode(params) {
+  return request(`${baseURL}/qrcode/info/createqrCode`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//批量生成二维码
+export async function createqrCodes(params) {
+  return request(`${baseURL}/qrcode/info/createqrCodes`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//查询二维码参数列表
+export async function queryQrcodeConfig(params) {
+  // return request(`${baseURL}/qrcode/info/list`, {
+  //   method: 'POST',
+  //   body: params,
+  // });
+  return request(`${baseURL}/qrcode/config/list?${stringify(params)}`);
+}
+
+//新建二维码参数
+export async function addQrcodeConfig(params) {
+  return request(`${baseURL}/qrcode/config/save`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//删除二维码参数信息
+export async function removeQrcodeConfig(params) {
+  return request(`${baseURL}/qrcode/config/delete`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//修改二维码参数信息
+export async function updateQrcodeConfig(params) {
+  return request(`${baseURL}/qrcode/config/update`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }

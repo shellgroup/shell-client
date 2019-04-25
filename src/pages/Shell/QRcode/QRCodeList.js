@@ -9,22 +9,26 @@ import {
   Select,
   Icon,
   Button,
+  Dropdown,
   Modal,
+  Menu,
   Badge,
   Divider,
   Radio,
-  TreeSelect,
+  TreeSelect, DatePicker,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../../utils/utils';
 import styles from './QRCodeList.less';
-
+import moment from 'moment';
 /**
  * 二维码列表
  * */
+const { RangePicker } = DatePicker;
 const showDeleteTipsParames = showDeleteConfirmParames();
 const FormItem = Form.Item;
+const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 const confirm = Modal.confirm;
@@ -42,7 +46,6 @@ const CreateForm = Form.create()(props => {
     handleAdd,
     handleModalVisible,
     onChangeTreeSelect,
-    isExistByUserName,
     UserNameOnChange,
     handleChange,
     deptData,
@@ -54,19 +57,12 @@ const CreateForm = Form.create()(props => {
 
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
-      if (err || userName) return;
+      if (err) return;
       form.resetFields();
       handleAdd(fieldsValue);
     });
   };
 
-  //处理角色数据
-  const roleValues = [];
-  if (roleData) {
-    for (let i = 0; i < roleData.length; i++) {
-      roleValues.push(<Option key={ roleData[i].roleId } value={roleData[i].roleId} title={roleData[i].roleName} >{roleData[i].roleName}</Option>);
-    }
-  }
 
 
 
@@ -81,58 +77,17 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="邮&emsp;箱">
-        {form.getFieldDecorator('email', {
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="推广员姓名">
+        {form.getFieldDecorator('userName', {
           rules: [
-            { type: 'email', message: '您输入的邮箱格式不正确！' },
-            { required: true, message: '请输入您的邮箱！' },
+            { required: true, message: '请输入推广员姓名！' },
           ],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="手&emsp;机">
-        {form.getFieldDecorator('mobile', {
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="推广员手机号">
+        {form.getFieldDecorator('userPhone', {
           rules: [{ required: true, message: '请输入11位手机号码！', min: 11 }],
         })(<Input placeholder="请输入" maxLength={11} />)}
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
-        {form.getFieldDecorator('deptId', {
-          rules: [{ required: true, message: '请选择所属部门！' }],
-        })(
-          <TreeSelect
-            className={styles.width}
-            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            treeData={child(deptData)}
-            dropdownMatchSelectWidth={false}
-            treeDefaultExpandAll={false}
-            placeholder="请选择部门"
-            //onChange={onChangeTreeSelect}
-          />
-        )}
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角&emsp;色">
-        {form.getFieldDecorator('roleIdList', {
-          rules: [{ required: false }],
-        })(
-          <Select
-            mode="multiple"
-            style={{ width: '100%' }}
-            placeholder="请选择角色"
-            onChange={handleChange}
-          >
-            {roleValues}
-          </Select>
-        )}
-      </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状&emsp;态">
-        {form.getFieldDecorator('status', {
-          rules: [{ required: false }],
-          initialValue: statusValue,
-        })(
-          <RadioGroup>
-            <Radio value={1}>正常</Radio>
-            <Radio value={0}>停用</Radio>
-          </RadioGroup>
-        )}
       </FormItem>
     </Modal>
   );
@@ -148,18 +103,12 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
+    console.log(props,8888888888888);
     this.state = {
       formVals: {
-        name: props.values.username,
-        key: props.values.userId,
-        deptId: props.values.deptId,
-        deptName: props.values.deptName,
-        email: props.values.email,
-        mobile: props.values.mobile,
-        roleIdList: props.values.roleIdList,
-        status: props.values.status,
-        userId: props.values.userId,
-        username: props.values.username,
+        id: props.values.id,
+        userName: props.values.userName,
+        userPhone: props.values.userPhone,
       },
       currentStep: 0,
       confirmDirty: false,
@@ -183,32 +132,7 @@ class UpdateForm extends PureComponent {
     } = this.props;
     const { formVals } = this.state;
     const { form } = this.props;
-    //处理角色数据
-    const roleValues = [];
-    for (let i = 0; i < roleData.length; i++) {
-      roleValues.push(<Option key={roleData[i].roleId} value={roleData[i].roleId} title={roleData[i].roleName} >{roleData[i].roleName}</Option>);
-    }
 
-
-    function handleConfirmBlur(e) {
-      const value = e.target.value;
-      that.setState({ confirmDirtyUp: that.state.confirmDirtyUp || !!value });
-    }
-
-    function compareToFirstPassword(rule, value, callback) {
-      if (value && value !== form.getFieldValue('password')) {
-        callback('两次输入的密码不一致!');
-      } else {
-        callback();
-      }
-    }
-
-    function validateToNextPassword(rule, value, callback) {
-      if (value && that.state.confirmDirtyUp) {
-        form.validateFields(['confirm'], { force: true });
-      }
-      callback();
-    }
 
     const okHandle = () => {
       form.validateFields((err, fieldsValue) => {
@@ -227,96 +151,23 @@ class UpdateForm extends PureComponent {
         onOk={okHandle}
         onCancel={() => handleUpdateModalVisible(false)}
       >
-        {form.getFieldDecorator('userId', {
+        {form.getFieldDecorator('id', {
           rules: [{ required: false }],
-          initialValue: formVals.userId,
+          initialValue: formVals.id,
         })(<Input type={'hidden'} />)}
-        <FormItem {...this.formLayout} label="用户名">
-          {form.getFieldDecorator('username', {
-            rules: [{ required: false, message: '请输入至少2个字符的用户名 ！', min: 2 }],
-            initialValue: formVals.name,
-          })(<Input placeholder="请输入" disabled={true} />)}
-        </FormItem>
-
-        <FormItem {...this.formLayout} label="密&emsp;码">
-          {form.getFieldDecorator('password', {
+        <FormItem {...this.formLayout} label="推广员姓名">
+          {form.getFieldDecorator('userName', {
             rules: [
-              {
-                required: false,
-                message: '请输入至少6个字符的密码!',
-                min: 6,
-              },
-              {
-                validator: validateToNextPassword,
-              },
+              { required: true, message: '请输入推广员姓名！' },
             ],
-          })(<Input type="password" placeholder="请输入" autoComplete={"new-password"}/>)}
-        </FormItem>
-        <FormItem {...this.formLayout} label="确认密码">
-          {form.getFieldDecorator('confirm', {
-            rules: [
-              {
-                required: false,
-                message: '请在次输入您的密码!',
-              },
-              {
-                validator: compareToFirstPassword,
-              },
-            ],
-          })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} autoComplete='new-password'/>)}
-        </FormItem>
-
-        <FormItem {...this.formLayout} label="邮&emsp;箱">
-          {form.getFieldDecorator('email', {
-            rules: [
-              { type: 'email', message: '您输入的邮箱格式不正确！' },
-              { required: false, message: '请输入您的邮箱！' },
-            ],
-            initialValue: formVals.email,
+            initialValue: formVals.userName
           })(<Input placeholder="请输入" />)}
         </FormItem>
-        <FormItem {...this.formLayout} label="手&emsp;机">
-          {form.getFieldDecorator('mobile', {
-            rules: [{ required: false, message: '请输入11位手机号码！', min: 11 }],
-            initialValue: formVals.mobile,
+        <FormItem {...this.formLayout} label="推广员手机号">
+          {form.getFieldDecorator('userPhone', {
+            rules: [{ required: true, message: '请输入11位手机号码！', min: 11 }],
+            initialValue: formVals.userPhone
           })(<Input placeholder="请输入" maxLength={11} />)}
-        </FormItem>
-        <FormItem {...this.formLayout} label="所属部门">
-          {form.getFieldDecorator('deptId', {
-            rules: [{ required: false, message: '请选择所属部门！' }],
-            initialValue: formVals.deptId,
-          })(
-            <TreeSelect
-              className={styles.width}
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-              treeData={deptData}
-              dropdownMatchSelectWidth={false}
-              treeDefaultExpandAll={false}
-              placeholder="请选择部门"
-              // onChange={onChangeTreeSelect}
-            />
-          )}
-        </FormItem>
-        <FormItem {...this.formLayout} label="角&emsp;色">
-          {form.getFieldDecorator('roleIdList', {
-            rules: [{ required: false }],
-            initialValue: formVals.roleIdList
-          })(
-            <Select mode="multiple" style={{ width: '100%' }} placeholder="请选择角色" >
-              {roleValues}
-            </Select>
-          )}
-        </FormItem>
-        <FormItem {...this.formLayout} label="状&emsp;态">
-          {form.getFieldDecorator('status', {
-            rules: [{ required: false }],
-            initialValue: formVals.status
-          })(
-            <RadioGroup>
-              <Radio value={1}>正常</Radio>
-              <Radio value={0}>停用</Radio>
-            </RadioGroup>
-          )}
         </FormItem>
       </Modal>
     );
@@ -339,7 +190,7 @@ class QRCodeList extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: 'userId', //列表的唯一键
+    key: 'id', //列表的唯一键
     statusValue: 1, //状态默认选中正常 0正常 1停用
     roleData: [], //角色下拉菜单数据
     deptData: [], //部门树菜单数据
@@ -347,9 +198,12 @@ class QRCodeList extends PureComponent {
     confirmDirtyUp: false, //确认密码
     DeleteBtn: false,
     userName: false,
+    createqrCodeBtn:false,
+    createqrCodesBtn:false,
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
+    createTime:{}
   };
 
   componentDidMount() {
@@ -379,46 +233,24 @@ class QRCodeList extends PureComponent {
     });
     //调用utils里面的disablesBtns方法判断是否有权限
     disablesBtns(this);
+    this.createTimes = this.createTimes.bind(this);
   }
 
   columns = [
     {
-      title: '用户名',
-      dataIndex: 'username',
+      title: '二维码ID',
+      dataIndex: 'id',
       align:'center',
     },
+    // {
+    //   title: '二维码类型',
+    //   dataIndex: 'mallType',
+    //   align:'center',
+    // },
     {
-      title: '所属部门',
-      dataIndex: 'deptName',
-      align:'center',
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'email',
-      align:'center',
-    },
-    {
-      title: '手机号',
-      dataIndex: 'mobile',
-      align:'center',
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      align:'center',
-      filters: [
-        {
-          text: status[0],
-          value: 0,
-        },
-        {
-          text: status[1],
-          value: 1,
-        },
-      ],
-      render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
-      },
+      title: '渠道ID',
+      dataIndex: 'deptId',
+      align: 'center',
     },
     {
       title: '创建时间',
@@ -430,7 +262,7 @@ class QRCodeList extends PureComponent {
     {
       title: '操作',
       align:'center',
-      width: 200,
+      width: 300,
       render: (text, record) => (
         <Fragment>
           {this.state.UpdateBtn && (
@@ -442,6 +274,12 @@ class QRCodeList extends PureComponent {
           {this.state.DeleteBtn && (
             <Button type={'primary'} onClick={() => this.showDeleteConfirm(record)}>
               删除
+            </Button>
+          )}
+          {this.state.createqrCodeBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+          {this.state.createqrCodeBtn && (
+            <Button type={'primary'} onClick={() => this.handleCreateQrcode(record)}>
+              二维码生成
             </Button>
           )}
         </Fragment>
@@ -479,6 +317,7 @@ class QRCodeList extends PureComponent {
     form.resetFields();
     this.setState({
       formValues: {},
+      createTime:{}
     });
     dispatch({
       type: 'qrcode/fetch',
@@ -500,28 +339,7 @@ class QRCodeList extends PureComponent {
   };
   handleChange = value => {
   };
-  isExistByUserName = e =>{
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'qrcode/isExistByUserName',
-      payload: {
-        userName: e.target.value
-      },
-      callback: res => {
 
-        let us = false;
-        if(res == "exist"){
-          us = true;
-        }
-        this.setState({
-            userName: us,
-        });
-        dispatch({
-          type: 'qrcode/fetch',
-        });
-      },
-    });
-  };
 
   handleSelectRows = rows => {
     this.setState({
@@ -538,10 +356,15 @@ class QRCodeList extends PureComponent {
       if (err) return;
 
       const values = {
-        username: fieldsValue.name,
+        id: fieldsValue.qrid,
+        mallType: fieldsValue.qrtype,
         deptId: fieldsValue.deptNo,
-        mobile: fieldsValue.phone,
+        beginDate: this.state.createTime.beginDate,
+        endDate: this.state.createTime.endDate,
       };
+
+
+
       this.setState({
         formValues: values,
       });
@@ -567,9 +390,6 @@ class QRCodeList extends PureComponent {
       payload: fields,
       callback: res => {
         tips(res, this, 'qrcode/fetch');
-        this.setState({
-          userName: false
-        })
       },
     });
 
@@ -584,7 +404,7 @@ class QRCodeList extends PureComponent {
       stepFormValues: record || {},
     });
   };
-  //删除用户信息
+  //删除二维码信息
   showDeleteConfirm = record => {
     let that = this;
     confirm({
@@ -600,7 +420,7 @@ class QRCodeList extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'qrcode/remove',
-      payload: [record.userId],
+      payload: [record.id],
       callback: res => {
         tips(res, this, 'qrcode/fetch');
       },
@@ -621,23 +441,63 @@ class QRCodeList extends PureComponent {
       },
     });
   };
-  handleMenuClick = () => {
+  handleCreateQrcode= record => {
     const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (selectedRows.length === 0) return;
     dispatch({
-      type: 'qrcode/remove',
-      payload: selectedRows.map(row => row.userId),
+      type: 'qrcode/createqrCode',
+      payload: [record.id],
       callback: res => {
         tips(res, this, 'qrcode/fetch');
-        this.setState({
-          selectedRows: [],
-        });
       },
     });
   };
+  createTimes(dates, dateStrings) {
+    let createTime = {
+      beginDate:dateStrings[0],
+      endDate:dateStrings[1]
+    }
+    this.setState({
+      createTime:createTime
+    });
+  };
 
+  handleMenuClick = e => {
+    const { dispatch } = this.props;
+    const { selectedRows } = this.state;
+    if (selectedRows.length === 0) return;
+    switch (e.key) {
+      case 'remove':
+        dispatch({
+          type: 'qrcode/remove',
+          payload: {
+            key: selectedRows.map(row => row.id),
+          },
+          callback: () => {
+            tips(res, this, 'qrcode/fetch');
+            this.setState({
+              selectedRows: [],
+            });
+          },
+        });
+        break;
+      case 'createQrcode':
+        dispatch({
+          type: 'qrcode/createqrCodes',
+          payload: {
+            key: selectedRows.map(row => row.id),
+          },
+          callback: () => {
+            tips(res, this, 'qrcode/fetch');
+            this.setState({
+              selectedRows: [],
+            });
+          },
+        });
+        break;
+      default:
+        break;
+    }
+  };
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
@@ -662,13 +522,13 @@ class QRCodeList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            <FormItem label="二维码ID">
+              {getFieldDecorator('qrid')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="手机">
-              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+            <FormItem label="二维码类型">
+              {getFieldDecorator('qrtype')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -697,30 +557,29 @@ class QRCodeList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            <FormItem label="二维码ID">
+              {getFieldDecorator('qrid')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="手机">
-              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+            <FormItem label="二维码类型">
+              {getFieldDecorator('qrtype')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="所属部门">
-              {getFieldDecorator('deptNo', {
-                rules: [{ required: false, message: '请选择所属部门！' }],
-              })(
-                <TreeSelect
-                  className={styles.width}
-                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                  treeData={this.state.deptData}
-                  dropdownMatchSelectWidth={false}
-                  treeDefaultExpandAll={false}
-                  placeholder="请选择部门"
-                  // onChange={onChangeTreeSelect}
-                />
-              )}
+            <FormItem label="渠道ID">
+              {getFieldDecorator('deptNo')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="创建时间">
+              <RangePicker
+                format={dateFormat}
+                showTime={{
+                  defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                }}
+                onChange={this.createTimes}
+              />
             </FormItem>
           </Col>
         </Row>
@@ -752,13 +611,18 @@ class QRCodeList extends PureComponent {
       qrcode: { data },
       loading,
     } = this.props;
+    const menu = (
+      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
+        {this.state.createqrCodeBtn && <Menu.Item key="remove">删除</Menu.Item>}
+        {this.state.createqrCodesBtn && <Menu.Item key="createQrcode">二维码生成</Menu.Item>}
+      </Menu>
+    );
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
       onChangeTreeSelect: this.onChangeTreeSelect,
       handleChange: this.handleChange,
-      isExistByUserName: this.isExistByUserName,
       UserNameOnChange: this.UserNameOnChange,
       roleData: roleData,
       userName: userName,
@@ -785,11 +649,20 @@ class QRCodeList extends PureComponent {
                   新建
                 </Button>
               )}
-              {selectedRows.length > 0 && this.state.DeleteBtn && (
+              {selectedRows.length > 0 && (
                 <span>
-                  <Button onClick={this.showDeletesConfirm}>批量删除</Button>
+                  <Dropdown overlay={menu}>
+                    <Button>
+                      更多操作 <Icon type="down" />
+                    </Button>
+                  </Dropdown>
                 </span>
               )}
+              {/*{selectedRows.length > 0 && this.state.DeleteBtn && (*/}
+              {/*  <span>*/}
+              {/*    <Button onClick={this.showDeletesConfirm}>批量删除</Button>*/}
+              {/*  </span>*/}
+              {/*)}*/}
             </div>
             <StandardTable
               selectedRows={selectedRows}

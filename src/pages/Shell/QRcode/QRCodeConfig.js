@@ -13,17 +13,20 @@ import {
   Badge,
   Divider,
   Radio,
-  TreeSelect,
+  TreeSelect, DatePicker,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../../utils/utils';
 import styles from './QRCodeConfig.less';
+import moment from 'moment';
 
 /**
  * 二维码参数配置
  * */
 const showDeleteTipsParames = showDeleteConfirmParames();
+const dateFormat = 'YYYY-MM-DD HH:mm:ss';
+const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
@@ -32,9 +35,11 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['default', 'processing'];
-const status = ['停用', '正常'];
-
+const status = ['圆形', '方形'];
+const Shape = [
+  <Option key={ 0 } value={0} title={"圆形"} >圆形</Option>,
+  <Option key={ 1 } value={1} title={"方形"} >方形</Option>
+];
 const CreateForm = Form.create()(props => {
   const {
     modalVisible,
@@ -42,7 +47,6 @@ const CreateForm = Form.create()(props => {
     handleAdd,
     handleModalVisible,
     onChangeTreeSelect,
-    isExistByUserName,
     UserNameOnChange,
     handleChange,
     deptData,
@@ -111,32 +115,37 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="宽">
         {form.getFieldDecorator('qrcodeWidth', {
           rules: [{ required: true, message: '请输入二维码的宽度！'}],
-        })(<Input placeholder="请输入" maxLength={11} />)}
+        })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="字体大小">
         {form.getFieldDecorator('qrcodeFontSize', {
           rules: [{ required: true, message: '请输入字体大小！'}],
-        })(<Input placeholder="请输入" maxLength={11} />)}
+        })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="字体高度">
         {form.getFieldDecorator('qrcodeFontHeight', {
           rules: [{ required: true, message: '请输入字体高度！'}],
-        })(<Input placeholder="请输入" maxLength={11} />)}
+        })(<Input placeholder="请输入" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
+        {form.getFieldDecorator('qrcodeShape', {
+          rules: [{ required: true, message: '请输入二维码形状，只能为数字类型！'}],
+        })(<Input placeholder="如：圆请输入“0”或方请输入“1”" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="跳转路径">
         {form.getFieldDecorator('qrcodeIndexUrl', {
           rules: [{ required: true, message: '请输入跳转路径！'}],
-        })(<Input placeholder="请输入" maxLength={11} />)}
+        })(<Input placeholder="请输入"/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="二微码名称">
         {form.getFieldDecorator('qrcodeConfigName', {
-          rules: [{ required: true, message: '请输入二微码名称！', min: 11 }],
-        })(<Input placeholder="请输入" maxLength={11} />)}
+          rules: [{ required: true, message: '配置名称！'}],
+        })(<Input placeholder="如：**位置码、**导购码" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备注说明">
         {form.getFieldDecorator('remark', {
-          rules: [{ required: false, message: '请输入备注说明！', min: 11 }],
-        })(<Input placeholder="请输入" maxLength={11} />)}
+          rules: [{ required: false, message: '请输入备注说明！'}],
+        })(<Input placeholder="请输入"/>)}
       </FormItem>
 
     </Modal>
@@ -155,16 +164,15 @@ class UpdateForm extends PureComponent {
     super(props);
     this.state = {
       formVals: {
-        name: props.values.username,
-        key: props.values.userId,
-        deptId: props.values.deptId,
-        deptName: props.values.deptName,
-        email: props.values.email,
-        mobile: props.values.mobile,
-        roleIdList: props.values.roleIdList,
-        status: props.values.status,
-        userId: props.values.userId,
-        username: props.values.username,
+        id: props.values.id,
+        qrcodeHeight: props.values.qrcodeHeight,
+        qrcodeWidth: props.values.qrcodeWidth,
+        qrcodeFontSize: props.values.qrcodeFontSize,
+        qrcodeFontHeight: props.values.qrcodeFontHeight,
+        qrcodeShape: props.values.qrcodeShape,
+        qrcodeIndexUrl: props.values.qrcodeIndexUrl,
+        qrcodeConfigName: props.values.qrcodeConfigName,
+        remark: props.values.remark,
       },
       currentStep: 0,
       confirmDirty: false,
@@ -188,32 +196,7 @@ class UpdateForm extends PureComponent {
     } = this.props;
     const { formVals } = this.state;
     const { form } = this.props;
-    //处理角色数据
-    const roleValues = [];
-    for (let i = 0; i < roleData.length; i++) {
-      roleValues.push(<Option key={roleData[i].roleId} value={roleData[i].roleId} title={roleData[i].roleName} >{roleData[i].roleName}</Option>);
-    }
 
-
-    function handleConfirmBlur(e) {
-      const value = e.target.value;
-      that.setState({ confirmDirtyUp: that.state.confirmDirtyUp || !!value });
-    }
-
-    function compareToFirstPassword(rule, value, callback) {
-      if (value && value !== form.getFieldValue('password')) {
-        callback('两次输入的密码不一致!');
-      } else {
-        callback();
-      }
-    }
-
-    function validateToNextPassword(rule, value, callback) {
-      if (value && that.state.confirmDirtyUp) {
-        form.validateFields(['confirm'], { force: true });
-      }
-      callback();
-    }
 
     const okHandle = () => {
       form.validateFields((err, fieldsValue) => {
@@ -232,9 +215,9 @@ class UpdateForm extends PureComponent {
         onOk={okHandle}
         onCancel={() => handleUpdateModalVisible(false)}
       >
-        {form.getFieldDecorator('userId', {
+        {form.getFieldDecorator('id', {
           rules: [{ required: false }],
-          initialValue: formVals.userId,
+          initialValue: formVals.id,
         })(<Input type={'hidden'} />)}
 
         <FormItem {...this.formLayout} label="高">
@@ -242,37 +225,50 @@ class UpdateForm extends PureComponent {
             rules: [
               { required: true, message: '请输入二维码的高度！' },
             ],
+            initialValue: formVals.qrcodeHeight,
           })(<Input placeholder="请输入" />)}
         </FormItem>
         <FormItem {...this.formLayout} label="宽">
           {form.getFieldDecorator('qrcodeWidth', {
             rules: [{ required: true, message: '请输入二维码的宽度！'}],
-          })(<Input placeholder="请输入" maxLength={11} />)}
+            initialValue: formVals.qrcodeWidth,
+          })(<Input placeholder="请输入"/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="字体大小">
           {form.getFieldDecorator('qrcodeFontSize', {
             rules: [{ required: true, message: '请输入字体大小！'}],
-          })(<Input placeholder="请输入" maxLength={11} />)}
+            initialValue: formVals.qrcodeFontSize,
+          })(<Input placeholder="请输入"/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="字体高度">
           {form.getFieldDecorator('qrcodeFontHeight', {
             rules: [{ required: true, message: '请输入字体高度！'}],
-          })(<Input placeholder="请输入" maxLength={11} />)}
+            initialValue: formVals.qrcodeFontHeight,
+          })(<Input placeholder="请输入"/>)}
+        </FormItem>
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
+          {form.getFieldDecorator('qrcodeShape', {
+            rules: [{ required: true, message: '请输入二维码形状，只能为数字类型！'}],
+            initialValue: formVals.qrcodeShape,
+          })(<Input placeholder="如：圆请输入“0”或方请输入“1”" />)}
         </FormItem>
         <FormItem {...this.formLayout} label="跳转路径">
           {form.getFieldDecorator('qrcodeIndexUrl', {
             rules: [{ required: true, message: '请输入跳转路径！'}],
-          })(<Input placeholder="请输入" maxLength={11} />)}
+            initialValue: formVals.qrcodeIndexUrl,
+          })(<Input placeholder="请输入"/>)}
         </FormItem>
-        <FormItem {...this.formLayout} label="二微码名称">
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="配置名称">
           {form.getFieldDecorator('qrcodeConfigName', {
-            rules: [{ required: true, message: '请输入二微码名称！', min: 11 }],
-          })(<Input placeholder="请输入" maxLength={11} />)}
+            rules: [{ required: true, message: '配置名称！'}],
+            initialValue: formVals.qrcodeConfigName,
+          })(<Input placeholder="如：**位置码、**导购码" />)}
         </FormItem>
         <FormItem {...this.formLayout} label="备注说明">
           {form.getFieldDecorator('remark', {
-            rules: [{ required: false, message: '请输入备注说明！', min: 11 }],
-          })(<Input placeholder="请输入" maxLength={11} />)}
+            rules: [{ required: false, message: '请输入备注说明！'}],
+            initialValue: formVals.remark,
+          })(<Input placeholder="请输入"/>)}
         </FormItem>
       </Modal>
     );
@@ -280,11 +276,11 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ qrcode, dept, role, loading }) => ({
-  qrcode,
+@connect(({ QRcodeConfig, dept, role, loading }) => ({
+  QRcodeConfig,
   dept,
   role,
-  loading: loading.effects[('qrcode/fetch', 'dept/fetch', 'role/fetch')],
+  loading: loading.effects[('QRcodeConfig/fetch', 'dept/fetch', 'role/fetch')],
 }))
 @Form.create()
 class QRCodeConfig extends PureComponent {
@@ -295,7 +291,7 @@ class QRCodeConfig extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: 'userId', //列表的唯一键
+    key: 'id', //列表的唯一键
     statusValue: 1, //状态默认选中正常 0正常 1停用
     roleData: [], //角色下拉菜单数据
     deptData: [], //部门树菜单数据
@@ -306,12 +302,13 @@ class QRCodeConfig extends PureComponent {
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
+    createTime:{}
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'qrcode/fetch',
+      type: 'QRcodeConfig/fetch',
     });
     dispatch({
       type: 'dept/fetch',
@@ -335,46 +332,59 @@ class QRCodeConfig extends PureComponent {
     });
     //调用utils里面的disablesBtns方法判断是否有权限
     disablesBtns(this);
+    this.createTimes = this.createTimes.bind(this);
   }
 
   columns = [
     {
-      title: '用户名',
-      dataIndex: 'username',
+      title: '码参数ID',
+      dataIndex: 'id',
+      align:'center',
+    },
+
+    {
+      title: '配置名称',
+      dataIndex: 'qrcodeConfigName',
+      align:'center',
+    }
+    ,
+    {
+      title: '高度',
+      dataIndex: 'qrcodeHeight',
       align:'center',
     },
     {
-      title: '所属部门',
-      dataIndex: 'deptName',
+      title: '宽度',
+      dataIndex: 'qrcodeWidth',
       align:'center',
     },
     {
-      title: '邮箱',
-      dataIndex: 'email',
+      title: '字体大小',
+      dataIndex: 'qrcodeFontSize',
       align:'center',
     },
     {
-      title: '手机号',
-      dataIndex: 'mobile',
+      title: '字体高度',
+      dataIndex: 'qrcodeFontHeight',
       align:'center',
     },
     {
-      title: '状态',
-      dataIndex: 'status',
+      title: '待跳转页面',
+      dataIndex: 'qrcodeIndexUrl',
       align:'center',
-      filters: [
-        {
-          text: status[0],
-          value: 0,
-        },
-        {
-          text: status[1],
-          value: 1,
-        },
-      ],
+    },
+    {
+      title: '形状',
+      dataIndex: 'qrcodeShape',
+      align:'center',
       render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
+        return <span>{status[val]}</span>;
       },
+    },
+    {
+      title: '存放地址',
+      dataIndex: 'qrcodePath',
+      align:'center',
     },
     {
       title: '创建时间',
@@ -382,6 +392,11 @@ class QRCodeConfig extends PureComponent {
       align:'center',
       // sorter: true,
       // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      align:'center',
     },
     {
       title: '操作',
@@ -425,7 +440,7 @@ class QRCodeConfig extends PureComponent {
     }
 
     dispatch({
-      type: 'qrcode/fetch',
+      type: 'QRcodeConfig/fetch',
       payload: params,
     });
   };
@@ -435,9 +450,10 @@ class QRCodeConfig extends PureComponent {
     form.resetFields();
     this.setState({
       formValues: {},
+      createTime:{}
     });
     dispatch({
-      type: 'qrcode/fetch',
+      type: 'QRcodeConfig/fetch',
       payload: {},
       callback: res => {
         tips(res);
@@ -456,28 +472,7 @@ class QRCodeConfig extends PureComponent {
   };
   handleChange = value => {
   };
-  isExistByUserName = e =>{
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'qrcode/isExistByUserName',
-      payload: {
-        userName: e.target.value
-      },
-      callback: res => {
 
-        let us = false;
-        if(res == "exist"){
-          us = true;
-        }
-        this.setState({
-            userName: us,
-        });
-        dispatch({
-          type: 'qrcode/fetch',
-        });
-      },
-    });
-  };
 
   handleSelectRows = rows => {
     this.setState({
@@ -494,16 +489,17 @@ class QRCodeConfig extends PureComponent {
       if (err) return;
 
       const values = {
-        username: fieldsValue.name,
-        deptId: fieldsValue.deptNo,
-        mobile: fieldsValue.phone,
+        qrcodeShape: fieldsValue.shape,
+        qrcodeConfigName: fieldsValue.name,
+        beginDate: this.state.createTime.beginDate,
+        endDate: this.state.createTime.endDate,
       };
       this.setState({
         formValues: values,
       });
 
       dispatch({
-        type: 'qrcode/fetch',
+        type: 'QRcodeConfig/fetch',
         payload: values,
       });
     });
@@ -517,12 +513,12 @@ class QRCodeConfig extends PureComponent {
     });
   };
   handleAdd = fields => {
-    const { dispatch, qrcode } = this.props;
+    const { dispatch, QRcodeConfig } = this.props;
     dispatch({
-      type: 'qrcode/add',
+      type: 'QRcodeConfig/add',
       payload: fields,
       callback: res => {
-        tips(res, this, 'qrcode/fetch');
+        tips(res, this, 'QRcodeConfig/fetch');
         this.setState({
           userName: false
         })
@@ -555,10 +551,10 @@ class QRCodeConfig extends PureComponent {
   deleted = record => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'qrcode/remove',
-      payload: [record.userId],
+      type: 'QRcodeConfig/remove',
+      payload: [record.id],
       callback: res => {
-        tips(res, this, 'qrcode/fetch');
+        tips(res, this, 'QRcodeConfig/fetch');
       },
     });
   };
@@ -577,16 +573,25 @@ class QRCodeConfig extends PureComponent {
       },
     });
   };
+  createTimes(dates, dateStrings) {
+    let createTime = {
+      beginDate:dateStrings[0],
+      endDate:dateStrings[1]
+    }
+    this.setState({
+      createTime:createTime
+    });
+  };
   handleMenuClick = () => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
 
     if (selectedRows.length === 0) return;
     dispatch({
-      type: 'qrcode/remove',
-      payload: selectedRows.map(row => row.userId),
+      type: 'QRcodeConfig/remove',
+      payload: selectedRows.map(row => row.id),
       callback: res => {
-        tips(res, this, 'qrcode/fetch');
+        tips(res, this, 'QRcodeConfig/fetch');
         this.setState({
           selectedRows: [],
         });
@@ -597,10 +602,10 @@ class QRCodeConfig extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'qrcode/update',
+      type: 'QRcodeConfig/update',
       payload: fields,
       callback: res => {
-        tips(res, this, 'qrcode/fetch');
+        tips(res, this, 'QRcodeConfig/fetch');
         this.setState({
           selectedRows: [],
         });
@@ -618,13 +623,22 @@ class QRCodeConfig extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名">
+            <FormItem label="配置名称">
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="手机">
-              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
+              {getFieldDecorator('shape', {
+                rules: [{ required: false }],
+              })(
+                <Select
+                  style={{ width: '100%' }}
+                  placeholder="请选形状"
+                >
+                  {Shape}
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -649,34 +663,38 @@ class QRCodeConfig extends PureComponent {
     const {
       form: { getFieldDecorator },
     } = this.props;
+
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="用户名">
+            <FormItem label="配置名称">
               {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="手机">
-              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+            <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
+              {getFieldDecorator('shape', {
+                rules: [{ required: false }],
+              })(
+                <Select
+                  style={{ width: '100%' }}
+                  placeholder="请选形状"
+                >
+                  {Shape}
+                </Select>
+              )}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="所属部门">
-              {getFieldDecorator('deptNo', {
-                rules: [{ required: false, message: '请选择所属部门！' }],
-              })(
-                <TreeSelect
-                  className={styles.width}
-                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                  treeData={this.state.deptData}
-                  dropdownMatchSelectWidth={false}
-                  treeDefaultExpandAll={false}
-                  placeholder="请选择部门"
-                  // onChange={onChangeTreeSelect}
-                />
-              )}
+            <FormItem label="创建时间">
+              <RangePicker
+                format={dateFormat}
+                showTime={{
+                  defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                }}
+                onChange={this.createTimes}
+              />
             </FormItem>
           </Col>
         </Row>
@@ -705,7 +723,7 @@ class QRCodeConfig extends PureComponent {
 
   render() {
     const {
-      qrcode: { data },
+      QRcodeConfig: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
@@ -714,7 +732,6 @@ class QRCodeConfig extends PureComponent {
       handleModalVisible: this.handleModalVisible,
       onChangeTreeSelect: this.onChangeTreeSelect,
       handleChange: this.handleChange,
-      isExistByUserName: this.isExistByUserName,
       UserNameOnChange: this.UserNameOnChange,
       roleData: roleData,
       userName: userName,

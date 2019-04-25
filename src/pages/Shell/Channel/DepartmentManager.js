@@ -18,7 +18,7 @@ const confirm = Modal.confirm;
 import styles from './DepartmentManager.less';
 
 /**
- * 服务商管理
+ * 渠道商管理
  * */
 
 const FormItem = Form.Item;
@@ -40,20 +40,20 @@ const CreateForm = Form.create()(props => {
   return (
     <Modal
       destroyOnClose
-      title="新增服务商"
+      title="新增渠道商"
       width={940}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="服务商名称">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="渠道商名称">
         {form.getFieldDecorator('name', {
-          rules: [{ required: true, message: '请输入您的服务商名称！' }],
+          rules: [{ required: true, message: '请输入您的渠道商名称！' }],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上级服务商">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上级渠道商">
         {form.getFieldDecorator('parentId', {
-          rules: [{ required: false, message: '请选择上级服务商！' }],
+          rules: [{ required: false, message: '请选择上级渠道商！' }],
         })(
           <TreeSelect
             className={styles.width}
@@ -61,16 +61,22 @@ const CreateForm = Form.create()(props => {
             treeData={child(deptData)}
             dropdownMatchSelectWidth={false}
             treeDefaultExpandAll={false}
-            placeholder="请选择服务商"
+            placeholder="请选择渠道商"
             //onChange={onChangeTreeSelect}
           />
         )}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="渠道推广码">
+        {form.getFieldDecorator('deptCode', {
+          rules: [{ required: true, message: '请输入您的渠道推广码！' }],
+        })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排&emsp;&emsp;序">
         {form.getFieldDecorator('orderNum', {
           rules: [{ required: false }],
         })(<InputNumber min={0} placeholder="请输入" />)}
       </FormItem>
+
     </Modal>
   );
 });
@@ -96,6 +102,7 @@ class UpdateForm extends PureComponent {
         orderNum: props.values.orderNum,
         parentId: props.values.parentId,
         parentName: props.values.parentName,
+        deptCode: props.values.deptCode,
         title: props.values.title,
         value: props.values.value,
       },
@@ -134,7 +141,7 @@ class UpdateForm extends PureComponent {
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="更新服务商"
+        title="更新渠道商"
         width={940}
         visible={updateModalVisible}
         onOk={okHandle}
@@ -145,15 +152,15 @@ class UpdateForm extends PureComponent {
           initialValue: formVals.deptId,
         })(<Input type={'hidden'} />)}
 
-        <FormItem {...this.formLayout} label="服务商名称">
+        <FormItem {...this.formLayout} label="渠道商名称">
           {form.getFieldDecorator('name', {
-            rules: [{ required: true, message: '请输入您的服务商名称！' }],
+            rules: [{ required: true, message: '请输入您的渠道商名称！' }],
             initialValue: formVals.name,
           })(<Input placeholder="请输入" />)}
         </FormItem>
-        <FormItem {...this.formLayout} label="上级服务商">
+        <FormItem {...this.formLayout} label="上级渠道商">
           {form.getFieldDecorator('parentId', {
-            rules: [{ required: false, message: '请选择上级服务商！' }],
+            rules: [{ required: false, message: '请选择上级渠道商！' }],
             initialValue: formVals.parentId,
           })(
             <TreeSelect
@@ -162,10 +169,16 @@ class UpdateForm extends PureComponent {
               treeData={deptData}
               dropdownMatchSelectWidth={false}
               treeDefaultExpandAll={false}
-              placeholder="请选择服务商"
+              placeholder="请选择渠道商"
               // onChange={onChangeTreeSelect}
             />
           )}
+        </FormItem>
+        <FormItem {...this.formLayout} label="渠道推广码">
+          {form.getFieldDecorator('deptCode', {
+            rules: [{ required: true, message: '请输入您的渠道推广码！' }],
+            initialValue: formVals.deptCode,
+          })(<Input placeholder="请输入" />)}
         </FormItem>
         <FormItem {...this.formLayout} label="排&emsp;&emsp;序">
           {form.getFieldDecorator('orderNum', {
@@ -173,6 +186,7 @@ class UpdateForm extends PureComponent {
             initialValue: formVals.orderNum,
           })(<InputNumber min={0} placeholder="请输入" />)}
         </FormItem>
+
       </Modal>
     );
   }
@@ -193,7 +207,7 @@ class DepartmentManager extends PureComponent {
     formValues: {},
     stepFormValues: {},
     key: 'deptId',
-    deptData: [], //服务商树菜单数据
+    deptData: [], //渠道商树菜单数据
     DeleteBtn: false,
     SaveBtn: false,
     UpdateBtn: false,
@@ -202,12 +216,17 @@ class DepartmentManager extends PureComponent {
 
   columns = [
     {
-      title: '服务商名称',
+      title: '渠道商名称',
       dataIndex: 'name',
     },
     {
-      title: '上级服务商',
+      title: '上级渠道商',
       dataIndex: 'parentName',
+      align:'center',
+    },
+    {
+      title: '渠道推广码',
+      dataIndex: 'deptCode',
       align:'center',
     },
     {
@@ -368,7 +387,7 @@ class DepartmentManager extends PureComponent {
     this.handleUpdateModalVisible();
   };
 
-  //删除服务商信息
+  //删除渠道商信息
   showDeleteConfirm = record => {
     let that = this;
     confirm({
