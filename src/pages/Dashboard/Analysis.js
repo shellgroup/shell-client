@@ -32,6 +32,9 @@ class Analysis extends Component {
         type: 'chart/fetch',
       });
     });
+
+
+    console.log(this.props,3333);
   }
 
   componentWillUnmount() {
@@ -106,6 +109,7 @@ class Analysis extends Component {
       // salesTypeDataOnline,
       // salesTypeDataOffline,
     } = chart;
+    console.log(salesData,88888888888888);
     // let salesPieData;
     // if (salesType === 'all') {
     //   salesPieData = salesTypeData;

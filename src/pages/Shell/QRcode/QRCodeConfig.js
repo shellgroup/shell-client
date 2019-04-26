@@ -47,10 +47,11 @@ const CreateForm = Form.create()(props => {
     handleAdd,
     handleModalVisible,
     onChangeTreeSelect,
+    isExitQrcodeConfig,
     UserNameOnChange,
     handleChange,
     deptData,
-    userName,
+    configName,
     roleData,
     statusValue,
     that,
@@ -95,6 +96,13 @@ const CreateForm = Form.create()(props => {
   }
 
 
+  let formConfigName = {};
+  if(configName){
+    formConfigName = {
+      validateStatus:"error",
+      help:"配置名称已存在！"
+    }
+  }
   return (
     <Modal
       destroyOnClose
@@ -104,10 +112,15 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="配置名称">
+      <FormItem
+        labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="配置名称"
+        {...formConfigName}
+      >
         {form.getFieldDecorator('qrcodeConfigName', {
-          rules: [{ required: true, message: '配置名称！'}],
-        })(<Input placeholder="如：**位置码、**导购码" />)}
+          rules: [
+            { required: true, message: '配置名称!'}
+          ],
+        })(<Input placeholder="如：**位置码、**导购码" onBlur={isExitQrcodeConfig}/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="高">
         {form.getFieldDecorator('qrcodeHeight', {
@@ -197,6 +210,8 @@ class UpdateForm extends PureComponent {
       handleUpdateModalVisible,
       values,
       roleData,
+      configName,
+      isExitQrcodeConfig,
       deptData,
       handleUpdate,
       that,
@@ -212,6 +227,13 @@ class UpdateForm extends PureComponent {
         handleUpdate(fieldsValue);
       });
     };
+    let formConfigName = {};
+    if(configName){
+      formConfigName = {
+        validateStatus:"error",
+        help:"配置名称已存在！"
+      }
+    }
     return (
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
@@ -227,13 +249,17 @@ class UpdateForm extends PureComponent {
           initialValue: formVals.id,
         })(<Input type={'hidden'} />)}
 
-        <FormItem {...this.formLayout} label="配置名称">
+        <FormItem
+          labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="配置名称"
+          {...formConfigName}
+        >
           {form.getFieldDecorator('qrcodeConfigName', {
-            rules: [{ required: true, message: '配置名称！'}],
+            rules: [
+              { required: true, message: '配置名称!'}
+            ],
             initialValue: formVals.qrcodeConfigName,
-          })(<Input placeholder="如：**位置码、**导购码" />)}
+          })(<Input placeholder="如：**位置码、**导购码" onBlur={isExitQrcodeConfig} disabled={true}/>)}
         </FormItem>
-
         <FormItem {...this.formLayout} label="高">
           {form.getFieldDecorator('qrcodeHeight', {
             rules: [
@@ -313,7 +339,7 @@ class QRCodeConfig extends PureComponent {
     confirmDirty: false, //确认密码
     confirmDirtyUp: false, //确认密码
     DeleteBtn: false,
-    userName: false,
+    configName: false,
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
@@ -613,7 +639,28 @@ class QRCodeConfig extends PureComponent {
       },
     });
   };
+  isExitQrcodeConfig = e =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'qrcodedetail/isExitQrcodeConfig',
+      payload: {
+        qrcodeConfigName: e.target.value
+      },
+      callback: res => {
 
+        let us = false;
+        if(res == "exist"){
+          us = true;
+        }
+        this.setState({
+          configName: us,
+        });
+        dispatch({
+          type: 'QRcodeConfig/fetch',
+        });
+      },
+    });
+  };
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
@@ -741,15 +788,16 @@ class QRCodeConfig extends PureComponent {
       QRcodeConfig: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, configName } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
       onChangeTreeSelect: this.onChangeTreeSelect,
+      isExitQrcodeConfig: this.isExitQrcodeConfig,
       handleChange: this.handleChange,
       UserNameOnChange: this.UserNameOnChange,
       roleData: roleData,
-      userName: userName,
+      configName: configName,
       deptData: deptData,
       statusValue: statusValue,
       that: this,
@@ -757,6 +805,8 @@ class QRCodeConfig extends PureComponent {
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
+      isExitQrcodeConfig: this.isExitQrcodeConfig,
+      configName: configName,
       roleData: roleData,
       deptData: deptData,
       that: this,

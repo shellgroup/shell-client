@@ -38,6 +38,8 @@ const getValue = obj =>
     .join(',');
 const statusMap = ['default', 'processing'];
 const status = ['停用', '正常'];
+const createtext = ['未生成', '已生成'];
+const shape = ['圆形', '方形'];
 
 const CreateForm = Form.create()(props => {
   const {
@@ -280,7 +282,7 @@ class CreateQrcodeForm extends PureComponent {
           </div>
           <div className={styles.address}>
             <span className={styles.spanTitle}>形状:</span>
-            {qrCodeConfigInfo.qrcodeShape && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodeShape}</span>}
+            {qrCodeConfigInfo.qrcodeShape==0?<span className={styles.imgpath}>{shape[0]}</span>:qrCodeConfigInfo.qrcodeShape==1?<span className={styles.imgpath}>{shape[1]}</span>:""}
           </div>
           <div className={styles.address}>
             <span className={styles.spanTitle}>类型:</span>
@@ -394,7 +396,7 @@ class DetailQrcodeForm extends PureComponent {
             </div>
             <div>
               <span className={styles.spanTitle}>是否生成:</span>
-              {formVals.isCreateQrcode && <span>{formVals.isCreateQrcode}</span>}
+              {formVals.isCreateQrcode == 0?<span>{createtext[0]}</span>:formVals.isCreateQrcode==1?<span>{createtext[1]}</span>:""}
             </div>
             <div>
               <span className={styles.spanTitle}>推广员姓名:</span>
@@ -704,6 +706,7 @@ class QRCodeList extends PureComponent {
         payload: "",
         callback: res => {
           this.setState({
+            qrCodeConfigInfo:{},
             createQrcodeItem:record,
             createQrcodeModalVisible: !!flag,
             stepFormValues: res.qrcodeConfigList || {},
@@ -713,6 +716,7 @@ class QRCodeList extends PureComponent {
     }else{
       this.setState({
         createQrcodeItem:[],
+        qrCodeConfigInfo:{},
         createQrcodeModalVisible: !!flag,
         stepFormValues: record || {},
       });

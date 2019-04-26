@@ -13,17 +13,20 @@ import {
   Badge,
   Divider,
   Radio,
-  TreeSelect,
+  TreeSelect, DatePicker,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../../utils/utils';
 import styles from './MemberList.less';
+import moment from 'moment';
 
 /**
  * 会员列表
  * */
+const dateFormat = 'YYYY-MM-DD HH:mm:ss';
 const showDeleteTipsParames = showDeleteConfirmParames();
+const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
@@ -309,7 +312,7 @@ class MemberList extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    key: 'userId', //列表的唯一键
+    key: 'id', //列表的唯一键
     statusValue: 1, //状态默认选中正常 0正常 1停用
     roleData: [], //角色下拉菜单数据
     deptData: [], //部门树菜单数据
@@ -320,6 +323,7 @@ class MemberList extends PureComponent {
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
+    createTime:{},
   };
 
   componentDidMount() {
@@ -349,40 +353,41 @@ class MemberList extends PureComponent {
     });
     //调用utils里面的disablesBtns方法判断是否有权限
     disablesBtns(this);
+    this.createTimes = this.createTimes.bind(this);
   }
 
   columns = [
     {
       title: 'openID',
-      dataIndex: 'username',
+      dataIndex: 'openId',
       align:'center',
     },
     {
       title: '姓名',
-      dataIndex: 'deptName',
+      dataIndex: 'name',
       align:'center',
     },
     {
       title: '手机',
-      dataIndex: 'mobile',
+      dataIndex: 'phone',
       align:'center',
     },
     {
       title: '身份证号',
-      dataIndex: 'email',
+      dataIndex: 'idCard',
+      align:'center',
+    },
+    {
+      title: '渠道ID',
+      dataIndex: 'deptId',
       align:'center',
     },
     {
       title: '注册日期',
-      dataIndex: 'createTime',
+      dataIndex: 'createDate',
       align:'center',
       // sorter: true,
       // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-    },
-    {
-      title: '渠道ID',
-      dataIndex: 'email',
-      align:'center',
     },
     // {
     //   title: '操作',
@@ -436,6 +441,7 @@ class MemberList extends PureComponent {
     form.resetFields();
     this.setState({
       formValues: {},
+      createTime:{}
     });
     dispatch({
       type: 'member/fetch',
@@ -445,7 +451,15 @@ class MemberList extends PureComponent {
       },
     });
   };
-
+  createTimes(dates, dateStrings) {
+    let createTime = {
+      beginDate:dateStrings[0],
+      endDate:dateStrings[1]
+    }
+    this.setState({
+      createTime:createTime
+    });
+  };
   toggleForm = () => {
     const { expandForm } = this.state;
     this.setState({
@@ -495,9 +509,11 @@ class MemberList extends PureComponent {
       if (err) return;
 
       const values = {
-        username: fieldsValue.name,
-        deptId: fieldsValue.deptNo,
-        mobile: fieldsValue.phone,
+        name: fieldsValue.username,
+        phone: fieldsValue.mobile,
+        deptId: fieldsValue.deptno,
+        beginDate: this.state.createTime.beginDate,
+        endDate: this.state.createTime.endDate,
       };
       this.setState({
         formValues: values,
@@ -620,12 +636,12 @@ class MemberList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="姓名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('username')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="手机">
-              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('mobile')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -655,12 +671,12 @@ class MemberList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="姓名">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('username')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="手机">
-              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('mobile')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           {/*<Col md={8} sm={24}>*/}
@@ -682,12 +698,20 @@ class MemberList extends PureComponent {
           {/*</Col>*/}
           <Col md={8} sm={24}>
             <FormItem label="注册时间">
-              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+              <RangePicker
+                format={dateFormat}
+                showTime={{
+                  defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                }}
+                onChange={this.createTimes}
+              />
             </FormItem>
           </Col>
+        </Row>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="渠道ID">
-              {getFieldDecorator('phone')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('deptno')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
         </Row>
@@ -746,23 +770,24 @@ class MemberList extends PureComponent {
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
-            <div className={styles.tableListOperator}>
-              {this.state.SaveBtn && (
-                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                  新建
-                </Button>
-              )}
-              {selectedRows.length > 0 && this.state.DeleteBtn && (
-                <span>
-                  <Button onClick={this.showDeletesConfirm}>批量删除</Button>
-                </span>
-              )}
-            </div>
+            {/*<div className={styles.tableListOperator}>*/}
+            {/*  {this.state.SaveBtn && (*/}
+            {/*    <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>*/}
+            {/*      新建*/}
+            {/*    </Button>*/}
+            {/*  )}*/}
+            {/*  {selectedRows.length > 0 && this.state.DeleteBtn && (*/}
+            {/*    <span>*/}
+            {/*      <Button onClick={this.showDeletesConfirm}>批量删除</Button>*/}
+            {/*    </span>*/}
+            {/*  )}*/}
+            {/*</div>*/}
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
               bordered={true}
-              tableAlert={true}
+              rowSelection={null}
+              tableAlert={false}
               data={ShowList ? data : {}}
               rowKey={key}
               columns={this.columns}

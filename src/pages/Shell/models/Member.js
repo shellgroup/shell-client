@@ -1,4 +1,4 @@
-import { queryUser, removeUser, addUser, updateUser, isExistByUserName } from '@/services/api';
+import { queryWxUser, addUser } from '@/services/api';
 
 /**
  * 会员管理
@@ -15,7 +15,7 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryUser, payload);
+      const response = yield call(queryWxUser, payload);
       yield put({
         type: 'save',
         payload: response,
