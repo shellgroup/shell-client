@@ -43,6 +43,37 @@
 .reBtnsSave {
   display: none;
 }
+.spanTitle{
+  display: inline-block;
+  width: 100px;
+  text-align: right;
+  line-height: 40px;
+  margin-right:20px;
+}
+.infoBox{
+  display: flex;
+  justify-content: space-between;
+  .left{
+    max-width: calc(100% - 180px);
+  }
+  .right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:120px;
+    .img{
+      width:120px;
+      height:120px;
+    }
+  }
+}
+.address{
+  display: flex;
+  .imgpath{
+    max-width:calc(100% - 120px);
+    padding-top: 10px;
+  }
+}
 @media screen and (max-width: @screen-lg) {
   .tableListForm :global(.ant-form-item) {
     margin-right: 24px;

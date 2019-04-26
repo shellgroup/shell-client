@@ -1,7 +1,7 @@
 import { queryDept, addDept, updateDept, removeDept } from '@/services/api';
 
 /**
- * 部门管理
+ * 渠道商管理
  * */
 export default {
   namespace: 'channel',

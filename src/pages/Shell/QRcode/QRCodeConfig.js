@@ -104,7 +104,11 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="配置名称">
+        {form.getFieldDecorator('qrcodeConfigName', {
+          rules: [{ required: true, message: '配置名称！'}],
+        })(<Input placeholder="如：**位置码、**导购码" />)}
+      </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="高">
         {form.getFieldDecorator('qrcodeHeight', {
           rules: [
@@ -129,19 +133,22 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
         {form.getFieldDecorator('qrcodeShape', {
-          rules: [{ required: true, message: '请输入二维码形状，只能为数字类型！'}],
-        })(<Input placeholder="如：圆请输入“0”或方请输入“1”" />)}
+          rules: [{ required: true }],
+        })(
+          <Select
+            style={{ width: '100%' }}
+            placeholder="请选形状"
+          >
+            {Shape}
+          </Select>
+        )}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="跳转路径">
         {form.getFieldDecorator('qrcodeIndexUrl', {
           rules: [{ required: true, message: '请输入跳转路径！'}],
         })(<Input placeholder="请输入"/>)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="二微码名称">
-        {form.getFieldDecorator('qrcodeConfigName', {
-          rules: [{ required: true, message: '配置名称！'}],
-        })(<Input placeholder="如：**位置码、**导购码" />)}
-      </FormItem>
+
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备注说明">
         {form.getFieldDecorator('remark', {
           rules: [{ required: false, message: '请输入备注说明！'}],
@@ -220,6 +227,13 @@ class UpdateForm extends PureComponent {
           initialValue: formVals.id,
         })(<Input type={'hidden'} />)}
 
+        <FormItem {...this.formLayout} label="配置名称">
+          {form.getFieldDecorator('qrcodeConfigName', {
+            rules: [{ required: true, message: '配置名称！'}],
+            initialValue: formVals.qrcodeConfigName,
+          })(<Input placeholder="如：**位置码、**导购码" />)}
+        </FormItem>
+
         <FormItem {...this.formLayout} label="高">
           {form.getFieldDecorator('qrcodeHeight', {
             rules: [
@@ -248,21 +262,22 @@ class UpdateForm extends PureComponent {
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
           {form.getFieldDecorator('qrcodeShape', {
-            rules: [{ required: true, message: '请输入二维码形状，只能为数字类型！'}],
+            rules: [{ required: false }],
             initialValue: formVals.qrcodeShape,
-          })(<Input placeholder="如：圆请输入“0”或方请输入“1”" />)}
+          })(
+            <Select
+              style={{ width: '100%' }}
+              placeholder="请选形状"
+            >
+              {Shape}
+            </Select>
+          )}
         </FormItem>
         <FormItem {...this.formLayout} label="跳转路径">
           {form.getFieldDecorator('qrcodeIndexUrl', {
             rules: [{ required: true, message: '请输入跳转路径！'}],
             initialValue: formVals.qrcodeIndexUrl,
           })(<Input placeholder="请输入"/>)}
-        </FormItem>
-        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="配置名称">
-          {form.getFieldDecorator('qrcodeConfigName', {
-            rules: [{ required: true, message: '配置名称！'}],
-            initialValue: formVals.qrcodeConfigName,
-          })(<Input placeholder="如：**位置码、**导购码" />)}
         </FormItem>
         <FormItem {...this.formLayout} label="备注说明">
           {form.getFieldDecorator('remark', {

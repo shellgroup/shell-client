@@ -174,6 +174,249 @@ class UpdateForm extends PureComponent {
   }
 }
 
+
+@Form.create()
+class CreateQrcodeForm extends PureComponent {
+  static defaultProps = {
+    handleCreateQrcode: () => {},
+    handleCreateQrcodeModalVisible: () => {},
+    values: {},
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      formVals: {
+        qrcodeData:props.values
+      },
+      currentStep: 0,
+      confirmDirty: false,
+    };
+
+    this.formLayout = {
+      labelCol: { span: 3 },
+      wrapperCol: { span: 15 },
+    };
+  }
+
+  render() {
+    const {
+      createQrcodeModalVisible,
+      handleCreateQrcodeModalVisible,
+      values,
+      configChange,
+      handleCreateQrcode,
+      that,
+    } = this.props;
+    const { formVals } = this.state;
+    const { form } = this.props;
+
+
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleCreateQrcode(fieldsValue);
+      });
+    };
+    const qrCodeConfigInfo = that.state.qrCodeConfigInfo;
+    let roleValues = [];
+
+    for (let i = 0; i < formVals.qrcodeData.length; i++) {
+      roleValues.push(<Option key={formVals.qrcodeData[i].id} value={formVals.qrcodeData[i].id} title={formVals.qrcodeData[i].qrcodeConfigName} >{formVals.qrcodeData[i].qrcodeConfigName}</Option>);
+    }
+
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="二维码生成参数绑定"
+        width={940}
+        visible={createQrcodeModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleCreateQrcodeModalVisible(false)}
+      >
+
+
+
+
+
+        {form.getFieldDecorator('qrcodeIds', {
+          rules: [{ required: false }],
+          initialValue: that.state.createQrcodeItem,
+        })(<Input type={'hidden'} />)}
+
+        <FormItem {...this.formLayout} label="配置名称">
+          {form.getFieldDecorator('qrcodeConfigId', {
+            rules: [{ required: true }]
+          })(
+            <Select
+              style={{ width: '100%' }}
+              placeholder="配置名称"
+              onChange={configChange}
+            >
+              {roleValues}
+            </Select>
+          )}
+        </FormItem>
+
+
+        <div className={styles.left}>
+          <div className={styles.address}>
+            <span className={styles.spanTitle}>高度:</span>
+            {qrCodeConfigInfo.qrcodeHeight && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodeHeight}</span>}
+          </div>
+          <div className={styles.address}>
+            <span className={styles.spanTitle}>宽度:</span>
+            {qrCodeConfigInfo.qrcodeWidth && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodeWidth}</span>}
+          </div>
+          <div className={styles.address}>
+            <span className={styles.spanTitle}>字体大小:</span>
+            {qrCodeConfigInfo.qrcodeFontSize && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodeFontSize}</span>}
+          </div>
+          <div className={styles.address}>
+            <span className={styles.spanTitle}>字体高度:</span>
+            {qrCodeConfigInfo.qrcodeFontHeight && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodeFontHeight}</span>}
+          </div>
+          <div className={styles.address}>
+            <span className={styles.spanTitle}>形状:</span>
+            {qrCodeConfigInfo.qrcodeShape && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodeShape}</span>}
+          </div>
+          <div className={styles.address}>
+            <span className={styles.spanTitle}>类型:</span>
+            {qrCodeConfigInfo.qrcodeTypeName && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodeTypeName}</span>}
+          </div>
+          <div className={styles.address}>
+            <span className={styles.spanTitle}>待跳转路径:</span>
+            {qrCodeConfigInfo.qrcodeIndexUrl && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodeIndexUrl}</span>}
+          </div>
+          <div className={styles.address}>
+            <span className={styles.spanTitle}>配置名称:</span>
+            {qrCodeConfigInfo.qrcodeConfigName && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodeConfigName}</span>}
+          </div>
+
+          <div className={styles.address}>
+            <span className={styles.spanTitle}>二维码目录:</span>
+            {qrCodeConfigInfo.qrcodePath && <span className={styles.imgpath}>{qrCodeConfigInfo.qrcodePath}</span>}
+          </div>
+          <div>
+            <span className={styles.spanTitle}>创建时间:</span>
+            {qrCodeConfigInfo.createTime && <span className={styles.imgpath}>{qrCodeConfigInfo.createTime}</span>}
+          </div>
+        </div>
+
+
+
+      </Modal>
+    );
+  }
+}
+
+@Form.create()
+class DetailQrcodeForm extends PureComponent {
+  static defaultProps = {
+    handleDetail: () => {},
+    handleDetailModalVisible: () => {},
+    values: {},
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      formVals: {
+        imgName: props.values.imgName,
+        imgPath: props.values.imgPath,
+        imgTime: props.values.imgTime,
+        deptCode: props.values.deptCode,
+        deptName: props.values.deptName,
+        isCreateQrcode: props.values.isCreateQrcode,
+        userName: props.values.userName,
+        userPhone: props.values.userPhone,
+        createTime:props.values.createTime,
+      },
+      currentStep: 0,
+      confirmDirty: false,
+    };
+
+  }
+
+  render() {
+    const {
+      detailModalVisible,
+      handleDetailModalVisible,
+      values,
+      handleDetail,
+      that,
+    } = this.props;
+    const { formVals } = this.state;
+    const { form } = this.props;
+
+
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        handleDetail(fieldsValue);
+      });
+    };
+    return (
+      <Modal
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="二维码详细信息"
+        width={940}
+        footer={null}
+        visible={detailModalVisible}
+        onOk={okHandle}
+        onCancel={() => handleDetailModalVisible(false)}
+      >
+        <div className={styles.infoBox}>
+          <div className={styles.left}>
+            <div>
+              <span className={styles.spanTitle}>二维码名称:</span>
+              {formVals.imgName && <span>{formVals.imgName}</span>}
+            </div>
+            <div className={styles.address}>
+              <span className={styles.spanTitle}>二维码地址:</span>
+              {formVals.imgPath && <span className={styles.imgpath}>{formVals.imgPath}</span>}
+            </div>
+            <div>
+              <span className={styles.spanTitle}>生成时间:</span>
+              {formVals.imgTime && <span>{formVals.imgTime}</span>}
+            </div>
+            <div>
+              <span className={styles.spanTitle}>推广码:</span>
+              {formVals.deptCode && <span>{formVals.deptCode}</span>}
+            </div>
+            <div>
+              <span className={styles.spanTitle}>渠道商:</span>
+              {formVals.deptName && <span>{formVals.deptName}</span>}
+            </div>
+            <div>
+              <span className={styles.spanTitle}>是否生成:</span>
+              {formVals.isCreateQrcode && <span>{formVals.isCreateQrcode}</span>}
+            </div>
+            <div>
+              <span className={styles.spanTitle}>推广员姓名:</span>
+              {formVals.userName && <span>{formVals.userName}</span>}
+            </div>
+            <div>
+              <span className={styles.spanTitle}>推广员手机号:</span>
+              {formVals.userPhone && <span>{formVals.userPhone}</span>}
+            </div>
+            <div>
+              <span className={styles.spanTitle}>创建时间:</span>
+              {formVals.createTime && <span>{formVals.createTime}</span>}
+            </div>
+          </div>
+          <div className={styles.right}>
+            {formVals.imgPath && <img className={styles.img} src={formVals.imgPath}/>}
+          </div>
+        </div>
+      </Modal>
+    );
+  }
+}
 /* eslint react/no-multi-comp:0 */
 @connect(({ qrcode, dept, role, loading }) => ({
   qrcode,
@@ -186,6 +429,8 @@ class QRCodeList extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
+    createQrcodeModalVisible: false,
+    detailModalVisible:false,
     expandForm: false,
     selectedRows: [],
     formValues: {},
@@ -203,7 +448,9 @@ class QRCodeList extends PureComponent {
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
-    createTime:{}
+    createTime:{},
+    createQrcodeItem:[], //所选生成二维码的对象
+    qrCodeConfigInfo:{} //二维码参数对象
   };
 
   componentDidMount() {
@@ -262,7 +509,7 @@ class QRCodeList extends PureComponent {
     {
       title: '操作',
       align:'center',
-      width: 300,
+      width: 400,
       render: (text, record) => (
         <Fragment>
           {this.state.UpdateBtn && (
@@ -276,9 +523,15 @@ class QRCodeList extends PureComponent {
               删除
             </Button>
           )}
+          {this.state.UpdateBtn && this.state.DeleteBtn && <Divider type="vertical" />}
+          {this.state.DeleteBtn && (
+            <Button type={'primary'} onClick={() => this.handleDetailModalVisible(true,record)}>
+              查看
+            </Button>
+          )}
           {this.state.createqrCodeBtn && this.state.DeleteBtn && <Divider type="vertical" />}
           {this.state.createqrCodeBtn && (
-            <Button type={'primary'} onClick={() => this.handleCreateQrcode(record)}>
+            <Button type={'primary'} onClick={() => this.handleCreateQrcodeModalVisible(true, [record.id])}>
               二维码生成
             </Button>
           )}
@@ -441,15 +694,52 @@ class QRCodeList extends PureComponent {
       },
     });
   };
-  handleCreateQrcode= record => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'qrcode/createqrCode',
-      payload: [record.id],
-      callback: res => {
-        tips(res, this, 'qrcode/fetch');
-      },
-    });
+  //二维码生成弹窗
+  handleCreateQrcodeModalVisible = (flag,record) => {
+
+    if(record && Object.keys(record).length){
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'qrcodedetail/getQrcodeConfigList',
+        payload: "",
+        callback: res => {
+          this.setState({
+            createQrcodeItem:record,
+            createQrcodeModalVisible: !!flag,
+            stepFormValues: res.qrcodeConfigList || {},
+          });
+        },
+      });
+    }else{
+      this.setState({
+        createQrcodeItem:[],
+        createQrcodeModalVisible: !!flag,
+        stepFormValues: record || {},
+      });
+    }
+
+  };
+  //查看详情
+  handleDetailModalVisible = (flag,record) => {
+    if(!!record){
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'qrcodedetail/queryQrcodeDetail',
+        payload: parseInt(record.id),
+        callback: res => {
+          this.setState({
+            stepFormValues: res.qrCodeInfo || {},
+            detailModalVisible: !!flag,
+          });
+        },
+      });
+    }else{
+      this.setState({
+        stepFormValues: record || {},
+        detailModalVisible: !!flag,
+      });
+    }
+
   };
   createTimes(dates, dateStrings) {
     let createTime = {
@@ -481,18 +771,8 @@ class QRCodeList extends PureComponent {
         });
         break;
       case 'createQrcode':
-        dispatch({
-          type: 'qrcode/createqrCodes',
-          payload: {
-            key: selectedRows.map(row => row.id),
-          },
-          callback: () => {
-            tips(res, this, 'qrcode/fetch');
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
+        //二维码批量生成
+        this.handleCreateQrcodeModalVisible(true,selectedRows.map(row => row.id));
         break;
       default:
         break;
@@ -514,6 +794,59 @@ class QRCodeList extends PureComponent {
     this.handleUpdateModalVisible();
   };
 
+  handleCreateQrcode = fields => {
+
+    console.log(fields,777);
+
+    const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'qrcode/createqrCode',
+    //   payload: [record.id],
+    //   callback: res => {
+    //     tips(res, this, 'qrcode/fetch');
+    //   },
+    // });
+
+
+    dispatch({
+      type: 'qrcodedetail/createqrCodes',
+      payload: fields,
+      callback: () => {
+        tips(res, this, 'qrcode/fetch');
+        this.setState({
+          selectedRows: [],
+        });
+      },
+    });
+
+
+    this.handleCreateQrcodeModalVisible();
+  };
+  handleDetail = fields => {
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'qrcode/createqrCode',
+    //   payload: [record.id],
+    //   callback: res => {
+    //     tips(res, this, 'qrcode/fetch');
+    //   },
+    // });
+
+    //this.handleCreateQrcodeModalVisible();
+  };
+  //配置名称选择触发事件查询该参数的详细信息
+  configChange = value => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'qrcodeParameter/queryQrcodeConfigDetail',
+      payload: parseInt(value),
+      callback: res => {
+        this.setState({
+          qrCodeConfigInfo: res.qrCodeConfigInfo || {},
+        });
+      },
+    });
+  };
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
@@ -617,7 +950,7 @@ class QRCodeList extends PureComponent {
         {this.state.createqrCodesBtn && <Menu.Item key="createQrcode">二维码生成</Menu.Item>}
       </Menu>
     );
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible,detailModalVisible, createQrcodeModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -637,7 +970,17 @@ class QRCodeList extends PureComponent {
       deptData: deptData,
       that: this,
     };
-
+    const createQrcodeMethods = {
+      handleCreateQrcodeModalVisible: this.handleCreateQrcodeModalVisible,
+      handleCreateQrcode: this.handleCreateQrcode,
+      configChange: this.configChange,
+      that: this,
+    };
+    const detailMethods = {
+      handleDetailModalVisible: this.handleDetailModalVisible,
+      handleDetail: this.handleDetail,
+      that: this,
+    };
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
@@ -685,6 +1028,21 @@ class QRCodeList extends PureComponent {
             values={stepFormValues}
           />
         ) : null}
+        {stepFormValues && Object.keys(stepFormValues).length ? (
+          <CreateQrcodeForm
+            {...createQrcodeMethods}
+            createQrcodeModalVisible={createQrcodeModalVisible}
+            values={stepFormValues}
+          />
+        ) : null}
+        {stepFormValues && Object.keys(stepFormValues).length ? (
+          <DetailQrcodeForm
+            {...detailMethods}
+            detailModalVisible={detailModalVisible}
+            values={stepFormValues}
+          />
+        ) : null}
+
       </PageHeaderWrapper>
     );
   }

@@ -327,7 +327,10 @@ export async function queryQrcode(params) {
   // });
   return request(`${baseURL}/qrcode/info/list?${stringify(params)}`);
 }
-
+//查询二维码详情
+export async function queryQrcodeDetail(params) {
+  return request(`${baseURL}/qrcode/info/info/${params}`);
+}
 //新建二维码
 export async function addQrcode(params) {
   return request(`${baseURL}/qrcode/info/save`, {
@@ -371,7 +374,18 @@ export async function queryQrcodeConfig(params) {
   // });
   return request(`${baseURL}/qrcode/config/list?${stringify(params)}`);
 }
-
+//查询二维码配置名称
+export async function getQrcodeConfigList(params) {
+  // return request(`${baseURL}/qrcode/info/list`, {
+  //   method: 'POST',
+  //   body: params,
+  // });
+  return request(`${baseURL}/qrcode/config/getQrcodeConfigList?${stringify(params)}`);
+}
+//查询二维码参数详情
+export async function queryQrcodeConfigDetail(params) {
+  return request(`${baseURL}/qrcode/config/info/${params}`);
+}
 //新建二维码参数
 export async function addQrcodeConfig(params) {
   return request(`${baseURL}/qrcode/config/save`, {

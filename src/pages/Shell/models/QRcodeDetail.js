@@ -1,10 +1,10 @@
-import { queryQrcodeConfig, removeQrcodeConfig, addQrcodeConfig, updateQrcodeConfig } from '@/services/api';
+import { createqrCodes, createqrCode, queryQrcodeDetail, getQrcodeConfigList } from '@/services/api';
 
 /**
- * 二维码配置信息
+ * 二维码详细信息
  * */
 export default {
-  namespace: 'QRcodeConfig',
+  namespace: 'qrcodedetail',
 
   state: {
     data: {
@@ -14,31 +14,32 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryQrcodeConfig, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(addQrcodeConfig, payload);
+    *queryQrcodeDetail({ payload, callback  }, { call, put }) {
+      const response = yield call(queryQrcodeDetail, payload);
       yield put({
         type: 'save',
         payload: response,
       });
       if (callback) callback(response);
     },
-    *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeQrcodeConfig, payload);
+    *createqrCodes({ payload, callback }, { call, put }) {
+      const response = yield call(createqrCodes, payload);
       yield put({
         type: 'save',
         payload: response,
       });
       if (callback) callback(response);
     },
-    *update({ payload, callback }, { call, put }) {
-      const response = yield call(updateQrcodeConfig, payload);
+    *createqrCode({ payload, callback }, { call, put }) {
+      const response = yield call(createqrCode, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+    *getQrcodeConfigList({ payload, callback }, { call, put }) {
+      const response = yield call(getQrcodeConfigList, payload);
       yield put({
         type: 'save',
         payload: response,

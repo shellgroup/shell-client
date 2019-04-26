@@ -1,7 +1,7 @@
 import { queryUser, removeUser, addUser, updateUser, isExistByUserName } from '@/services/api';
 
 /**
- * 管理员管理
+ * 用户管理
  * */
 export default {
   namespace: 'usr',
