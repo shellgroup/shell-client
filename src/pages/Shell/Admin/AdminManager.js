@@ -158,9 +158,9 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请输入11位手机号码！', min: 11 }],
         })(<Input placeholder="请输入" maxLength={11} />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属渠道商">
         {form.getFieldDecorator('deptId', {
-          rules: [{ required: true, message: '请选择所属部门！' }],
+          rules: [{ required: true, message: '请选择所属渠道商！' }],
         })(
           <TreeSelect
             className={styles.width}
@@ -168,7 +168,7 @@ const CreateForm = Form.create()(props => {
             treeData={child(deptData)}
             dropdownMatchSelectWidth={false}
             treeDefaultExpandAll={false}
-            placeholder="请选择部门"
+            placeholder="请选择渠道商"
             //onChange={onChangeTreeSelect}
           />
         )}
@@ -345,9 +345,9 @@ class UpdateForm extends PureComponent {
             initialValue: formVals.mobile,
           })(<Input placeholder="请输入" maxLength={11} />)}
         </FormItem>
-        <FormItem {...this.formLayout} label="所属部门">
+        <FormItem {...this.formLayout} label="所属渠道商">
           {form.getFieldDecorator('deptId', {
-            rules: [{ required: false, message: '请选择所属部门！' }],
+            rules: [{ required: false, message: '请选择所属渠道商！' }],
             initialValue: formVals.deptId,
           })(
             <TreeSelect
@@ -356,7 +356,7 @@ class UpdateForm extends PureComponent {
               treeData={deptData}
               dropdownMatchSelectWidth={false}
               treeDefaultExpandAll={false}
-              placeholder="请选择部门"
+              placeholder="请选择渠道商"
               // onChange={onChangeTreeSelect}
             />
           )}
@@ -406,7 +406,7 @@ class AdminManager extends PureComponent {
     key: 'userId', //列表的唯一键
     statusValue: 1, //状态默认选中正常 0正常 1停用
     roleData: [], //角色下拉菜单数据
-    deptData: [], //部门树菜单数据
+    deptData: [], //渠道商树菜单数据
     confirmDirty: false, //确认密码
     confirmDirtyUp: false, //确认密码
     DeleteBtn: false,
@@ -452,7 +452,7 @@ class AdminManager extends PureComponent {
       align:'center',
     },
     {
-      title: '所属部门',
+      title: '所属渠道商',
       dataIndex: 'deptName',
       align:'center',
     },
@@ -776,9 +776,9 @@ class AdminManager extends PureComponent {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="所属部门">
+            <FormItem label="所属渠道商">
               {getFieldDecorator('deptNo', {
-                rules: [{ required: false, message: '请选择所属部门！' }],
+                rules: [{ required: false, message: '请选择所属渠道商！' }],
               })(
                 <TreeSelect
                   className={styles.width}
@@ -786,7 +786,7 @@ class AdminManager extends PureComponent {
                   treeData={this.state.deptData}
                   dropdownMatchSelectWidth={false}
                   treeDefaultExpandAll={false}
-                  placeholder="请选择部门"
+                  placeholder="请选择渠道商"
                   // onChange={onChangeTreeSelect}
                 />
               )}

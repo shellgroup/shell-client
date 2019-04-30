@@ -9,7 +9,7 @@ const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
 const rankingListData = [];
-for (let i = 0; i < 7; i += 1) {
+for (let i = 0; i < 100; i += 1) {
   rankingListData.push({
     title: formatMessage({ id: 'app.analysis.test' }, { no: i }),
     total: 323234,
@@ -17,7 +17,7 @@ for (let i = 0; i < 7; i += 1) {
 }
 
 const SalesCard = memo(
-  ({ rangePickerValue, salesData, isActive, handleRangePickerChange, loading, selectDate }) => (
+  ({ rangePickerValue, salesData, isActive, queryRankingMsg, loading, selectDate }) => (
     <Card loading={loading} bordered={false} bodyStyle={{ padding: 0 }}>
       <div className={styles.salesCard}>
         <Tabs
@@ -39,7 +39,7 @@ const SalesCard = memo(
               </div>
               <RangePicker
                 value={rangePickerValue}
-                onChange={handleRangePickerChange}
+                onChange={queryRankingMsg}
                 style={{ width: 256 }}
               />
             </div>
@@ -76,7 +76,7 @@ const SalesCard = memo(
                   </h4>
                   <ul className={styles.rankingList}>
                     {rankingListData.map((item, i) => (
-                      <li key={item.title}>
+                      <li key={item.title} className={styles.numtext}>
                         <span
                           className={`${styles.rankingItemNumber} ${i < 3 ? styles.active : ''}`}
                         >
@@ -95,7 +95,7 @@ const SalesCard = memo(
               </Col>
             </Row>
           </TabPane>
-          <TabPane
+          {/*<TabPane
             tab={<FormattedMessage id="app.analysis.visits" defaultMessage="Visits" />}
             key="views"
           >
@@ -140,7 +140,7 @@ const SalesCard = memo(
                 </div>
               </Col>
             </Row>
-          </TabPane>
+          </TabPane>*/}
         </Tabs>
       </div>
     </Card>

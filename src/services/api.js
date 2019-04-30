@@ -402,6 +402,15 @@ export async function isExitQrcodeConfig(params) {
     body: params,
   });
 }
+//更新检测二维码参数配置名称
+export async function isExitQrcodeConfigWhenUpdate(params) {
+  return request(`${baseURL}/qrcode/config/isExitQrcodeConfigWhenUpdate`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
+
 //会员列表
 
 export async function queryWxUser(params) {
@@ -413,7 +422,17 @@ export async function queryWxUser(params) {
 export async function fakeChartData() {
   return request(`${baseURL}/wxUser/manage/queryWxUserTotleLastWeek`);
 }
-
+// 获取该渠道商下的总拉新数目,包括周同比，日同比和日拉新数量
+export async function WxUserInfoByDataFilter() {
+  return request(`${baseURL}/wxUser/manage/WxUserInfoByDataFilter`);
+}
+//首页排序
+export async function queryRankingMsg(params) {
+  return request(`${baseURL}/wxUser/manage/queryRankingMsg`, {
+    method: 'POST',
+    body: params,
+  });
+}
 
 
 

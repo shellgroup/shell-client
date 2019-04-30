@@ -60,7 +60,7 @@ class Bar extends Component {
       title,
       forceFit = true,
       data,
-      color = 'rgba(24, 144, 255, 0.85)',
+      color = 'rgba(251, 205, 21, 1)',
       padding,
     } = this.props;
 
@@ -72,6 +72,9 @@ class Bar extends Component {
       },
       y: {
         min: 0,
+        // formatter: function formatter(val) {
+        //   return parseInt(val);
+        // }
       },
     };
 

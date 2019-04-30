@@ -10,6 +10,7 @@ import {
   Icon,
   Button,
   Dropdown,
+  Spin, Alert,
   Modal,
   Menu,
   Badge,
@@ -40,7 +41,7 @@ const statusMap = ['default', 'processing'];
 const status = ['停用', '正常'];
 const createtext = ['未生成', '已生成'];
 const shape = ['圆形', '方形'];
-
+let infoModal=null;
 const CreateForm = Form.create()(props => {
   const {
     modalVisible,
@@ -82,13 +83,13 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="推广员姓名">
         {form.getFieldDecorator('userName', {
           rules: [
-            { required: true, message: '请输入推广员姓名！' },
+            { required: false, message: '请输入推广员姓名！' },
           ],
         })(<Input placeholder="请输入" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="推广员手机号">
         {form.getFieldDecorator('userPhone', {
-          rules: [{ required: true, message: '请输入11位手机号码！', min: 11 }],
+          rules: [{ required: false, message: '请输入11位手机号码！', min: 11 }],
         })(<Input placeholder="请输入" maxLength={11} />)}
       </FormItem>
     </Modal>
@@ -160,14 +161,14 @@ class UpdateForm extends PureComponent {
         <FormItem {...this.formLayout} label="推广员姓名">
           {form.getFieldDecorator('userName', {
             rules: [
-              { required: true, message: '请输入推广员姓名！' },
+              { required: false, message: '请输入推广员姓名！' },
             ],
             initialValue: formVals.userName
           })(<Input placeholder="请输入" />)}
         </FormItem>
         <FormItem {...this.formLayout} label="推广员手机号">
           {form.getFieldDecorator('userPhone', {
-            rules: [{ required: true, message: '请输入11位手机号码！', min: 11 }],
+            rules: [{ required: false, message: '请输入11位手机号码！', min: 11 }],
             initialValue: formVals.userPhone
           })(<Input placeholder="请输入" maxLength={11} />)}
         </FormItem>
@@ -797,29 +798,39 @@ class QRCodeList extends PureComponent {
 
     this.handleUpdateModalVisible();
   };
+  info() {
+    infoModal = Modal.info({
+      title: '二维码生成',
+      content: (
+        <Spin tip="请稍等，此操作可能需要一段时间！"></Spin>
+      ),
+      onOk() {},
+      okButtonProps: {
+        disabled: true,
+      },
+    });
 
+  };
   handleCreateQrcode = fields => {
-
-    console.log(fields,777);
-
+    this.info();
     const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'qrcode/createqrCode',
-    //   payload: [record.id],
-    //   callback: res => {
-    //     tips(res, this, 'qrcode/fetch');
-    //   },
-    // });
-
 
     dispatch({
       type: 'qrcodedetail/createqrCodes',
       payload: fields,
-      callback: () => {
-        tips(res, this, 'qrcode/fetch');
-        this.setState({
-          selectedRows: [],
-        });
+      callback: (res) => {
+        if(!!res.msg){
+          infoModal.update({
+            content: (
+              <div>
+                {res.msg.split(' ').map(list => (<p>{list}</p>))}
+              </div>
+            ),
+            okButtonProps: {
+              disabled: false,
+            },
+          });
+        }
       },
     });
 

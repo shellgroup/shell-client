@@ -27,7 +27,7 @@ const links = [
 
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> 2018 北京特利达科技版权所有
+    Copyright <Icon type="copyright" /> 2018 北京汇纳远景科技有限公司
   </Fragment>
 );
 

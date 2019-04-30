@@ -161,7 +161,11 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请输入跳转路径！'}],
         })(<Input placeholder="请输入"/>)}
       </FormItem>
-
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="二维码根目录">
+        {form.getFieldDecorator('qrcodePath', {
+          rules: [{ required: true, message: '请输入二维码根目录！'}],
+        })(<Input placeholder="请输入"/>)}
+      </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="备注说明">
         {form.getFieldDecorator('remark', {
           rules: [{ required: false, message: '请输入备注说明！'}],
@@ -191,6 +195,7 @@ class UpdateForm extends PureComponent {
         qrcodeFontHeight: props.values.qrcodeFontHeight,
         qrcodeShape: props.values.qrcodeShape,
         qrcodeIndexUrl: props.values.qrcodeIndexUrl,
+        qrcodePath:props.values.qrcodePath,
         qrcodeConfigName: props.values.qrcodeConfigName,
         remark: props.values.remark,
       },
@@ -211,7 +216,7 @@ class UpdateForm extends PureComponent {
       values,
       roleData,
       configName,
-      isExitQrcodeConfig,
+      isExitQrcodeConfigWhenUpdate,
       deptData,
       handleUpdate,
       that,
@@ -258,7 +263,7 @@ class UpdateForm extends PureComponent {
               { required: true, message: '配置名称!'}
             ],
             initialValue: formVals.qrcodeConfigName,
-          })(<Input placeholder="如：**位置码、**导购码" onBlur={isExitQrcodeConfig} disabled={true}/>)}
+          })(<Input placeholder="如：**位置码、**导购码" data-id={formVals.id} onBlur={isExitQrcodeConfigWhenUpdate}/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="高">
           {form.getFieldDecorator('qrcodeHeight', {
@@ -303,6 +308,12 @@ class UpdateForm extends PureComponent {
           {form.getFieldDecorator('qrcodeIndexUrl', {
             rules: [{ required: true, message: '请输入跳转路径！'}],
             initialValue: formVals.qrcodeIndexUrl,
+          })(<Input placeholder="请输入"/>)}
+        </FormItem>
+        <FormItem {...this.formLayout} label="二维码根目录">
+          {form.getFieldDecorator('qrcodePath', {
+            rules: [{ required: true, message: '请输入二维码根目录！'}],
+            initialValue: formVals.qrcodePath,
           })(<Input placeholder="请输入"/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="备注说明">
@@ -661,6 +672,30 @@ class QRCodeConfig extends PureComponent {
       },
     });
   };
+  isExitQrcodeConfigWhenUpdate = e =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'qrcodedetail/isExitQrcodeConfigWhenUpdate',
+      payload: {
+        qrcodeConfigId:e.currentTarget.getAttribute("data-id"),
+        qrcodeConfigName: e.target.value
+      },
+      callback: res => {
+
+        let us = false;
+        if(res == "exist"){
+          us = true;
+        }
+        this.setState({
+          configName: us,
+        });
+        dispatch({
+          type: 'QRcodeConfig/fetch',
+        });
+      },
+    });
+  };
+
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
@@ -805,7 +840,7 @@ class QRCodeConfig extends PureComponent {
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
-      isExitQrcodeConfig: this.isExitQrcodeConfig,
+      isExitQrcodeConfigWhenUpdate:this.isExitQrcodeConfigWhenUpdate,
       configName: configName,
       roleData: roleData,
       deptData: deptData,

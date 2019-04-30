@@ -7,6 +7,7 @@ import { getTimeDistance } from '@/utils/utils';
 
 import styles from './Analysis.less';
 import PageLoading from '@/components/PageLoading';
+import {tips} from "../../utils/utils";
 
 const IntroduceRow = React.lazy(() => import('./IntroduceRow'));
 const SalesCard = React.lazy(() => import('./SalesCard'));
@@ -14,8 +15,9 @@ const SalesCard = React.lazy(() => import('./SalesCard'));
 // const ProportionSales = React.lazy(() => import('./ProportionSales'));
 // const OfflineData = React.lazy(() => import('./OfflineData'));
 
-@connect(({ chart, loading }) => ({
+@connect(({ chart, dataFilter, loading }) => ({
   chart,
+  dataFilter,
   loading: loading.effects['chart/fetch'],
 }))
 class Analysis extends Component {
@@ -32,9 +34,10 @@ class Analysis extends Component {
         type: 'chart/fetch',
       });
     });
-
-
-    console.log(this.props,3333);
+    dispatch({
+      type: 'dataFilter/WxUserInfoByDataFilter',
+    });
+    this.queryRankingMsg({});
   }
 
   componentWillUnmount() {
@@ -51,7 +54,32 @@ class Analysis extends Component {
       salesType: e.target.value,
     });
   };
+  createTimes(dates, dateStrings) {
+    let createTime = {
+      beginDate:dateStrings[0],
+      endDate:dateStrings[1]
+    }
+    this.setState({
+      createTime:createTime
+    });
+  };
+  //排序
+  queryRankingMsg = rangePickerValue => {
 
+    console.log(rangePickerValue,888);
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'ranking/queryRankingMsg',
+      payload: {
+        createBeginTime:'',
+        createEndTime:''
+      },
+      callback: res => {
+        //tips(res);
+      },
+    });
+  };
   handleTabChange = key => {
     this.setState({
       currentTabKey: key,
@@ -70,17 +98,16 @@ class Analysis extends Component {
   };
 
   selectDate = type => {
+
     const { dispatch } = this.props;
     this.setState({
       rangePickerValue: getTimeDistance(type),
     });
-
-    dispatch({
-      type: 'chart/fetchSalesData',
-    });
+    this.queryRankingMsg(getTimeDistance(type));
   };
 
   isActive = type => {
+
     const { rangePickerValue } = this.state;
     const value = getTimeDistance(type);
     if (!rangePickerValue[0] || !rangePickerValue[1]) {
@@ -97,7 +124,7 @@ class Analysis extends Component {
 
   render() {
     const { rangePickerValue, salesType, currentTabKey } = this.state;
-    const { chart, loading } = this.props;
+    const { chart, loading, dataFilter } = this.props;
     const {
       visitData,
       // visitData2,
@@ -109,7 +136,7 @@ class Analysis extends Component {
       // salesTypeDataOnline,
       // salesTypeDataOffline,
     } = chart;
-    console.log(salesData,88888888888888);
+    let { resultMap } = dataFilter;
     // let salesPieData;
     // if (salesType === 'all') {
     //   salesPieData = salesTypeData;
@@ -133,17 +160,18 @@ class Analysis extends Component {
     //
     // const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name);
 
+
     return (
       <GridContent>
         <Suspense fallback={<PageLoading />}>
-          <IntroduceRow loading={loading} visitData={visitData} />
+          <IntroduceRow loading={loading} resultMap={resultMap} />
         </Suspense>
         <Suspense fallback={null}>
           <SalesCard
             rangePickerValue={rangePickerValue}
             salesData={salesData}
             isActive={this.isActive}
-            handleRangePickerChange={this.handleRangePickerChange}
+            queryRankingMsg={this.queryRankingMsg}
             loading={loading}
             selectDate={this.selectDate}
           />

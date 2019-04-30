@@ -17,6 +17,8 @@
   margin: 25px 0 0;
   padding: 0;
   list-style: none;
+  overflow-y: auto;
+  max-height: 280px;
   li {
     .clearfix();
     margin-top: 16px;
@@ -40,8 +42,8 @@
       text-align: center;
       margin-top: 1.5px;
       &.active {
-        background-color: #314659;
-        color: #fff;
+        background-color:rgba(251, 205, 21, 1);
+
       }
     }
     .rankingItemTitle {
@@ -138,7 +140,15 @@
   margin-left: 8px;
   color: @heading-color;
 }
-
+.defaultText{
+  line-height: 120px;
+  text-align: center;
+  color: #999;
+}
+.numtext{
+  padding-right: 20px;
+  box-sizing: border-box;
+}
 @media screen and (max-width: @screen-lg) {
   .salesExtra {
     display: none;

@@ -1,4 +1,4 @@
-import { createqrCodes, createqrCode, queryQrcodeDetail, getQrcodeConfigList, isExitQrcodeConfig } from '@/services/api';
+import { createqrCodes, createqrCode, queryQrcodeDetail, getQrcodeConfigList, isExitQrcodeConfig, isExitQrcodeConfigWhenUpdate } from '@/services/api';
 
 /**
  * 二维码详细信息
@@ -54,7 +54,16 @@ export default {
         payload: response,
       });
       if (callback) callback(response);
-    }
+    },
+    *isExitQrcodeConfigWhenUpdate({ payload, callback }, { call, put }) {
+      const response = yield call(isExitQrcodeConfigWhenUpdate, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+
   },
 
   reducers: {

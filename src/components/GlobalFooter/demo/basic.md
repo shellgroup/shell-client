@@ -26,7 +26,7 @@ const links = [{
   blankTarget: true,
 }];
 
-const copyright = <div>Copyright <Icon type="copyright" /> 2017 北京特利达科技版权所有</div>;
+const copyright = <div>Copyright <Icon type="copyright" /> 2017 北京汇纳远景科技有限公司</div>;
 
 ReactDOM.render(
   <div style={{ background: '#f5f5f5', overflow: 'hidden' }}>
