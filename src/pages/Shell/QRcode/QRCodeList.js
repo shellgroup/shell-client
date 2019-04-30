@@ -329,6 +329,7 @@ class DetailQrcodeForm extends PureComponent {
       formVals: {
         imgName: props.values.imgName,
         imgPath: props.values.imgPath,
+        imgBase64: props.values.imgBase64,
         imgTime: props.values.imgTime,
         deptCode: props.values.deptCode,
         deptName: props.values.deptName,
@@ -413,7 +414,7 @@ class DetailQrcodeForm extends PureComponent {
             </div>
           </div>
           <div className={styles.right}>
-            {formVals.imgPath && <img className={styles.img} src={formVals.imgPath}/>}
+            {formVals.imgPath && <img className={styles.img} src={formVals.imgBase64}/>}
           </div>
         </div>
       </Modal>
