@@ -319,6 +319,7 @@ class MemberList extends PureComponent {
     confirmDirty: false, //确认密码
     confirmDirtyUp: false, //确认密码
     DeleteBtn: false,
+    downloadBtn:false,
     userName: false,
     SaveBtn: false,
     UpdateBtn: false,
@@ -594,6 +595,29 @@ class MemberList extends PureComponent {
       },
     });
   };
+  //导出用户信息
+  handleModalDownload = () => {
+    const { dispatch, form } = this.props;
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+
+      const values = {
+        name: fieldsValue.username,
+        phone: fieldsValue.mobile,
+        deptId: fieldsValue.deptno,
+        beginDate: this.state.createTime.beginDate,
+        endDate: this.state.createTime.endDate,
+      };
+      this.setState({
+        formValues: values,
+      });
+
+      dispatch({
+        type: 'memberDownload/download',
+        payload: values,
+      });
+    });
+  };
   handleMenuClick = () => {
     const { dispatch } = this.props;
     const { selectedRows } = this.state;
@@ -782,6 +806,13 @@ class MemberList extends PureComponent {
             {/*    </span>*/}
             {/*  )}*/}
             {/*</div>*/}
+            <div className={styles.tableListOperator}>
+              {this.state.downloadBtn && (
+                <Button icon="download" type="primary" onClick={() => this.handleModalDownload()}>
+                  导出
+                </Button>
+              )}
+            </div>
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}

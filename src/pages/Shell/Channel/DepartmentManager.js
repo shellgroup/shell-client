@@ -28,7 +28,15 @@ const getValue = obj =>
     .join(',');
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, deptData } = props;
+  const {
+    modalVisible,
+    form,
+    handleAdd,
+    handleModalVisible,
+    deptData,
+    configName,
+    isExitDeptNameWhenAdd,
+  } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -36,7 +44,13 @@ const CreateForm = Form.create()(props => {
       handleAdd(fieldsValue);
     });
   };
-
+  let formConfigName = {};
+  if(configName){
+    formConfigName = {
+      validateStatus:"error",
+      help:"渠道商名称已存在！"
+    }
+  }
   return (
     <Modal
       destroyOnClose
@@ -46,10 +60,15 @@ const CreateForm = Form.create()(props => {
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="渠道商名称">
+      <FormItem
+        labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="渠道商名称"
+        {...formConfigName}
+      >
         {form.getFieldDecorator('name', {
-          rules: [{ required: true, message: '请输入您的渠道商名称！' }],
-        })(<Input placeholder="请输入" />)}
+          rules: [
+            { required: true, message: '请输入您的渠道商名称!'}
+          ],
+        })(<Input placeholder="请输入" onBlur={isExitDeptNameWhenAdd}/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上级渠道商">
         {form.getFieldDecorator('parentId', {
@@ -120,6 +139,8 @@ class UpdateForm extends PureComponent {
     const {
       updateModalVisible,
       handleUpdateModalVisible,
+      configName,
+      isExitDeptNameWhenUpdate,
       values,
       roleData,
       deptData,
@@ -136,7 +157,13 @@ class UpdateForm extends PureComponent {
         handleUpdate(fieldsValue);
       });
     };
-
+    let formConfigName = {};
+    if(configName){
+      formConfigName = {
+        validateStatus:"error",
+        help:"渠道商名称已存在！"
+      }
+    }
     return (
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
@@ -152,11 +179,11 @@ class UpdateForm extends PureComponent {
           initialValue: formVals.deptId,
         })(<Input type={'hidden'} />)}
 
-        <FormItem {...this.formLayout} label="渠道商名称">
+        <FormItem {...this.formLayout} label="渠道商名称" {...formConfigName} >
           {form.getFieldDecorator('name', {
             rules: [{ required: true, message: '请输入您的渠道商名称！' }],
             initialValue: formVals.name,
-          })(<Input placeholder="请输入" />)}
+          })(<Input placeholder="请输入" data-id={formVals.deptId} onBlur={isExitDeptNameWhenUpdate}/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="上级渠道商">
           {form.getFieldDecorator('parentId', {
@@ -209,6 +236,7 @@ class DepartmentManager extends PureComponent {
     key: 'deptId',
     deptData: [], //渠道商树菜单数据
     DeleteBtn: false,
+    configName: false,
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
@@ -347,6 +375,51 @@ class DepartmentManager extends PureComponent {
     });
   };
 
+  isExitDeptNameWhenAdd = e =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'channelUpdate/isExitDeptNameWhenAdd',
+      payload: {
+        deptName: e.target.value
+      },
+      callback: res => {
+
+        let us = false;
+        if(res == "exist"){
+          us = true;
+        }
+        this.setState({
+          configName: us,
+        });
+        dispatch({
+          type: 'channel/fetch',
+        });
+      },
+    });
+  };
+  isExitDeptNameWhenUpdate = e =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'channelUpdate/isExitDeptNameWhenUpdate',
+      payload: {
+        deptId:e.currentTarget.getAttribute("data-id"),
+        deptName: e.target.value
+      },
+      callback: res => {
+
+        let us = false;
+        if(res == "exist"){
+          us = true;
+        }
+        this.setState({
+          configName: us,
+        });
+        dispatch({
+          type: 'channel/fetch',
+        });
+      },
+    });
+  };
   handleUpdateModalVisible = (flag, record) => {
     this.setState({
       updateModalVisible: !!flag,
@@ -416,16 +489,20 @@ class DepartmentManager extends PureComponent {
       channel: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues,deptData, key, ShowList } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, configName, stepFormValues,deptData, key, ShowList } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
       deptData: deptData,
+      configName:configName,
+      isExitDeptNameWhenAdd:this.isExitDeptNameWhenAdd
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
       deptData: deptData,
+      configName:configName,
+      isExitDeptNameWhenUpdate:this.isExitDeptNameWhenUpdate
     };
     return (
       <PageHeaderWrapper>

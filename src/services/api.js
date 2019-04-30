@@ -82,31 +82,50 @@ export async function queryUser(params) {
   return request(`${baseURL}/sys/user/list?${stringify(params)}`);
 }
 
-//新建部门
+//新建渠道商
 export async function addDept(params) {
   return request(`${baseURL}/sys/dept/save`, {
     method: 'POST',
     body: params,
   });
 }
-//删除部门信息
+//删除渠道商信息
 export async function removeDept(params) {
   return request(`${baseURL}/sys/dept/delete`, {
     method: 'POST',
     body: params,
   });
 }
-//修改部门信息
+//修改渠道商信息
 export async function updateDept(params) {
   return request(`${baseURL}/sys/dept/update`, {
     method: 'POST',
     body: params,
   });
 }
-//查询部门列表
+//查询渠道商列表
 export async function queryDept(params) {
   return request(`${baseURL}/sys/dept/list?${stringify(params)}`);
 }
+
+//检测渠道商配置名称
+export async function isExitDeptNameWhenAdd(params) {
+  return request(`${baseURL}/sys/dept/isExitDeptNameWhenAdd`, {
+    method: 'POST',
+    body: params,
+  });
+}
+//更新渠道商配置名称
+export async function isExitDeptNameWhenUpdate(params) {
+  return request(`${baseURL}/sys/dept/isExitDeptNameWhenUpdate`, {
+    method: 'POST',
+    body: params,
+  });
+}
+
+
+
+
 //检测角色是否存在
 export async function isExistByRoleName(params) {
   return request(`${baseURL}/sys/role/isExistByRoleName`, {
@@ -416,7 +435,18 @@ export async function isExitQrcodeConfigWhenUpdate(params) {
 export async function queryWxUser(params) {
   return request(`${baseURL}/wxUser/manage/list?${stringify(params)}`);
 }
-
+//导出会员列表
+export async function downloadMembers(params) {
+  if(params){
+    let str = "";
+    for(var key in params){
+      if(params[key]){
+        str+="&"+key+"="+params[key];
+      }
+    }
+    window.location.href =`${baseURL}/wxUser/manage/download?${str}`
+  }
+}
 
 //收据统计图表
 export async function fakeChartData() {

@@ -1,34 +1,35 @@
-import { queryRankingMsg} from '@/services/api';
+import { queryRankingMsg } from '@/services/api';
 
-/**
- * 二维码详细信息
- * */
 export default {
   namespace: 'ranking',
 
   state: {
-    data: {
-      list: [],
-      pagination: {},
-    },
+    result: [],
+    loading: false,
   },
 
   effects: {
-    *queryRankingMsg({ payload, callback  }, { call, put }) {
-      const response = yield call(queryRankingMsg, payload);
+    *queryRankingMsg({ payload }, { call, put }) {
+      const response = yield call(queryRankingMsg,payload);
       yield put({
         type: 'save',
-        result: response.result,
+        payload: {
+          result: response.result,
+        },
       });
-      if (callback) callback(response);
-    }
+    },
   },
 
   reducers: {
-    save(state, action) {
+    save(state, { payload }) {
       return {
         ...state,
-        data: action.payload,
+        ...payload,
+      };
+    },
+    clear() {
+      return {
+        result:[]
       };
     },
   },

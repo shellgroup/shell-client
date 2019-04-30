@@ -28,7 +28,7 @@ const ThemeColor = ({ colors, title, value, onChange }) => {
       },
       {
         key: 'sunset',
-        color: '#FAAD14',
+        color: '#faad14',
       },
       {
         key: 'cyan',

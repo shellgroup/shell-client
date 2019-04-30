@@ -249,6 +249,11 @@ export function disablesBtns(that) {
         createqrCodesBtn: true,
       });
     }
+    if (data[i].indexOf('download') != -1) {
+      that.setState({
+        downloadBtn: true,
+      });
+    }
   }
 }
 //统一删除模板

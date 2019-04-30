@@ -23,6 +23,7 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../../utils/utils';
 import styles from './QRCodeList.less';
 import moment from 'moment';
+import {imgURL} from "../../../services/baseurl";
 /**
  * 二维码列表
  * */
@@ -413,7 +414,7 @@ class DetailQrcodeForm extends PureComponent {
             </div>
           </div>
           <div className={styles.right}>
-            {formVals.imgPath && <img className={styles.img} src={formVals.imgPath}/>}
+            {formVals.imgPath && <img className={styles.img} src={imgURL+formVals.imgPath}/>}
           </div>
         </div>
       </Modal>
@@ -498,8 +499,8 @@ class QRCodeList extends PureComponent {
     //   align:'center',
     // },
     {
-      title: '渠道ID',
-      dataIndex: 'deptId',
+      title: '渠道名称',
+      dataIndex: 'deptName',
       align: 'center',
     },
     {
