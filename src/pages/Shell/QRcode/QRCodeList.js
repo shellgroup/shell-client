@@ -23,7 +23,6 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../../utils/utils';
 import styles from './QRCodeList.less';
 import moment from 'moment';
-import {imgURL} from "../../../services/baseurl";
 /**
  * 二维码列表
  * */
@@ -414,7 +413,7 @@ class DetailQrcodeForm extends PureComponent {
             </div>
           </div>
           <div className={styles.right}>
-            {formVals.imgPath && <img className={styles.img} src={imgURL+formVals.imgPath}/>}
+            {formVals.imgPath && <img className={styles.img} src={formVals.imgPath}/>}
           </div>
         </div>
       </Modal>
