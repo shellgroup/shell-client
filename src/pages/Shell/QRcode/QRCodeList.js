@@ -251,7 +251,7 @@ class CreateQrcodeForm extends PureComponent {
 
         <FormItem {...this.formLayout} label="配置名称">
           {form.getFieldDecorator('qrcodeConfigId', {
-            rules: [{ required: true }]
+            rules: [{ required: true, message: '请选择配置名称！' }]
           })(
             <Select
               style={{ width: '100%' }}
@@ -503,9 +503,28 @@ class QRCodeList extends PureComponent {
       dataIndex: 'deptName',
       align: 'center',
     },
+    ,
     {
-      title: '创建时间',
-      dataIndex: 'createTime',
+      title: '生成状态',
+      dataIndex: 'isCreateQrcode',
+      align:'center',
+      // filters: [
+      //   {
+      //     text: status[0],
+      //     value: 0,
+      //   },
+      //   {
+      //     text: status[1],
+      //     value: 1,
+      //   },
+      // ],
+      render(val) {
+        return <Badge status={statusMap[val]} text={createtext[val]} />;
+      },
+    },
+    {
+      title: '生成时间',
+      dataIndex: 'imgTime',
       align:'center',
       // sorter: true,
       // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,

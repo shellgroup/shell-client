@@ -543,8 +543,8 @@ class QRCodeConfig extends PureComponent {
       const values = {
         qrcodeShape: fieldsValue.shape,
         qrcodeConfigName: fieldsValue.name,
-        beginDate: this.state.createTime.beginDate,
-        endDate: this.state.createTime.endDate,
+        createBeginTime: this.state.createTime.beginDate,
+        createEndTime: this.state.createTime.endDate,
       };
       this.setState({
         formValues: values,

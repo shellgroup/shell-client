@@ -192,6 +192,17 @@ class UpdateForm extends PureComponent {
       }
       return <TreeNode {...item} />;
     });
+    const renderTreeNodess = data => data.map((item) => {
+      if (item.children) {
+        console.log(item.key,999999999999);
+        return (
+          <TreeNode title={item.title} key={item.key} value={item.key}  dataRef={item}>
+            {renderTreeNodess(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode {...item} />;
+    });
     return (
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
@@ -248,7 +259,7 @@ class UpdateForm extends PureComponent {
                 onSelect={that.onSelectMenu}
                 selectedKeys={that.state.menuSelectedKeys}
               >
-                {renderTreeNodes(menuList)}
+                {renderTreeNodess(menuList)}
               </Tree>
             )}
           </FormItem>
@@ -301,6 +312,7 @@ class RoleManager extends PureComponent {
     deptCheckedKeys: [],
     deptSelectedKeys: [],
     deptExpandedKeys: [],
+    halfCheckedKeys:[],
     DeleteBtn: false,
     roleName:false,
     SaveBtn: false,
@@ -483,6 +495,9 @@ class RoleManager extends PureComponent {
     this.setState({
       modalVisible: !!flag,
       roleName: false,
+      deptCheckedKeys: [],
+      menuCheckedKeys: [],
+      halfCheckedKeys:[],
     });
   };
 
@@ -490,6 +505,10 @@ class RoleManager extends PureComponent {
     this.setState({
       updateModalVisible: !!flag,
       stepFormValues: record || {},
+      deptCheckedKeys: [],
+      menuCheckedKeys: [],
+      halfCheckedKeys:[],
+      roleName:false
     });
   };
   isExistByRoleName = e =>{
@@ -520,7 +539,7 @@ class RoleManager extends PureComponent {
       fields.deptId = 0;
     }
     fields.deptIdList = this.state.deptCheckedKeys;
-    fields.menuIdList = this.state.menuCheckedKeys;
+    fields.menuIdList = this.state.menuCheckedKeys.concat(this.state.halfCheckedKeys);
     dispatch({
       type: 'role/add',
       payload: fields,
@@ -529,6 +548,7 @@ class RoleManager extends PureComponent {
         this.setState({
           deptCheckedKeys: [],
           menuCheckedKeys: [],
+          halfCheckedKeys:[],
           roleName:false
         });
       },
@@ -541,7 +561,7 @@ class RoleManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     fields.deptIdList = this.state.deptCheckedKeys;
-    fields.menuIdList = this.state.menuCheckedKeys;
+    fields.menuIdList = this.state.menuCheckedKeys.concat(this.state.halfCheckedKeys);
     dispatch({
       type: 'role/update',
       payload: fields,
@@ -550,6 +570,8 @@ class RoleManager extends PureComponent {
         this.setState({
           deptCheckedKeys: [],
           menuCheckedKeys: [],
+          halfCheckedKeys:[],
+          roleName:false
         });
       },
     });
@@ -715,8 +737,11 @@ class RoleManager extends PureComponent {
     });
   }
 
-  onCheckMenu = (checkedKeys) => {
-    this.setState({ menuCheckedKeys:checkedKeys });
+  onCheckMenu = (checkedKeys,event) => {
+    this.setState({
+      menuCheckedKeys:checkedKeys,
+      halfCheckedKeys:event.halfCheckedKeys
+    });
   }
 
   onSelectMenu = (selectedKeys, info) => {

@@ -116,21 +116,21 @@ const CreateForm = Form.create()(props => {
           rules: [
             { required: true, message: '请在输入至少2个字符的用户名!', min:2}
           ],
-        })(<Input placeholder="请输入" onBlur={isExistByUserName} autoComplete='off'/>)}
+        })(<Input placeholder="请输入用户名" onBlur={isExistByUserName} maxLength={15} autoComplete='off'/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密&emsp;码">
         {form.getFieldDecorator('password', {
           rules: [
             {
               required: true,
-              message: '请输入至少6个字符的密码!',
+              message: '请输入6~18位字符密码!',
               min: 6,
             },
             {
               validator: validateToNextPassword,
             },
           ],
-        })(<Input type="password" placeholder="请输入" autoComplete='new-password' />)}
+        })(<Input type="password" placeholder="请输入密码" maxLength={18} autoComplete='new-password' />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="确认密码">
         {form.getFieldDecorator('confirm', {
@@ -143,7 +143,7 @@ const CreateForm = Form.create()(props => {
               validator: compareToFirstPassword,
             },
           ],
-        })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} />)}
+        })(<Input type="password" placeholder="请重新输入您的密码" maxLength={18} onBlur={handleConfirmBlur} />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="邮&emsp;箱">
         {form.getFieldDecorator('email', {
@@ -151,12 +151,12 @@ const CreateForm = Form.create()(props => {
             { type: 'email', message: '您输入的邮箱格式不正确！' },
             { required: true, message: '请输入您的邮箱！' },
           ],
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入您的邮箱" />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="手&emsp;机">
         {form.getFieldDecorator('mobile', {
           rules: [{ required: true, message: '请输入11位手机号码！', min: 11 }],
-        })(<Input placeholder="请输入" maxLength={11} />)}
+        })(<Input placeholder="请输入手机号码" maxLength={11} />)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属渠道商">
         {form.getFieldDecorator('deptId', {
@@ -175,7 +175,7 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角&emsp;色">
         {form.getFieldDecorator('roleIdList', {
-          rules: [{ required: false }],
+          rules: [{ required: true }],
         })(
           <Select
             mode="multiple"
@@ -299,7 +299,7 @@ class UpdateForm extends PureComponent {
           {form.getFieldDecorator('username', {
             rules: [{ required: false, message: '请输入至少2个字符的用户名 ！', min: 2 }],
             initialValue: formVals.name,
-          })(<Input placeholder="请输入" disabled={true} />)}
+          })(<Input placeholder="请输入用户名" maxLength={15} disabled={true} />)}
         </FormItem>
 
         <FormItem {...this.formLayout} label="密&emsp;码">
@@ -307,14 +307,14 @@ class UpdateForm extends PureComponent {
             rules: [
               {
                 required: false,
-                message: '请输入至少6个字符的密码!',
+                message: '请输入6~18位字符密码!',
                 min: 6,
               },
               {
                 validator: validateToNextPassword,
               },
             ],
-          })(<Input type="password" placeholder="请输入" autoComplete={"new-password"}/>)}
+          })(<Input type="password" placeholder="请输入密码" maxLength={18} autoComplete={"new-password"}/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="确认密码">
           {form.getFieldDecorator('confirm', {
@@ -327,7 +327,7 @@ class UpdateForm extends PureComponent {
                 validator: compareToFirstPassword,
               },
             ],
-          })(<Input type="password" placeholder="请输入" onBlur={handleConfirmBlur} autoComplete='new-password'/>)}
+          })(<Input type="password" placeholder="请在次输入您的密码" onBlur={handleConfirmBlur} maxLength={18} autoComplete='new-password'/>)}
         </FormItem>
 
         <FormItem {...this.formLayout} label="邮&emsp;箱">
@@ -337,13 +337,13 @@ class UpdateForm extends PureComponent {
               { required: false, message: '请输入您的邮箱！' },
             ],
             initialValue: formVals.email,
-          })(<Input placeholder="请输入" />)}
+          })(<Input placeholder="请输入您的邮箱" />)}
         </FormItem>
         <FormItem {...this.formLayout} label="手&emsp;机">
           {form.getFieldDecorator('mobile', {
             rules: [{ required: false, message: '请输入11位手机号码！', min: 11 }],
             initialValue: formVals.mobile,
-          })(<Input placeholder="请输入" maxLength={11} />)}
+          })(<Input placeholder="请输入手机号码" maxLength={11} />)}
         </FormItem>
         <FormItem {...this.formLayout} label="所属渠道商">
           {form.getFieldDecorator('deptId', {
@@ -629,6 +629,7 @@ class AdminManager extends PureComponent {
   };
   handleAdd = fields => {
     const { dispatch, usr } = this.props;
+    fields.username = fields.username.replace(/\s/g,"");
     dispatch({
       type: 'usr/add',
       payload: fields,

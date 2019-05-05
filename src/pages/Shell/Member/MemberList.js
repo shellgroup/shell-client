@@ -358,11 +358,11 @@ class MemberList extends PureComponent {
   }
 
   columns = [
-    {
-      title: 'openID',
-      dataIndex: 'openId',
-      align:'center',
-    },
+    // {
+    //   title: 'openID',
+    //   dataIndex: 'openId',
+    //   align:'center',
+    // },
     {
       title: '姓名',
       dataIndex: 'name',
@@ -379,8 +379,8 @@ class MemberList extends PureComponent {
       align:'center',
     },
     {
-      title: '渠道ID',
-      dataIndex: 'deptId',
+      title: '渠道名称',
+      dataIndex: 'deptName',
       align:'center',
     },
     {
@@ -512,7 +512,7 @@ class MemberList extends PureComponent {
       const values = {
         name: fieldsValue.username,
         phone: fieldsValue.mobile,
-        deptId: fieldsValue.deptno,
+        deptName: fieldsValue.deptno,
         beginDate: this.state.createTime.beginDate,
         endDate: this.state.createTime.endDate,
       };
@@ -604,7 +604,7 @@ class MemberList extends PureComponent {
       const values = {
         name: fieldsValue.username,
         phone: fieldsValue.mobile,
-        deptId: fieldsValue.deptno,
+        deptName: fieldsValue.deptno,
         beginDate: this.state.createTime.beginDate,
         endDate: this.state.createTime.endDate,
       };
@@ -734,7 +734,7 @@ class MemberList extends PureComponent {
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="渠道ID">
+            <FormItem label="渠道名称">
               {getFieldDecorator('deptno')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
