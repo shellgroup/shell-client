@@ -245,6 +245,7 @@ class UpdateForm extends PureComponent {
       handleUpdate,
       that,
     } = this.props;
+    const { user:{currentUser:{userId}} } = that.props;
     const { formVals } = this.state;
     const { form } = this.props;
     //处理角色数据
@@ -281,6 +282,7 @@ class UpdateForm extends PureComponent {
         handleUpdate(fieldsValue);
       });
     };
+    console.log(userId,8888888888888888);
     return (
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
@@ -357,6 +359,7 @@ class UpdateForm extends PureComponent {
               dropdownMatchSelectWidth={false}
               treeDefaultExpandAll={false}
               placeholder="请选择渠道商"
+              disabled={(formVals.userId == userId)?true:false}
               // onChange={onChangeTreeSelect}
             />
           )}
@@ -366,7 +369,7 @@ class UpdateForm extends PureComponent {
             rules: [{ required: false }],
             initialValue: formVals.roleIdList
           })(
-            <Select mode="multiple" style={{ width: '100%' }} placeholder="请选择角色" >
+            <Select mode="multiple" disabled={(formVals.userId == userId)?true:false} style={{ width: '100%' }} placeholder="请选择角色" >
               {roleValues}
             </Select>
           )}
@@ -376,7 +379,7 @@ class UpdateForm extends PureComponent {
             rules: [{ required: false }],
             initialValue: formVals.status
           })(
-            <RadioGroup>
+            <RadioGroup disabled={(formVals.userId == userId)?true:false}>
               <Radio value={1}>正常</Radio>
               <Radio value={0}>停用</Radio>
             </RadioGroup>
@@ -388,11 +391,12 @@ class UpdateForm extends PureComponent {
 }
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ usr, channel, roleAdmin, loading }) => ({
+@connect(({ usr, user, channel, roleAdmin, loading }) => ({
   usr,
   channel,
+  user,
   roleAdmin,
-  loading: loading.effects[('usr/fetch', 'channel/fetch', 'roleAdmin/fetch')],
+  loading: loading.effects[('usr/fetch', 'channel/fetch', 'roleAdmin/fetch', 'user/fetchCurrent')],
 }))
 @Form.create()
 class AdminManager extends PureComponent {

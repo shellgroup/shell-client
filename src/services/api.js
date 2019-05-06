@@ -381,6 +381,10 @@ export async function createqrCodes(params) {
     body: params,
   });
 }
+//二维码下载
+export async function downloadQrcode(params) {
+  window.location.href =`${baseURL}/qrcode/info/download?${stringify(params)}`;
+}
 //查询二维码参数列表
 export async function queryQrcodeConfig(params) {
   return request(`${baseURL}/qrcode/config/list?${stringify(params)}`);

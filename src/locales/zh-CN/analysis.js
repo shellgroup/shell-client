@@ -1,7 +1,8 @@
 export default {
   'app.analysis.test': '工专路 {no} 号店',
   'app.analysis.introduce': '指标说明',
-  'app.analysis.total-sales': '拉新总数',
+  'app.analysis.total-sales': '本渠道拉新总数',
+  'app.analysis.total-saless': '下级渠道拉新总数',
   'app.analysis.day-sales': '日拉新数',
   'app.analysis.visits': '访问量',
   'app.analysis.visits-trend': '访问量趋势',

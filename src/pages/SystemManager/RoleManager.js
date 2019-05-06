@@ -196,7 +196,7 @@ class UpdateForm extends PureComponent {
       if (item.children) {
         console.log(item.key,999999999999);
         return (
-          <TreeNode title={item.title} key={item.key} value={item.key}  dataRef={item}>
+          <TreeNode title={item.title} key={item.key} value={item.value}  dataRef={item}>
             {renderTreeNodess(item.children)}
           </TreeNode>
         );
@@ -256,6 +256,7 @@ class UpdateForm extends PureComponent {
                 autoExpandParent={that.state.autoExpandParent}
                 onCheck={that.onCheckMenu}
                 checkedKeys={that.state.menuCheckedKeys}
+                checkStrictly={true}
                 onSelect={that.onSelectMenu}
                 selectedKeys={that.state.menuSelectedKeys}
               >
@@ -561,7 +562,12 @@ class RoleManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     fields.deptIdList = this.state.deptCheckedKeys;
-    fields.menuIdList = this.state.menuCheckedKeys.concat(this.state.halfCheckedKeys);
+    if(this.state.halfCheckedKeys instanceof Array){
+      fields.menuIdList = this.state.menuCheckedKeys.concat(this.state.halfCheckedKeys);
+    }else{
+      fields.menuIdList = this.state.menuCheckedKeys;
+    }
+
     dispatch({
       type: 'role/update',
       payload: fields,
@@ -742,6 +748,7 @@ class RoleManager extends PureComponent {
       menuCheckedKeys:checkedKeys,
       halfCheckedKeys:event.halfCheckedKeys
     });
+
   }
 
   onSelectMenu = (selectedKeys, info) => {

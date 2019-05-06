@@ -327,6 +327,7 @@ class DetailQrcodeForm extends PureComponent {
     super(props);
     this.state = {
       formVals: {
+        id:props.values.id,
         imgName: props.values.imgName,
         imgPath: props.values.imgPath,
         imgBase64: props.values.imgBase64,
@@ -374,7 +375,7 @@ class DetailQrcodeForm extends PureComponent {
         onOk={okHandle}
         onCancel={() => handleDetailModalVisible(false)}
       >
-        <div className={styles.infoBox}>
+        <div className={styles.detailBox}>
           <div className={styles.left}>
             <div>
               <span className={styles.spanTitle}>二维码名称:</span>
@@ -384,37 +385,48 @@ class DetailQrcodeForm extends PureComponent {
               <span className={styles.spanTitle}>二维码地址:</span>
               {formVals.imgPath && <span className={styles.imgpath}>{formVals.imgPath}</span>}
             </div>
-            <div>
-              <span className={styles.spanTitle}>生成时间:</span>
-              {formVals.imgTime && <span>{formVals.imgTime}</span>}
-            </div>
-            <div>
-              <span className={styles.spanTitle}>推广码:</span>
-              {formVals.deptCode && <span>{formVals.deptCode}</span>}
-            </div>
-            <div>
-              <span className={styles.spanTitle}>渠道商:</span>
-              {formVals.deptName && <span>{formVals.deptName}</span>}
-            </div>
-            <div>
-              <span className={styles.spanTitle}>是否生成:</span>
-              {formVals.isCreateQrcode == 0?<span>{createtext[0]}</span>:formVals.isCreateQrcode==1?<span>{createtext[1]}</span>:""}
-            </div>
-            <div>
-              <span className={styles.spanTitle}>推广员姓名:</span>
-              {formVals.userName && <span>{formVals.userName}</span>}
-            </div>
-            <div>
-              <span className={styles.spanTitle}>推广员手机号:</span>
-              {formVals.userPhone && <span>{formVals.userPhone}</span>}
-            </div>
-            <div>
-              <span className={styles.spanTitle}>创建时间:</span>
-              {formVals.createTime && <span>{formVals.createTime}</span>}
-            </div>
           </div>
           <div className={styles.right}>
-            {formVals.imgPath && <img className={styles.img} src={formVals.imgBase64}/>}
+            <div className={styles.info}>
+              <div>
+                <span className={styles.spanTitle}>生成时间:</span>
+                {formVals.imgTime && <span>{formVals.imgTime}</span>}
+              </div>
+              <div>
+                <span className={styles.spanTitle}>推广码:</span>
+                {formVals.deptCode && <span>{formVals.deptCode}</span>}
+              </div>
+              <div>
+                <span className={styles.spanTitle}>渠道商:</span>
+                {formVals.deptName && <span>{formVals.deptName}</span>}
+              </div>
+              <div>
+                <span className={styles.spanTitle}>是否生成:</span>
+                {formVals.isCreateQrcode == 0?<span>{createtext[0]}</span>:formVals.isCreateQrcode==1?<span>{createtext[1]}</span>:""}
+              </div>
+              <div>
+                <span className={styles.spanTitle}>推广员姓名:</span>
+                {formVals.userName && <span>{formVals.userName}</span>}
+              </div>
+              <div>
+                <span className={styles.spanTitle}>推广员手机号:</span>
+                {formVals.userPhone && <span>{formVals.userPhone}</span>}
+              </div>
+              <div>
+                <span className={styles.spanTitle}>创建时间:</span>
+                {formVals.createTime && <span>{formVals.createTime}</span>}
+              </div>
+            </div>
+            {formVals.imgPath && (
+              <div className={styles.imgbtnBox}>
+                <img className={styles.img} src={formVals.imgBase64}/>
+                {that.state.downloadBtn && (
+                  <Button type={'primary'} onClick={() => that.downloadRecode(formVals.id)}>
+                    下载
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </Modal>
@@ -452,6 +464,7 @@ class QRCodeList extends PureComponent {
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
+    downloadBtn:false,
     createTime:{},
     createQrcodeItem:[], //所选生成二维码的对象
     qrCodeConfigInfo:{} //二维码参数对象
@@ -493,11 +506,6 @@ class QRCodeList extends PureComponent {
       dataIndex: 'id',
       align:'center',
     },
-    // {
-    //   title: '二维码类型',
-    //   dataIndex: 'mallType',
-    //   align:'center',
-    // },
     {
       title: '渠道名称',
       dataIndex: 'deptName',
@@ -528,6 +536,16 @@ class QRCodeList extends PureComponent {
       align:'center',
       // sorter: true,
       // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    },
+    {
+      title: '推广人姓名',
+      dataIndex: 'userName',
+      align:'center',
+    },
+    {
+      title: '推广人手机号',
+      dataIndex: 'userPhone',
+      align:'center',
     },
     {
       title: '操作',
@@ -600,6 +618,10 @@ class QRCodeList extends PureComponent {
       payload: {},
       callback: res => {
         tips(res);
+        this.setState({
+          formValues: {},
+          createTime:{}
+        });
       },
     });
   };
@@ -632,11 +654,11 @@ class QRCodeList extends PureComponent {
       if (err) return;
 
       const values = {
-        id: fieldsValue.qrid,
-        mallType: fieldsValue.qrtype,
-        deptId: fieldsValue.deptNo,
-        beginDate: this.state.createTime.beginDate,
-        endDate: this.state.createTime.endDate,
+        userName: fieldsValue.name,
+        userPhone: fieldsValue.mobile,
+        deptName: fieldsValue.deptN,
+        createBeginTime: this.state.createTime.beginDate,
+        createEndTime: this.state.createTime.endDate,
       };
 
 
@@ -766,6 +788,19 @@ class QRCodeList extends PureComponent {
     }
 
   };
+  //二维码下载
+
+  downloadRecode = (record) => {
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'qrcodedetail/downloadQrcode',
+      payload: {qrcodeId:record},
+      callback: res => {
+
+      },
+    });
+  };
   createTimes(dates, dateStrings) {
     let createTime = {
       beginDate:dateStrings[0],
@@ -890,13 +925,13 @@ class QRCodeList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="二维码ID">
-              {getFieldDecorator('qrid')(<Input placeholder="请输入" />)}
+            <FormItem label="推广员姓名">
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="二维码类型">
-              {getFieldDecorator('qrtype')(<Input placeholder="请输入" />)}
+            <FormItem label="推广员手机号">
+              {getFieldDecorator('mobile')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -925,22 +960,22 @@ class QRCodeList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="二维码ID">
-              {getFieldDecorator('qrid')(<Input placeholder="请输入" />)}
+            <FormItem label="推广员姓名">
+              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="二维码类型">
-              {getFieldDecorator('qrtype')(<Input placeholder="请输入" />)}
+            <FormItem label="推广员手机号">
+              {getFieldDecorator('mobile')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="渠道ID">
-              {getFieldDecorator('deptNo')(<Input placeholder="请输入" />)}
+            <FormItem label="渠道名称">
+              {getFieldDecorator('deptN')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="创建时间">
+            <FormItem label="生成时间">
               <RangePicker
                 format={dateFormat}
                 showTime={{

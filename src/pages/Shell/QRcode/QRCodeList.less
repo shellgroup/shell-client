@@ -66,6 +66,28 @@
     }
   }
 }
+.detailBox{
+  display: flex;
+  flex-flow: column;
+  .left{
+    max-width: calc(100% - 180px);
+  }
+  .right{
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    .imgbtnBox{
+      display: flex;
+      flex-flow: column;
+      width:160px;
+      margin-right:120px;
+      justify-content: flex-end;
+      .img{
+        width:160px;
+      }
+    }
+  }
+}
 .address{
   display: flex;
   .imgpath{

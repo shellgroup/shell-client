@@ -1,5 +1,5 @@
 {
   "projects": {
-    "default": "master-admin"
+    "default": "shell-client"
   }
 }

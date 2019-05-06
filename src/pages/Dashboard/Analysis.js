@@ -54,6 +54,9 @@ class Analysis extends Component {
   //排序
   queryRankingMsg = rangePickerValue => {
     const { dispatch } = this.props;
+    this.setState({
+      rangePickerValue,
+    });
     dispatch({
       type: 'ranking/queryRankingMsg',
       payload: {

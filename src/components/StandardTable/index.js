@@ -101,7 +101,7 @@ class StandardTable extends PureComponent {
                   </a>
                 </Fragment>
               }
-              type="info"
+              type="warning"
               showIcon
           />
           </div>

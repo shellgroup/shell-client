@@ -53,25 +53,32 @@ const IntroduceRow = memo(({ loading, resultMap }) => (
     <Col {...topColResponsiveProps}>
       <ChartCard
         bordered={false}
-        loading={loading}
-        title={''}
+        title={<FormattedMessage id="app.analysis.total-saless" defaultMessage="Total Sales" />}
         action={
           <Tooltip
             title={<FormattedMessage id="app.analysis.introduce" defaultMessage="Introduce" />}
           >
-            {/*<Icon type="info-circle-o" />*/}
+            <Icon type="info-circle-o" />
           </Tooltip>
         }
-        total={''}
+        loading={loading}
+        total={() => <div>{`${numeral(resultMap.totle).format('0,0')}人`}</div>}
         footer={
           <Field
-            label={''}
-            value={''}
+            label={<FormattedMessage id="app.analysis.day-sales" defaultMessage="Daily Sales" />}
+            value={`${numeral(resultMap.todayTotle).format('0,0')}人`}
           />
         }
         contentHeight={46}
       >
-        <div className={styles.defaultText}>内容待添加</div>
+        <Trend flag={resultMap.weekPercentage>0?"up":resultMap.weekPercentage<0?"down":""}>
+          <FormattedMessage id="app.analysis.week" defaultMessage="Weekly Changes" />
+          <span className={styles.trendText}>{resultMap.weekPercentage && resultMap.weekPercentage!="无" || resultMap.weekPercentage==0?`${Number(resultMap.weekPercentage).toFixed(2)}%`:"无"}</span>
+        </Trend>
+        <Trend style={{marginLeft:20}} flag={resultMap.dayPercentage>0?"up":resultMap.dayPercentage<0?"down":""}>
+          <FormattedMessage id="app.analysis.day" defaultMessage="Daily Changes" />
+          <span className={styles.trendText}>{resultMap.dayPercentage && resultMap.dayPercentage!="无" || resultMap.dayPercentage==0?`${Number(resultMap.dayPercentage).toFixed(2)}%`:"无"}</span>
+        </Trend>
       </ChartCard>
     </Col>
     <Col {...topColResponsiveProps}>
