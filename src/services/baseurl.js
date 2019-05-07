@@ -4,10 +4,11 @@ module.exports = {
     flag === 'test'
       ? '/api'
       : flag === 'dev'
-      ? 'http://192.168.199.109:9001/master-admin'
+      ? 'http://192.168.199.109:9001/shell-admin'
       : flag === 'local'
-      ? 'http://localhost:9001/master-admin'
+      ? 'http://localhost:9001/shell-admin'
       : flag === 'pro'
       ? '/api'
       : null,
+
 };
