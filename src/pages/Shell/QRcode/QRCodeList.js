@@ -461,6 +461,7 @@ class QRCodeList extends PureComponent {
     userName: false,
     createqrCodeBtn:false,
     createqrCodesBtn:false,
+    batchDownLoadBtn:false,
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
@@ -801,6 +802,23 @@ class QRCodeList extends PureComponent {
       },
     });
   };
+  //二维码批量下载
+  batchDownload = (record) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'qrcodedetail/batchDownload',
+      payload: {
+        qrcodeIdListStr: record,
+      },
+      callback: res => {
+        this.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  };
+
+
   createTimes(dates, dateStrings) {
     let createTime = {
       beginDate:dateStrings[0],
@@ -833,6 +851,10 @@ class QRCodeList extends PureComponent {
       case 'createQrcode':
         //二维码批量生成
         this.handleCreateQrcodeModalVisible(true,selectedRows.map(row => row.id));
+        break;
+      case 'downLoadQrcode':
+        //二维码批量下载
+        this.batchDownload(selectedRows.map(row => row.id));
         break;
       default:
         break;
@@ -885,6 +907,16 @@ class QRCodeList extends PureComponent {
               disabled: false,
             },
           });
+          this.setState({
+            selectedRows: [],
+          });
+          dispatch({
+            type: 'qrcode/fetch',
+            payload: "",
+            callback: res => {
+            },
+          });
+
         }
       },
     });
@@ -1016,8 +1048,9 @@ class QRCodeList extends PureComponent {
     } = this.props;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        {this.state.createqrCodeBtn && <Menu.Item key="remove">删除</Menu.Item>}
-        {this.state.createqrCodesBtn && <Menu.Item key="createQrcode">二维码生成</Menu.Item>}
+        {this.state.createqrCodeBtn && <Menu.Item key="remove">批量删除</Menu.Item>}
+        {this.state.createqrCodesBtn && <Menu.Item key="createQrcode">二维码批量生成</Menu.Item>}
+        {this.state.batchDownLoadBtn && <Menu.Item key="downLoadQrcode">二维码批量下载</Menu.Item>}
       </Menu>
     );
     const { selectedRows, modalVisible, updateModalVisible,detailModalVisible, createQrcodeModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;

@@ -30,22 +30,22 @@ const IntroduceRow = memo(({ loading, resultMap }) => (
           </Tooltip>
         }
         loading={loading}
-        total={() => <div>{`${numeral(resultMap.totle).format('0,0')}人`}</div>}
+        total={() => <div>{`${numeral(resultMap.myselfTotle).format('0,0')}人`}</div>}
         footer={
           <Field
             label={<FormattedMessage id="app.analysis.day-sales" defaultMessage="Daily Sales" />}
-            value={`${numeral(resultMap.todayTotle).format('0,0')}人`}
+            value={`${numeral(resultMap.myselfTodayTotle).format('0,0')}人`}
           />
         }
         contentHeight={46}
       >
-        <Trend flag={resultMap.weekPercentage>0?"up":resultMap.weekPercentage<0?"down":""}>
+        <Trend flag={resultMap.myselfmyselfWeekPercentage>0?"up":resultMap.myselfWeekPercentage<0?"down":""}>
           <FormattedMessage id="app.analysis.week" defaultMessage="Weekly Changes" />
-          <span className={styles.trendText}>{resultMap.weekPercentage && resultMap.weekPercentage!="无" || resultMap.weekPercentage==0?`${Number(resultMap.weekPercentage).toFixed(2)}%`:"无"}</span>
+          <span className={styles.trendText}>{resultMap.myselfWeekPercentage && resultMap.myselfWeekPercentage!="无" || resultMap.myselfWeekPercentage==0?`${Number(resultMap.myselfWeekPercentage).toFixed(2)}%`:"无"}</span>
         </Trend>
-        <Trend style={{marginLeft:20}} flag={resultMap.dayPercentage>0?"up":resultMap.dayPercentage<0?"down":""}>
+        <Trend style={{marginLeft:20}} flag={resultMap.myselfDayPercentage>0?"up":resultMap.myselfDayPercentage<0?"down":""}>
           <FormattedMessage id="app.analysis.day" defaultMessage="Daily Changes" />
-          <span className={styles.trendText}>{resultMap.dayPercentage && resultMap.dayPercentage!="无" || resultMap.dayPercentage==0?`${Number(resultMap.dayPercentage).toFixed(2)}%`:"无"}</span>
+          <span className={styles.trendText}>{resultMap.myselfDayPercentage && resultMap.myselfDayPercentage!="无" || resultMap.myselfDayPercentage==0?`${Number(resultMap.myselfDayPercentage).toFixed(2)}%`:"无"}</span>
         </Trend>
       </ChartCard>
     </Col>
@@ -62,22 +62,22 @@ const IntroduceRow = memo(({ loading, resultMap }) => (
           </Tooltip>
         }
         loading={loading}
-        total={() => <div>{`${numeral(resultMap.totle).format('0,0')}人`}</div>}
+        total={() => <div>{`${numeral(resultMap.childrenTotle).format('0,0')}人`}</div>}
         footer={
           <Field
             label={<FormattedMessage id="app.analysis.day-sales" defaultMessage="Daily Sales" />}
-            value={`${numeral(resultMap.todayTotle).format('0,0')}人`}
+            value={`${numeral(resultMap.childrenTodayTotle).format('0,0')}人`}
           />
         }
         contentHeight={46}
       >
-        <Trend flag={resultMap.weekPercentage>0?"up":resultMap.weekPercentage<0?"down":""}>
+        <Trend flag={resultMap.childrenWeekPercentage>0?"up":resultMap.childrenWeekPercentage<0?"down":""}>
           <FormattedMessage id="app.analysis.week" defaultMessage="Weekly Changes" />
-          <span className={styles.trendText}>{resultMap.weekPercentage && resultMap.weekPercentage!="无" || resultMap.weekPercentage==0?`${Number(resultMap.weekPercentage).toFixed(2)}%`:"无"}</span>
+          <span className={styles.trendText}>{resultMap.childrenWeekPercentage && resultMap.childrenWeekPercentage!="无" || resultMap.childrenWeekPercentage==0?`${Number(resultMap.childrenWeekPercentage).toFixed(2)}%`:"无"}</span>
         </Trend>
-        <Trend style={{marginLeft:20}} flag={resultMap.dayPercentage>0?"up":resultMap.dayPercentage<0?"down":""}>
+        <Trend style={{marginLeft:20}} flag={resultMap.childrenDayPercentage>0?"up":resultMap.childrenDayPercentage<0?"down":""}>
           <FormattedMessage id="app.analysis.day" defaultMessage="Daily Changes" />
-          <span className={styles.trendText}>{resultMap.dayPercentage && resultMap.dayPercentage!="无" || resultMap.dayPercentage==0?`${Number(resultMap.dayPercentage).toFixed(2)}%`:"无"}</span>
+          <span className={styles.trendText}>{resultMap.childrenDayPercentage && resultMap.childrenDayPercentage!="无" || resultMap.childrenDayPercentage==0?`${Number(resultMap.childrenDayPercentage).toFixed(2)}%`:"无"}</span>
         </Trend>
       </ChartCard>
     </Col>

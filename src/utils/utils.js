@@ -254,6 +254,11 @@ export function disablesBtns(that) {
         downloadBtn: true,
       });
     }
+    if (data[i].indexOf('batchDownLoad') != -1) {
+      that.setState({
+        batchDownLoadBtn: true,
+      });
+    }
   }
 }
 //统一删除模板

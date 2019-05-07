@@ -385,6 +385,19 @@ export async function createqrCodes(params) {
 export async function downloadQrcode(params) {
   window.location.href =`${baseURL}/qrcode/info/download?${stringify(params)}`;
 }
+//二维码批量下载
+export async function batchDownload(params) {
+  if(params){
+    let str = "";
+    for(var key in params){
+      if(params[key]){
+        str+="&"+key+"="+params[key];
+      }
+    }
+    window.location.href =`${baseURL}/qrcode/info/batchDownload?${str}`
+  }
+}
+
 //查询二维码参数列表
 export async function queryQrcodeConfig(params) {
   return request(`${baseURL}/qrcode/config/list?${stringify(params)}`);
