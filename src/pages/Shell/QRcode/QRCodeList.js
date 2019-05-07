@@ -66,11 +66,6 @@ const CreateForm = Form.create()(props => {
     });
   };
 
-
-
-
-
-
   return (
     <Modal
       destroyOnClose
@@ -106,7 +101,6 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-    console.log(props,8888888888888);
     this.state = {
       formVals: {
         id: props.values.id,
@@ -451,6 +445,8 @@ class QRCodeList extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    stepFormDetailValues: {},
+    stepFormCreateValues: {},
     key: 'id', //列表的唯一键
     statusValue: 1, //状态默认选中正常 0正常 1停用
     roleData: [], //角色下拉菜单数据
@@ -641,6 +637,7 @@ class QRCodeList extends PureComponent {
 
 
   handleSelectRows = rows => {
+    console.log(666);
     this.setState({
       selectedRows: rows,
     });
@@ -725,13 +722,13 @@ class QRCodeList extends PureComponent {
       },
     });
   };
-  //批量删除
-  showDeletesConfirm = () => {
+  //批量删除弹窗
+  showDeletesConfirm = (arr) => {
     let that = this;
     confirm({
       ...showDeleteTipsParames,
       onOk() {
-        that.handleMenuClick();
+        that.delectQrcodes(arr);
       },
       onCancel() {
         that.setState({
@@ -740,6 +737,21 @@ class QRCodeList extends PureComponent {
       },
     });
   };
+  //二维码批量删除
+  delectQrcodes = arr => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'qrcode/remove',
+      payload:arr,
+      callback: (res) => {
+        tips(res, this, 'qrcode/fetch');
+        this.setState({
+          selectedRows: [],
+        });
+      },
+    });
+  };
+
   //二维码生成弹窗
   handleCreateQrcodeModalVisible = (flag,record) => {
 
@@ -753,7 +765,7 @@ class QRCodeList extends PureComponent {
             qrCodeConfigInfo:{},
             createQrcodeItem:record,
             createQrcodeModalVisible: !!flag,
-            stepFormValues: res.qrcodeConfigList || {},
+            stepFormCreateValues: res.qrcodeConfigList || {},
           });
         },
       });
@@ -762,13 +774,14 @@ class QRCodeList extends PureComponent {
         createQrcodeItem:[],
         qrCodeConfigInfo:{},
         createQrcodeModalVisible: !!flag,
-        stepFormValues: record || {},
+        stepFormCreateValues: record || {},
       });
     }
 
   };
   //查看详情
   handleDetailModalVisible = (flag,record) => {
+    console.log(record,888888889);
     if(!!record){
       const { dispatch } = this.props;
       dispatch({
@@ -776,17 +789,22 @@ class QRCodeList extends PureComponent {
         payload: parseInt(record.id),
         callback: res => {
           this.setState({
-            stepFormValues: res.qrCodeInfo || {},
+            stepFormDetailValues: res.qrCodeInfo || {},
             detailModalVisible: !!flag,
           });
         },
       });
     }else{
       this.setState({
-        stepFormValues: record || {},
+        stepFormDetailValues: record || {},
         detailModalVisible: !!flag,
       });
     }
+
+
+    // tips({
+    //   msg:"暂无详细信息，请生成二维码后查看！"
+    // });
 
   };
   //二维码下载
@@ -804,18 +822,34 @@ class QRCodeList extends PureComponent {
   };
   //二维码批量下载
   batchDownload = (record) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'qrcodedetail/batchDownload',
-      payload: {
-        qrcodeIdListStr: record,
-      },
-      callback: res => {
-        this.setState({
-          selectedRows: [],
-        });
-      },
-    });
+    const { dispatch,
+      qrcode: { data:{list} },
+      loading, } = this.props;
+    let arr = [];
+    for(let j=0;j<record.length;j++){
+      for(let i=0;i<list.length;i++){
+        if(list[i].id == record[j] && list[i].isCreateQrcode == 0){
+          arr.push(list[i].id);
+        }
+      }
+    }
+    if(arr.length){
+      tips({
+        msg:`二维码ID为：【${arr.toString()}】的数据暂未生成二维码，故无法下载，请取消勾选或为此生成二维码后下载！`
+      });
+    }else{
+      dispatch({
+        type: 'qrcodedetail/batchDownload',
+        payload: {
+          qrcodeIdListStr: record,
+        },
+        callback: res => {
+          this.setState({
+            selectedRows: [],
+          });
+        },
+      });
+    }
   };
 
 
@@ -835,18 +869,7 @@ class QRCodeList extends PureComponent {
     if (selectedRows.length === 0) return;
     switch (e.key) {
       case 'remove':
-        dispatch({
-          type: 'qrcode/remove',
-          payload: {
-            key: selectedRows.map(row => row.id),
-          },
-          callback: () => {
-            tips(res, this, 'qrcode/fetch');
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
+        this.showDeletesConfirm(selectedRows.map(row => row.id));
         break;
       case 'createQrcode':
         //二维码批量生成
@@ -1053,7 +1076,7 @@ class QRCodeList extends PureComponent {
         {this.state.batchDownLoadBtn && <Menu.Item key="downLoadQrcode">二维码批量下载</Menu.Item>}
       </Menu>
     );
-    const { selectedRows, modalVisible, updateModalVisible,detailModalVisible, createQrcodeModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible,detailModalVisible, createQrcodeModalVisible, stepFormValues, stepFormDetailValues, stepFormCreateValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -1131,18 +1154,18 @@ class QRCodeList extends PureComponent {
             values={stepFormValues}
           />
         ) : null}
-        {stepFormValues && Object.keys(stepFormValues).length ? (
+        {stepFormCreateValues && Object.keys(stepFormCreateValues).length ? (
           <CreateQrcodeForm
             {...createQrcodeMethods}
             createQrcodeModalVisible={createQrcodeModalVisible}
-            values={stepFormValues}
+            values={stepFormCreateValues}
           />
         ) : null}
-        {stepFormValues && Object.keys(stepFormValues).length ? (
+        {stepFormDetailValues && Object.keys(stepFormDetailValues).length ? (
           <DetailQrcodeForm
             {...detailMethods}
             detailModalVisible={detailModalVisible}
-            values={stepFormValues}
+            values={stepFormDetailValues}
           />
         ) : null}
 
