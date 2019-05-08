@@ -381,7 +381,7 @@ class RoleManager extends PureComponent {
       },
     });
     dispatch({
-      type: 'menulist/fetch',
+      type: 'menulist/menuAuthorization',
       callback: res => {
         if (res.code == 0) {
           this.setState({

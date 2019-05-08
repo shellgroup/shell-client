@@ -781,7 +781,6 @@ class QRCodeList extends PureComponent {
   };
   //查看详情
   handleDetailModalVisible = (flag,record) => {
-    console.log(record,888888889);
     if(!!record){
       const { dispatch } = this.props;
       dispatch({

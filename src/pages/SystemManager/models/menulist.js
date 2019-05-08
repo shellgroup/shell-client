@@ -1,4 +1,4 @@
-import { queryMenulist, addMenu, removeMenu, updateMenu } from '@/services/api';
+import { queryMenulist, addMenu, removeMenu, updateMenu, menuAuthorization } from '@/services/api';
 
 /**
  * 菜单列表
@@ -16,6 +16,14 @@ export default {
   effects: {
     *fetch({ payload, callback }, { call, put }) {
       const response = yield call(queryMenulist, payload);
+      yield put({
+        type: 'save',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+    *menuAuthorization({ payload, callback }, { call, put }) {
+      const response = yield call(menuAuthorization, payload);
       yield put({
         type: 'save',
         payload: response,

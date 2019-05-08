@@ -185,6 +185,13 @@ export async function updateMenu(params) {
 export async function queryMenulist(params) {
   return request(`${baseURL}/sys/menu/list?${stringify(params)}`);
 }
+//查询菜单授权列表
+export async function menuAuthorization(params) {
+  return request(`${baseURL}/sys/menu/menuAuthorization?${stringify(params)}`);
+}
+
+
+
 //查询icon图标
 export async function queryIcon() {
   return request(`${baseURL}/sys/icon/list`,{
