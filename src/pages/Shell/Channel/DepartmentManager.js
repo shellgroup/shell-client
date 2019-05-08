@@ -380,7 +380,7 @@ class DepartmentManager extends PureComponent {
     dispatch({
       type: 'channelUpdate/isExitDeptNameWhenAdd',
       payload: {
-        deptName: e.target.value
+        deptName: e.target.value.replace(/\s/g,"")
       },
       callback: res => {
 
@@ -403,7 +403,7 @@ class DepartmentManager extends PureComponent {
       type: 'channelUpdate/isExitDeptNameWhenUpdate',
       payload: {
         deptId:e.currentTarget.getAttribute("data-id"),
-        deptName: e.target.value
+        deptName: e.target.value.replace(/\s/g,"")
       },
       callback: res => {
 
@@ -432,6 +432,7 @@ class DepartmentManager extends PureComponent {
     if (!fields.parentId) {
       fields.parentId = 0;
     }
+    fields.name = fields.name.replace(/\s/g,"");
     dispatch({
       type: 'channel/add',
       payload: fields,
@@ -446,6 +447,7 @@ class DepartmentManager extends PureComponent {
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
+    fields.name = fields.name.replace(/\s/g,"");
     dispatch({
       type: 'channel/update',
       payload: fields,

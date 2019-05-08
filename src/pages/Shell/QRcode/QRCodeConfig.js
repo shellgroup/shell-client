@@ -566,6 +566,7 @@ class QRCodeConfig extends PureComponent {
   };
   handleAdd = fields => {
     const { dispatch, QRcodeConfig } = this.props;
+    fields.qrcodeConfigName = fields.qrcodeConfigName.replace(/\s/g,"");
     dispatch({
       type: 'QRcodeConfig/add',
       payload: fields,
@@ -655,7 +656,7 @@ class QRCodeConfig extends PureComponent {
     dispatch({
       type: 'qrcodedetail/isExitQrcodeConfig',
       payload: {
-        qrcodeConfigName: e.target.value
+        qrcodeConfigName: e.target.value.replace(/\s/g,"")
       },
       callback: res => {
 
@@ -678,7 +679,7 @@ class QRCodeConfig extends PureComponent {
       type: 'qrcodedetail/isExitQrcodeConfigWhenUpdate',
       payload: {
         qrcodeConfigId:e.currentTarget.getAttribute("data-id"),
-        qrcodeConfigName: e.target.value
+        qrcodeConfigName: e.target.value.replace(/\s/g,"")
       },
       callback: res => {
 
@@ -698,6 +699,7 @@ class QRCodeConfig extends PureComponent {
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
+    fields.qrcodeConfigName = fields.qrcodeConfigName.replace(/\s/g,"");
     dispatch({
       type: 'QRcodeConfig/update',
       payload: fields,

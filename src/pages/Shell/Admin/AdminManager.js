@@ -573,7 +573,7 @@ class AdminManager extends PureComponent {
     dispatch({
       type: 'usr/isExistByUserName',
       payload: {
-        userName: e.target.value
+        userName: e.target.value.replace(/\s/g,"")
       },
       callback: res => {
 
@@ -714,6 +714,7 @@ class AdminManager extends PureComponent {
 
   handleUpdate = fields => {
     const { dispatch } = this.props;
+    fields.username = fields.username.replace(/\s/g,"");
     dispatch({
       type: 'usr/update',
       payload: fields,
