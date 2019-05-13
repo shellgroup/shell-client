@@ -77,9 +77,9 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: false, message: '请输入备注信息！'}],
         })(<Input placeholder="请输入" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属部门">
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属渠道">
         {form.getFieldDecorator('deptId', {
-          rules: [{ required: false, message: '请选择所属部门！' }],
+          rules: [{ required: true, message: '请选择所属渠道！' }],
         })(
           <TreeSelect
             className={styles.width}
@@ -87,7 +87,7 @@ const CreateForm = Form.create()(props => {
             treeData={deptData}
             dropdownMatchSelectWidth={false}
             treeDefaultExpandAll={false}
-            placeholder="请选择部门"
+            placeholder="请选择渠道"
             //onChange={onChangeTreeSelect}
           />
         )}
@@ -228,9 +228,9 @@ class UpdateForm extends PureComponent {
             initialValue: formVals.remark,
           })(<Input placeholder="请输入" />)}
         </FormItem>
-        <FormItem {...this.formLayout} label="所属部门">
+        <FormItem {...this.formLayout} label="所属渠道">
           {form.getFieldDecorator('deptId', {
-            rules: [{ required: false, message: '请选择所属部门！' }],
+            rules: [{ required: false, message: '请选择所属渠道！' }],
             initialValue: formVals.deptId,
           })(
             <TreeSelect
@@ -239,7 +239,7 @@ class UpdateForm extends PureComponent {
               treeData={deptData}
               dropdownMatchSelectWidth={false}
               treeDefaultExpandAll={false}
-              placeholder="请选择部门"
+              placeholder="请选择渠道"
               //onChange={onChangeTreeSelect}
             />
           )}
@@ -303,7 +303,7 @@ class RoleManager extends PureComponent {
     formValues: {},
     stepFormValues: {},
     key: 'roleId',
-    deptData: [], //部门树菜单数据
+    deptData: [], //渠道树菜单数据
     menuList:[],//授权菜单数据
     autoExpandParent: true,
     menuCheckedKeys: [],
@@ -327,7 +327,7 @@ class RoleManager extends PureComponent {
       align:'center',
     },
     {
-      title: '所属部门',
+      title: '所属渠道',
       dataIndex: 'deptName',
       align:'center',
     },
@@ -648,9 +648,9 @@ class RoleManager extends PureComponent {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="所属部门">
+            <FormItem label="所属渠道">
               {getFieldDecorator('deptNo', {
-                rules: [{ required: false, message: '请选择所属部门！' }],
+                rules: [{ required: false, message: '请选择所属渠道！' }],
               })(
                 <TreeSelect
                   className={styles.width}
@@ -658,7 +658,7 @@ class RoleManager extends PureComponent {
                   treeData={this.state.deptData}
                   dropdownMatchSelectWidth={false}
                   treeDefaultExpandAll={false}
-                  placeholder="请选择部门"
+                  placeholder="请选择渠道"
                   // onChange={onChangeTreeSelect}
                 />
               )}
@@ -692,9 +692,9 @@ class RoleManager extends PureComponent {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="所属部门">
+            <FormItem label="所属渠道">
               {getFieldDecorator('deptNo', {
-                rules: [{ required: false, message: '请选择所属部门！' }],
+                rules: [{ required: false, message: '请选择所属渠道！' }],
               })(
                 <TreeSelect
                   className={styles.width}
@@ -702,7 +702,7 @@ class RoleManager extends PureComponent {
                   treeData={this.state.deptData}
                   dropdownMatchSelectWidth={false}
                   treeDefaultExpandAll={false}
-                  placeholder="请选择部门"
+                  placeholder="请选择渠道"
                   // onChange={onChangeTreeSelect}
                 />
               )}

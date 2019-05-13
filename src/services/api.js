@@ -468,7 +468,7 @@ export async function downloadMembers(params) {
         str+="&"+key+"="+params[key];
       }
     }
-    window.location.href =`${baseURL}/wxUser/manage/download?${str}`
+    window.location.href =`${baseURL}/wxUser/manage/downloadForForm?${str}`
   }
 }
 

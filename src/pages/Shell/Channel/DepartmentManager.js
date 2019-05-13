@@ -72,7 +72,7 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上级渠道商">
         {form.getFieldDecorator('parentId', {
-          rules: [{ required: false, message: '请选择上级渠道商！' }],
+          rules: [{ required: true, message: '请选择上级渠道商！' }],
         })(
           <TreeSelect
             className={styles.width}

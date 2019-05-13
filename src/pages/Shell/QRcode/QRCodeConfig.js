@@ -146,7 +146,7 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
         {form.getFieldDecorator('qrcodeShape', {
-          rules: [{ required: true }],
+          rules: [{ required: true, message: '请选择二维码形状！'  }],
         })(
           <Select
             style={{ width: '100%' }}
@@ -293,7 +293,7 @@ class UpdateForm extends PureComponent {
         </FormItem>
         <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
           {form.getFieldDecorator('qrcodeShape', {
-            rules: [{ required: false }],
+            rules: [{ required: false, message: '请选择二维码形状！' }],
             initialValue: formVals.qrcodeShape,
           })(
             <Select
@@ -729,7 +729,7 @@ class QRCodeConfig extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
               {getFieldDecorator('shape', {
-                rules: [{ required: false }],
+                rules: [{ required: false, message: '请选择二维码形状！'  }],
               })(
                 <Select
                   style={{ width: '100%' }}
@@ -774,7 +774,7 @@ class QRCodeConfig extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="形状">
               {getFieldDecorator('shape', {
-                rules: [{ required: false }],
+                rules: [{ required: false, message: '请选择二维码形状！'  }],
               })(
                 <Select
                   style={{ width: '100%' }}

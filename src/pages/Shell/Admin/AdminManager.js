@@ -175,7 +175,7 @@ const CreateForm = Form.create()(props => {
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角&emsp;色">
         {form.getFieldDecorator('roleIdList', {
-          rules: [{ required: true }],
+          rules: [{ required: true , message: '请选择所角色！' }],
         })(
           <Select
             mode="multiple"
@@ -261,7 +261,7 @@ class UpdateForm extends PureComponent {
     }
 
     function compareToFirstPassword(rule, value, callback) {
-      if (value && value !== form.getFieldValue('password')) {
+      if (value && value !== form.getFieldValue('password2')) {
         callback('两次输入的密码不一致!');
       } else {
         callback();
@@ -270,7 +270,7 @@ class UpdateForm extends PureComponent {
 
     function validateToNextPassword(rule, value, callback) {
       if (value && that.state.confirmDirtyUp) {
-        form.validateFields(['confirm'], { force: true });
+        form.validateFields(['confirm2'], { force: true });
       }
       callback();
     }
@@ -282,7 +282,6 @@ class UpdateForm extends PureComponent {
         handleUpdate(fieldsValue);
       });
     };
-    console.log(userId,8888888888888888);
     return (
       <Modal
         bodyStyle={{ padding: '32px 40px 48px' }}
@@ -305,7 +304,7 @@ class UpdateForm extends PureComponent {
         </FormItem>
 
         <FormItem {...this.formLayout} label="密&emsp;码">
-          {form.getFieldDecorator('password', {
+          {form.getFieldDecorator('password2', {
             rules: [
               {
                 required: false,
@@ -319,7 +318,7 @@ class UpdateForm extends PureComponent {
           })(<Input type="password" placeholder="请输入密码" maxLength={18} autoComplete={"new-password"}/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="确认密码">
-          {form.getFieldDecorator('confirm', {
+          {form.getFieldDecorator('confirm2', {
             rules: [
               {
                 required: false,
@@ -715,6 +714,9 @@ class AdminManager extends PureComponent {
   handleUpdate = fields => {
     const { dispatch } = this.props;
     fields.username = fields.username.replace(/\s/g,"");
+    fields.confirm = fields.confirm2;
+    fields.password = fields.password2;
+
     dispatch({
       type: 'usr/update',
       payload: fields,
