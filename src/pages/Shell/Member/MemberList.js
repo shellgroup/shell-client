@@ -703,23 +703,23 @@ class MemberList extends PureComponent {
               {getFieldDecorator('mobile')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-          {/*<Col md={8} sm={24}>*/}
-          {/*  <FormItem label="所属部门">*/}
-          {/*    {getFieldDecorator('deptNo', {*/}
-          {/*      rules: [{ required: false, message: '请选择所属部门！' }],*/}
-          {/*    })(*/}
-          {/*      <TreeSelect*/}
-          {/*        className={styles.width}*/}
-          {/*        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}*/}
-          {/*        treeData={this.state.deptData}*/}
-          {/*        dropdownMatchSelectWidth={false}*/}
-          {/*        treeDefaultExpandAll={false}*/}
-          {/*        placeholder="请选择部门"*/}
-          {/*        // onChange={onChangeTreeSelect}*/}
-          {/*      />*/}
-          {/*    )}*/}
-          {/*  </FormItem>*/}
-          {/*</Col>*/}
+          <Col md={8} sm={24}>
+            <FormItem label="所属部门">
+              {getFieldDecorator('deptNo', {
+                rules: [{ required: false, message: '请选择所属部门！' }],
+              })(
+                <TreeSelect
+                  className={styles.width}
+                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                  treeData={this.state.deptData}
+                  dropdownMatchSelectWidth={false}
+                  treeDefaultExpandAll={false}
+                  placeholder="请选择部门"
+                  // onChange={onChangeTreeSelect}
+                />
+              )}
+            </FormItem>
+          </Col>
           <Col md={8} sm={24}>
             <FormItem label="注册时间">
               <RangePicker

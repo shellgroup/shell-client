@@ -87,6 +87,21 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: false, message: '请输入11位手机号码！', min: 11 }],
         })(<Input placeholder="请输入" maxLength={11} />)}
       </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="所属渠道商">
+        {form.getFieldDecorator('deptId', {
+          rules: [{ required: true, message: '请选择所属渠道商！' }],
+        })(
+          <TreeSelect
+            className={styles.width}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            treeData={child(deptData)}
+            dropdownMatchSelectWidth={false}
+            treeDefaultExpandAll={false}
+            placeholder="请选择渠道商"
+            //onChange={onChangeTreeSelect}
+          />
+        )}
+      </FormItem>
     </Modal>
   );
 });
@@ -106,6 +121,7 @@ class UpdateForm extends PureComponent {
         id: props.values.id,
         userName: props.values.userName,
         userPhone: props.values.userPhone,
+        deptId:props.values.deptId,
       },
       currentStep: 0,
       confirmDirty: false,
@@ -165,6 +181,22 @@ class UpdateForm extends PureComponent {
             rules: [{ required: false, message: '请输入11位手机号码！', min: 11 }],
             initialValue: formVals.userPhone
           })(<Input placeholder="请输入" maxLength={11} />)}
+        </FormItem>
+        <FormItem {...this.formLayout} label="所属渠道商">
+          {form.getFieldDecorator('deptId', {
+            rules: [{ required: false, message: '请选择所属渠道商！' }],
+            initialValue: formVals.deptId,
+          })(
+            <TreeSelect
+              className={styles.width}
+              dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+              treeData={deptData}
+              dropdownMatchSelectWidth={false}
+              treeDefaultExpandAll={false}
+              placeholder="请选择渠道商"
+              // onChange={onChangeTreeSelect}
+            />
+          )}
         </FormItem>
       </Modal>
     );
@@ -473,8 +505,9 @@ class QRCodeList extends PureComponent {
       type: 'qrcode/fetch',
     });
     dispatch({
-      type: 'dept/fetch',
+      type: 'channel/fetch',
       callback: res => {
+        console.log(66666,res);
         if (res.code == 0) {
           this.setState({
             deptData: res.list,
