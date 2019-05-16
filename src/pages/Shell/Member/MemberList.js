@@ -703,23 +703,25 @@ class MemberList extends PureComponent {
               {getFieldDecorator('mobile')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="所属部门">
-              {getFieldDecorator('deptNo', {
-                rules: [{ required: false, message: '请选择所属部门！' }],
-              })(
-                <TreeSelect
-                  className={styles.width}
-                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                  treeData={this.state.deptData}
-                  dropdownMatchSelectWidth={false}
-                  treeDefaultExpandAll={false}
-                  placeholder="请选择部门"
-                  // onChange={onChangeTreeSelect}
-                />
-              )}
-            </FormItem>
-          </Col>
+
+          {/*<Col md={8} sm={24}>*/}
+          {/*  <FormItem label="所属渠道商">*/}
+          {/*    {getFieldDecorator('deptNo', {*/}
+          {/*      rules: [{ required: false, message: '请选择所属渠道商！' }],*/}
+          {/*    })(*/}
+          {/*      <TreeSelect*/}
+          {/*        className={styles.width}*/}
+          {/*        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}*/}
+          {/*        treeData={this.state.deptData}*/}
+          {/*        dropdownMatchSelectWidth={false}*/}
+          {/*        treeDefaultExpandAll={false}*/}
+          {/*        placeholder="请选择所属渠道商"*/}
+          {/*        // onChange={onChangeTreeSelect}*/}
+          {/*      />*/}
+          {/*    )}*/}
+          {/*  </FormItem>*/}
+          {/*</Col>*/}
+
           <Col md={8} sm={24}>
             <FormItem label="注册时间">
               <RangePicker
@@ -732,13 +734,13 @@ class MemberList extends PureComponent {
             </FormItem>
           </Col>
         </Row>
-        {/*<Row gutter={{ md: 8, lg: 24, xl: 48 }}>*/}
-        {/*  <Col md={8} sm={24}>*/}
-        {/*    <FormItem label="渠道名称">*/}
-        {/*      {getFieldDecorator('deptno')(<Input placeholder="请输入" />)}*/}
-        {/*    </FormItem>*/}
-        {/*  </Col>*/}
-        {/*</Row>*/}
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col md={8} sm={24}>
+            <FormItem label="渠道名称">
+              {getFieldDecorator('deptno')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+        </Row>
 
         <div style={{ overflow: 'hidden' }}>
           <div style={{ float: 'right', marginBottom: 24 }}>

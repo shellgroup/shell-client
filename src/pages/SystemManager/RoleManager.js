@@ -120,6 +120,7 @@ const CreateForm = Form.create()(props => {
               onCheck={that.onCheckDept}
               checkedKeys={that.state.deptCheckedKeys}
               onSelect={that.onSelectDept}
+              checkStrictly={true}
               selectedKeys={that.state.deptSelectedKeys}
             >
               {renderTreeNodes(deptData)}
@@ -272,6 +273,7 @@ class UpdateForm extends PureComponent {
                 autoExpandParent={that.state.autoExpandParent}
                 onCheck={that.onCheckDept}
                 checkedKeys={that.state.deptCheckedKeys}
+                checkStrictly={true}
                 onSelect={that.onSelectDept}
                 selectedKeys={that.state.deptSelectedKeys}
               >
