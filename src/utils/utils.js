@@ -150,6 +150,28 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(
 export function isUrl(path) {
   return reg.test(path);
 }
+export function regs(str,type){
+  //1.过滤特殊字符
+  //2.过滤空格
+  let pattern = null;
+
+
+  if(type == 1){
+    pattern = new RegExp("[a-zA-Z\\d\u4e00-\u9fa5]");
+  }else if(type == 2){
+    pattern = new RegExp("[\\S]");
+  }
+
+
+
+  var rs = "";
+  for (let i = 0; i < str.length; i++) {
+    if(pattern.test(str[i])){
+      rs+=str[i];
+    }
+  }
+  return rs;
+}
 /*操作统一模态提醒*/
 export function tips(res, that, path, menu) {
   if (res.code == 0) {

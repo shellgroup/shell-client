@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../../utils/utils';
+import {tips, disablesBtns, showDeleteConfirmParames, child, regs} from '../../../utils/utils';
 const showDeleteTipsParames = showDeleteConfirmParames();
 const confirm = Modal.confirm;
 import styles from './DepartmentManager.less';
@@ -36,6 +36,7 @@ const CreateForm = Form.create()(props => {
     deptData,
     configName,
     isExitDeptNameWhenAdd,
+    that
   } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -68,7 +69,7 @@ const CreateForm = Form.create()(props => {
           rules: [
             { required: true, message: '请输入您的渠道商名称!'}
           ],
-        })(<Input placeholder="请输入" onBlur={isExitDeptNameWhenAdd}/>)}
+        })(<Input placeholder="请输入" onBlur={isExitDeptNameWhenAdd} onChange={that.parseVaule} maxLength={30}/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="上级渠道商">
         {form.getFieldDecorator('parentId', {
@@ -88,7 +89,7 @@ const CreateForm = Form.create()(props => {
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="渠道推广码">
         {form.getFieldDecorator('deptCode', {
           rules: [{ required: true, message: '请输入您的渠道推广码！' }],
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入" onChange={that.parseVaule} maxLength={100}/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="排&emsp;&emsp;序">
         {form.getFieldDecorator('orderNum', {
@@ -183,7 +184,7 @@ class UpdateForm extends PureComponent {
           {form.getFieldDecorator('name', {
             rules: [{ required: true, message: '请输入您的渠道商名称！' }],
             initialValue: formVals.name,
-          })(<Input placeholder="请输入" data-id={formVals.deptId} onBlur={isExitDeptNameWhenUpdate}/>)}
+          })(<Input placeholder="请输入" data-id={formVals.deptId} onBlur={isExitDeptNameWhenUpdate} onChange={that.parseVaule} maxLength={30}/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="上级渠道商">
           {form.getFieldDecorator('parentId', {
@@ -205,7 +206,7 @@ class UpdateForm extends PureComponent {
           {form.getFieldDecorator('deptCode', {
             rules: [{ required: true, message: '请输入您的渠道推广码！' }],
             initialValue: formVals.deptCode,
-          })(<Input placeholder="请输入" />)}
+          })(<Input placeholder="请输入" onChange={that.parseVaule} maxLength={100}/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="排&emsp;&emsp;序">
           {form.getFieldDecorator('orderNum', {
@@ -328,6 +329,11 @@ class DepartmentManager extends PureComponent {
 
 
 
+  handleSelectRows = rows => {
+    this.setState({
+      selectedRows: rows,
+    });
+  };
 
   handleMenuClick = e => {
     const { dispatch } = this.props;
@@ -396,6 +402,11 @@ class DepartmentManager extends PureComponent {
         });
       },
     });
+  };
+  //过滤空格
+  parseVaule = e =>{
+    let str = e.target.value;
+    return e.target.value = regs(str,2);
   };
   isExitDeptNameWhenUpdate = e =>{
     const { dispatch } = this.props;
@@ -497,14 +508,16 @@ class DepartmentManager extends PureComponent {
       handleModalVisible: this.handleModalVisible,
       deptData: deptData,
       configName:configName,
-      isExitDeptNameWhenAdd:this.isExitDeptNameWhenAdd
+      isExitDeptNameWhenAdd:this.isExitDeptNameWhenAdd,
+      that:this
     };
     const updateMethods = {
       handleUpdateModalVisible: this.handleUpdateModalVisible,
       handleUpdate: this.handleUpdate,
       deptData: deptData,
       configName:configName,
-      isExitDeptNameWhenUpdate:this.isExitDeptNameWhenUpdate
+      isExitDeptNameWhenUpdate:this.isExitDeptNameWhenUpdate,
+      that:this
     };
     return (
       <PageHeaderWrapper>

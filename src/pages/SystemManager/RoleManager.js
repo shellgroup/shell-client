@@ -770,7 +770,7 @@ class RoleManager extends PureComponent {
   }
 
   onCheckDept = (checkedKeys) => {
-    this.setState({ deptCheckedKeys:checkedKeys });
+    this.setState({ deptCheckedKeys:checkedKeys.checked });
   }
 
   onSelectDept = (selectedKeys, info) => {

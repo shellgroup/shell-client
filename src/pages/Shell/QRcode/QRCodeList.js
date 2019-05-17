@@ -80,7 +80,7 @@ const CreateForm = Form.create()(props => {
           rules: [
             { required: false, message: '请输入推广员姓名！' },
           ],
-        })(<Input placeholder="请输入" />)}
+        })(<Input placeholder="请输入" maxLength={15}/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="推广员手机号">
         {form.getFieldDecorator('userPhone', {
@@ -174,7 +174,7 @@ class UpdateForm extends PureComponent {
               { required: false, message: '请输入推广员姓名！' },
             ],
             initialValue: formVals.userName
-          })(<Input placeholder="请输入" />)}
+          })(<Input placeholder="请输入" maxLength={15}/>)}
         </FormItem>
         <FormItem {...this.formLayout} label="推广员手机号">
           {form.getFieldDecorator('userPhone', {

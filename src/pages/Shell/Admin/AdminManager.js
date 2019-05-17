@@ -17,7 +17,7 @@ import {
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { tips, disablesBtns, showDeleteConfirmParames, child } from '../../../utils/utils';
+import { tips, disablesBtns, showDeleteConfirmParames, child, regs } from '../../../utils/utils';
 import styles from './AdminManager.less';
 
 /**
@@ -45,6 +45,7 @@ const CreateForm = Form.create()(props => {
     isExistByUserName,
     UserNameOnChange,
     handleChange,
+    unamevalue,
     deptData,
     userName,
     roleData,
@@ -116,7 +117,7 @@ const CreateForm = Form.create()(props => {
           rules: [
             { required: true, message: '请在输入至少2个字符的用户名!', min:2}
           ],
-        })(<Input placeholder="请输入用户名" onBlur={isExistByUserName} maxLength={15} autoComplete='off'/>)}
+        })(<Input placeholder="请输入用户名" onBlur={isExistByUserName} maxLength={15} autoComplete='off' onChange={that.parseVaule}/>)}
       </FormItem>
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密&emsp;码">
         {form.getFieldDecorator('password', {
@@ -300,7 +301,7 @@ class UpdateForm extends PureComponent {
           {form.getFieldDecorator('username', {
             rules: [{ required: false, message: '请输入至少2个字符的用户名 ！', min: 2 }],
             initialValue: formVals.name,
-          })(<Input placeholder="请输入用户名" maxLength={15} disabled={true} />)}
+          })(<Input placeholder="请输入用户名" maxLength={15} disabled={true} onChange={that.parseVaule}/>)}
         </FormItem>
 
         <FormItem {...this.formLayout} label="密&emsp;码">
@@ -417,6 +418,7 @@ class AdminManager extends PureComponent {
     SaveBtn: false,
     UpdateBtn: false,
     ShowList: false,
+    unamevalue:"",
   };
 
   componentDidMount() {
@@ -589,7 +591,18 @@ class AdminManager extends PureComponent {
       },
     });
   };
-
+  //用户名过滤特殊字符
+  parseVaule = e =>{
+    let str = e.target.value;
+    // let pattern = new RegExp("[a-zA-Z\\d\u4e00-\u9fa5]");
+    // var rs = "";
+    // for (let i = 0; i < str.length; i++) {
+    //   if(pattern.test(str[i])){
+    //     rs+=str[i];
+    //   }
+    // }
+    return e.target.value = regs(str,1);
+  };
   handleSelectRows = rows => {
     this.setState({
       selectedRows: rows,
@@ -829,7 +842,7 @@ class AdminManager extends PureComponent {
       usr: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
+    const { selectedRows, modalVisible, updateModalVisible, stepFormValues, unamevalue, roleData, deptData, statusValue, ShowList, key, userName } = this.state;
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
@@ -839,6 +852,7 @@ class AdminManager extends PureComponent {
       UserNameOnChange: this.UserNameOnChange,
       roleData: roleData,
       userName: userName,
+      unamevalue:unamevalue,
       deptData: deptData,
       statusValue: statusValue,
       that: this,

@@ -513,8 +513,8 @@ class MemberList extends PureComponent {
         name: fieldsValue.username,
         phone: fieldsValue.mobile,
         deptName: fieldsValue.deptno,
-        beginDate: this.state.createTime.beginDate,
-        endDate: this.state.createTime.endDate,
+        createBeginTime: this.state.createTime.beginDate,
+        createEndTime: this.state.createTime.endDate,
       };
       this.setState({
         formValues: values,
