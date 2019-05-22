@@ -688,8 +688,8 @@ class QRCodeList extends PureComponent {
         userName: fieldsValue.name,
         userPhone: fieldsValue.mobile,
         deptName: fieldsValue.deptN,
-        createBeginTime: this.state.createTime.beginDate,
-        createEndTime: this.state.createTime.endDate,
+        imageBeginTime: this.state.createTime.beginDate,
+        imageEndTime: this.state.createTime.endDate,
       };
 
 
@@ -1103,7 +1103,7 @@ class QRCodeList extends PureComponent {
     } = this.props;
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        {this.state.createqrCodeBtn && <Menu.Item key="remove">批量删除</Menu.Item>}
+        {this.state.DeleteBtn && <Menu.Item key="remove">批量删除</Menu.Item>}
         {this.state.createqrCodesBtn && <Menu.Item key="createQrcode">二维码批量生成</Menu.Item>}
         {this.state.batchDownLoadBtn && <Menu.Item key="downLoadQrcode">二维码批量下载</Menu.Item>}
       </Menu>

@@ -513,6 +513,7 @@ class MemberList extends PureComponent {
         name: fieldsValue.username,
         phone: fieldsValue.mobile,
         deptName: fieldsValue.deptno,
+        memberType:fieldsValue.membertype,
         createBeginTime: this.state.createTime.beginDate,
         createEndTime: this.state.createTime.endDate,
       };
@@ -735,6 +736,22 @@ class MemberList extends PureComponent {
           </Col>
         </Row>
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col md={8} sm={24}>
+            <FormItem label="会员类型">
+              {getFieldDecorator('membertype')(
+                <Select
+                  showSearch
+                  placeholder="请选择会员类型"
+                  optionFilterProp="children"
+                >
+                  <Option value="0">全部</Option>
+                  <Option value="1">游客</Option>
+                  <Option value="2">会员</Option>
+                  <Option value="3">开卡会员</Option>
+                </Select>,
+              )}
+            </FormItem>
+          </Col>
           <Col md={8} sm={24}>
             <FormItem label="渠道名称">
               {getFieldDecorator('deptno')(<Input placeholder="请输入" />)}
