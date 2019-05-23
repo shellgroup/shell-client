@@ -390,19 +390,80 @@ export async function createqrCodes(params) {
 }
 //二维码下载
 export async function downloadQrcode(params) {
-  window.location.href =`${baseURL}/qrcode/info/download?${stringify(params)}`;
+  //window.location.href =`${baseURL}/qrcode/info/download?${stringify(params)}`;
+  let $tempPane = document.createElement("div");
+  let $form = document.createElement("form");
+
+  $form.setAttribute("id","downloadFile");
+  $form.setAttribute("method", "POST");
+  $form.setAttribute("action", `${baseURL}/qrcode/info/download`);
+  $form.setAttribute("target", "downloadFileTarget");
+  $form.style.display="none";
+  for(var key in params){
+    if(params[key]){
+      let input = document.createElement("input");
+      input.setAttribute("type","hidden");
+      input.setAttribute("name",key);
+      input.setAttribute("value",params[key]);
+      $form.appendChild(input);
+    }
+  }
+
+  let $iframe = document.createElement("iframe");
+  $iframe.setAttribute("id","downloadFileTarget");
+  $iframe.setAttribute("name","downloadFileTarget");
+  $iframe.style.display="none";
+  $iframe.appendChild($form);
+  $tempPane.appendChild($iframe);
+  document.body.appendChild($tempPane);
+  $form.submit();
+  //$tempPane.remove();
 }
 //二维码批量下载
 export async function batchDownload(params) {
+  // if(params){
+  //   let str = "";
+  //   for(var key in params){
+  //     if(params[key]){
+  //       str+="&"+key+"="+params[key];
+  //     }
+  //   }
+  //   window.location.href =`${baseURL}/qrcode/info/batchDownload?${str}`
+  // }
+
+
   if(params){
-    let str = "";
+
+    let $tempPane = document.createElement("div");
+    let $form = document.createElement("form");
+
+    $form.setAttribute("id","downloadFile");
+    $form.setAttribute("method", "POST");
+    $form.setAttribute("action", `${baseURL}/qrcode/info/batchDownload`);
+    $form.setAttribute("target", "downloadFileTarget");
+    $form.style.display="none";
     for(var key in params){
       if(params[key]){
-        str+="&"+key+"="+params[key];
+        let input = document.createElement("input");
+        input.setAttribute("type","hidden");
+        input.setAttribute("name",key);
+        input.setAttribute("value",params[key]);
+        $form.appendChild(input);
       }
     }
-    window.location.href =`${baseURL}/qrcode/info/batchDownload?${str}`
+
+    let $iframe = document.createElement("iframe");
+    $iframe.setAttribute("id","downloadFileTarget");
+    $iframe.setAttribute("name","downloadFileTarget");
+    $iframe.style.display="none";
+    $iframe.appendChild($form);
+    $tempPane.appendChild($iframe);
+    document.body.appendChild($tempPane);
+    $form.submit();
+    //$tempPane.remove();
   }
+
+
 }
 
 //查询二维码参数列表
@@ -461,55 +522,34 @@ export async function queryWxUser(params) {
 }
 //导出会员列表
 export async function downloadMembers(params) {
-  if(params){
-    let str = "";
-    for(var key in params){
-      if(params[key]){
-        str+="&"+key+"="+params[key];
-      }
+  let $tempPane = document.createElement("div");
+  let $form = document.createElement("form");
+
+  $form.setAttribute("id","downloadFile");
+  $form.setAttribute("method", "POST");
+  $form.setAttribute("action", `${baseURL}/wxUser/manage/download`);
+  $form.setAttribute("target", "downloadFileTarget");
+  $form.style.display="none";
+  for(var key in params){
+    if(params[key]){
+      let input = document.createElement("input");
+      input.setAttribute("type","hidden");
+      input.setAttribute("name",key);
+      input.setAttribute("value",params[key]);
+      $form.appendChild(input);
     }
-    //window.location.href =`${baseURL}/wxUser/manage/download?${str}`
-    //1、html专门设置一个空的div，用于下载，我的div的id是tempPane
-    let $tempPane = document.createElement("div");
-    //2、新建一个form
-    let $form = document.createElement("form");
-
-    $form.setAttribute("id","downloadFile");
-    $form.setAttribute("method", "POST");
-    $form.setAttribute("action", `${baseURL}/wxUser/manage/download?${str}`);
-    $form.setAttribute("target", "downloadFileTarget");
-    $form.style.display="none";
-    //form表单提交会刷新页面，因此绑定一个iframe，target设置之后将刷新转嫁到iframe。
-    //3、填充你需要提交的参数
-    for(var key in params){
-      if(params[key]){
-        let input = document.createElement("input");
-        input.setAttribute("type","hidden");
-        input.setAttribute("name",key);
-        input.setAttribute("value",params[key]);
-        $form.appendChild(input);
-      }
-    }
-
-
-
-    //4、新建一个iframe
-    let $iframe = document.createElement("iframe");
-    //此处需要设置name值用于form绑定。
-    $iframe.setAttribute("id","downloadFileTarget");
-    $iframe.setAttribute("name","downloadFileTarget");
-    $iframe.style.display="none";
-    //5、将form填充到iframe里，再将iframe填充到tempPane里
-    $iframe.appendChild($form);
-    $tempPane.appendChild($iframe);
-    document.body.appendChild($tempPane);
-    //6、提交form表单
-    $form.submit();
-    //7、成功后清除tempPane里面的所有内容
-    // $iframe.onload(() => {
-    //   $tempPane.remove();
-    // })
   }
+
+  let $iframe = document.createElement("iframe");
+  $iframe.setAttribute("id","downloadFileTarget");
+  $iframe.setAttribute("name","downloadFileTarget");
+  $iframe.style.display="none";
+  $iframe.appendChild($form);
+  $tempPane.appendChild($iframe);
+  document.body.appendChild($tempPane);
+  $form.submit();
+  //$tempPane.remove();
+
 }
 
 //收据统计图表
